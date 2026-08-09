@@ -3,7 +3,7 @@
 local addonName, VCA = ...
 
 VCA.ADDON_NAME = addonName
-VCA.VERSION = "0.1.0"
+VCA.VERSION = "2.4.0"
 VCA.SCHEMA_VERSION = 2
 VCA.CHAR_DB_NAME = "VoidcoreAdvisorCharDB"
 VCA.GLOBAL_DB_NAME = "VoidcoreAdvisorDB"
@@ -87,7 +87,7 @@ VCA.MythicPlusVaultRewards = {
     },
     [10] = {
         track = "Myth 1/6",
-        bonusID = 12801
+        bonusID = 12849
     }
 }
 -- ── Nebulous Voidcore currency ─────────────────────────────────────────────
@@ -95,32 +95,56 @@ VCA.VOIDCORE_CURRENCY_ID = 3418 -- Nebulous Voidcore (Season 1)
 -- ── Nebulous Voidcache item IDs ───────────────────────────────────────────────
 -- Maps current-season M+ dungeon EJ instanceID → its Nebulous Voidcache item ID.
 -- Used by VoidcacheScan to read per-spec loot lists from the Voidcache tooltip.
+-- instanceIDs from /vcagen list
 VCA.DungeonVoidcacheIDs = {
-    [1201] = 268465, -- Algeth'ar Academy
-    [1300] = 268466, -- Magisters' Terrace
-    [1316] = 268467, -- Nexus-Point Xenas
-    [278] = 268468, -- Pit of Saron
-    [945] = 268469, -- Seat of the Triumvirate
-    [476] = 268470, -- Skyreach
-    [1299] = 268471, -- Windrunner Spire
-    [1315] = 268473 -- Maisara Caverns
+    -- Season 1 (12.0.x)
+    -- [1201] = 268465, -- Algeth'ar Academy
+    -- [1300] = 268466, -- Magisters' Terrace
+    -- [1316] = 268467, -- Nexus-Point Xenas
+    -- [278] = 268468, -- Pit of Saron
+    -- [945] = 268469, -- Seat of the Triumvirate
+    -- [476] = 268470, -- Skyreach
+    -- [1299] = 268471, -- Windrunner Spire
+    -- [1315] = 268473, -- Maisara Caverns
+    -- Season 2 (12.1.0)
+    [1322] = 279618, -- Altar of Fangs
+    [1311] = 279620, -- Den of Nalorakk
+    [1304] = 279623, -- Murder Row
+    [1309] = 279619, -- The Blinding Vale
+    [1313] = 279625, -- Voidscar Arena
+    [1041] = 279621, -- Kings' Rest
+    [1202] = 279622, -- Ruby Life Pools
+    [1030] = 279624 -- Temple of Sethraliss
 }
 
 -- ── Raid Nebulous Voidcache item IDs ─────────────────────────────────────────
 -- Maps current-season raid encounterID → its Nebulous Voidcache item ID.
 -- Only encounters that award Voidcaches are listed here.
--- Encounters 2782, 2827, 2828, 2829 (Liberation of Undermine) have no Voidcache.
+-- encounterIDs from /vcagen list; voidcache item names may differ from encounter
+-- names (e.g. "Tortollan Explorers" vs "The Lost Explorers") — mapped manually.
 VCA.RaidEncounterCacheIDs = {
-    [2733] = 268459, -- Imperator Averzian
-    [2734] = 268460, -- Vorasius
-    [2735] = 268462, -- Vaelgor & Ezzorak
-    [2736] = 268461, -- Fallen-King Salhadaar
-    [2737] = 268463, -- Lightblinded Vanguard
-    [2738] = 267488, -- Crown of the Cosmos
-    [2739] = 268458, -- Belo'ren, Child of Al'ar
-    [2740] = 262658, -- Midnight Falls
-    [2795] = 268464, -- Chimaerus the Undreamt God
-    [2711] = 275228 -- Rotmire
+    -- Season 1 (12.0.x) — Crown of Midnight
+    -- [2733] = 268459, -- Imperator Averzian
+    -- [2734] = 268460, -- Vorasius
+    -- [2735] = 268462, -- Vaelgor & Ezzorak
+    -- [2736] = 268461, -- Fallen-King Salhadaar
+    -- [2737] = 268463, -- Lightblinded Vanguard
+    -- [2738] = 267488, -- Crown of the Cosmos
+    -- [2739] = 268458, -- Belo'ren, Child of Al'ar
+    -- [2740] = 262658, -- Midnight Falls
+    -- [2795] = 268464, -- Chimaerus the Undreamt God
+    -- [2711] = 275228, -- Rotmire
+    -- Season 2 (12.1.0) — The Tidebound Grotto (instanceID 1317)
+    [2849] = 274708, -- Nymrissa Wavecaller
+    -- Season 2 (12.1.0) — The Venomous Abyss (instanceID 1320)
+    [2888] = 278285, -- Nek'zali the Soulcoiler  (item: Soulcoiler Nek'zali)
+    [2874] = 278283, -- Entombed Sentinels
+    [2894] = 278286, -- The Lost Explorers       (item: Tortollan Explorers)
+    [2882] = 278287, -- Vashnik the Malignant    (item: Vashnik)
+    [2871] = 278288, -- Sszorak
+    [2887] = 278289, -- The Twin Fangs
+    [2883] = 278290, -- The Coiled Altar
+    [2895] = 278284 -- Ula'tek
 }
 
 -- ── Detection ─────────────────────────────────────────────────────────────────

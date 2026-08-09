@@ -1,4 +1,4 @@
-## Interface: 120005, 120007, 121000
+## Interface: 121000
 ## Title: VoidcoreAdvisor
 ## Notes: Attaches a panel to the Encounter Journal showing which loot specialization gives you the best chance of getting the items you want when spending Nebulous Voidcores.
 ## Version: 2.4.0

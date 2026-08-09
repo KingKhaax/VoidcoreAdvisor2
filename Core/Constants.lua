@@ -78,15 +78,17 @@ VCA.RaidTooltipExtraBonusItems = {
 
 -- Items excluded from specific encounters (do not drop from Voidcores).
 VCA.LootPoolExclusions = {
-    [2895] = {[270909] = true}, -- Ula'tek
+    [2895] = {
+        [270909] = true
+    } -- Ula'tek
 }
 
 -- Per-encounter bonus ID overrides for specific difficulties.
 VCA.RaidEncounterTooltipBonus = {
     [VCA.Difficulty.RAID_MYTHIC] = {
         [2883] = {"13335", "13708", "13848"}, -- The Coiled Altar
-        [2895] = {"13335", "13708", "13848"}, -- Ula'tek
-    },
+        [2895] = {"13335", "13708", "13848"} -- Ula'tek
+    }
 }
 
 -- ── M+ Great Vault reward data ────────────────────────────────────────────────

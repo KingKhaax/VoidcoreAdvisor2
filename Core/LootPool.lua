@@ -334,12 +334,14 @@ function LootPool.GetEncounterItemsForSpec(encounterID, difficultyID, classID, s
     end
 
     local rawItems = (encounterData.bySpec and encounterData.bySpec[difficultyID] and
-                      encounterData.bySpec[difficultyID][specID]) or {}
+                         encounterData.bySpec[difficultyID][specID]) or {}
     local exclusions = VCA.LootPoolExclusions and VCA.LootPoolExclusions[encounterID]
     if exclusions then
         local filtered = {}
         for _, id in ipairs(rawItems) do
-            if not exclusions[id] then filtered[#filtered + 1] = id end
+            if not exclusions[id] then
+                filtered[#filtered + 1] = id
+            end
         end
         _cache[key] = filtered
         return filtered
@@ -461,12 +463,14 @@ function LootPool.GetEncounterItemsForClass(encounterID, difficultyID, classID, 
     end
 
     local rawItems = (encounterData.byClass and encounterData.byClass[difficultyID] and
-                      encounterData.byClass[difficultyID][classID]) or {}
+                         encounterData.byClass[difficultyID][classID]) or {}
     local exclusions = VCA.LootPoolExclusions and VCA.LootPoolExclusions[encounterID]
     if exclusions then
         local filtered = {}
         for _, id in ipairs(rawItems) do
-            if not exclusions[id] then filtered[#filtered + 1] = id end
+            if not exclusions[id] then
+                filtered[#filtered + 1] = id
+            end
         end
         _cache[key] = filtered
         return filtered

@@ -531,9 +531,8 @@ local function BuildRaidTooltipLink(itemLink, difficultyID)
     local isSpecial = VCA.RaidTooltipExtraBonusItems and VCA.RaidTooltipExtraBonusItems[itemID]
 
     -- Check for encounter-specific bonus override (keyed by difficulty + encounterID).
-    local encounterBonus = VCA.RaidEncounterTooltipBonus
-        and VCA.RaidEncounterTooltipBonus[difficultyID]
-        and VCA.RaidEncounterTooltipBonus[difficultyID][Panel.sourceID]
+    local encounterBonus = VCA.RaidEncounterTooltipBonus and VCA.RaidEncounterTooltipBonus[difficultyID] and
+                               VCA.RaidEncounterTooltipBonus[difficultyID][Panel.sourceID]
 
     fields[11] = "" -- clear loot specID; its presence suppresses the track label
     fields[13] = info.ctx

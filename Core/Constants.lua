@@ -47,43 +47,83 @@ VCA.MythicPlusEJDifficulty = VCA.Difficulty.DUNGEON_MYTHIC
 -- These IDs are injected into item links so tooltips render at the correct
 -- item level for Nebulous Voidcore rewards from M+ dungeons.
 VCA.MythicPlusBonusIDs = {13440, 6652, 12699} -- shared M+ base bonus IDs
-VCA.VoidcoreTrackBonusID = 12801 -- Myth 1/6 track
+VCA.VoidcoreTrackBonusID = 12849 -- Myth 1/6 track
+
+-- ── Raid Voidcore tooltip settings per difficulty ───────────────────────────────
+-- ctx = item link context field (5=Hero tier, 6=Myth tier); drives the track label.
+-- Track bonus IDs: Veteran 12825-12830, Champion 12833-12838, Hero 12841-12846, Myth 12849-12854.
+VCA.RaidVoidcoreTooltip = {
+    [VCA.Difficulty.RAID_NORMAL] = {
+        ctx = "5",
+        bonus = 12841, -- Hero 1/6
+        tag = 13334 -- Heroic difficulty tag
+    },
+    [VCA.Difficulty.RAID_HEROIC] = {
+        ctx = "6",
+        bonus = 12849, -- Myth 1/6
+        tag = 13335 -- Mythic difficulty tag
+    },
+    [VCA.Difficulty.RAID_MYTHIC] = {
+        ctx = "6",
+        bonus = 12854, -- Myth 6/6
+        tag = 13335 -- Mythic difficulty tag
+    }
+}
+
+-- Items that need an extra bonus ID (13708) in the Heroic link; raw EJ link on Mythic.
+VCA.RaidTooltipExtraBonusItems = {
+    [268265] = true,
+    [271875] = true
+}
+
+-- Items excluded from specific encounters (do not drop from Voidcores).
+VCA.LootPoolExclusions = {
+    [2895] = {[270909] = true}, -- Ula'tek
+}
+
+-- Per-encounter bonus ID overrides for specific difficulties.
+VCA.RaidEncounterTooltipBonus = {
+    [VCA.Difficulty.RAID_MYTHIC] = {
+        [2883] = {"13335", "13708", "13848"}, -- The Coiled Altar
+        [2895] = {"13335", "13708", "13848"}, -- Ula'tek
+    },
+}
 
 -- ── M+ Great Vault reward data ────────────────────────────────────────────────
 -- Maps each key level to its Great Vault reward upgrade track.
--- Track bonus IDs: Champion 12785-12790, Hero 12793-12798, Myth 12801-12806.
+-- Track bonus IDs: Veteran 12825-12830, Champion 12833-12838, Hero 12841-12846, Myth 12849-12854.
 VCA.MythicPlusVaultRewards = {
     [2] = {
         track = "Hero 1/6",
-        bonusID = 12793
+        bonusID = 12841
     },
     [3] = {
         track = "Hero 1/6",
-        bonusID = 12793
+        bonusID = 12841
     },
     [4] = {
         track = "Hero 2/6",
-        bonusID = 12794
+        bonusID = 12842
     },
     [5] = {
         track = "Hero 2/6",
-        bonusID = 12794
+        bonusID = 12842
     },
     [6] = {
         track = "Hero 3/6",
-        bonusID = 12795
+        bonusID = 12843
     },
     [7] = {
         track = "Hero 4/6",
-        bonusID = 12796
+        bonusID = 12844
     },
     [8] = {
         track = "Hero 4/6",
-        bonusID = 12796
+        bonusID = 12844
     },
     [9] = {
         track = "Hero 4/6",
-        bonusID = 12796
+        bonusID = 12844
     },
     [10] = {
         track = "Myth 1/6",

@@ -504,6 +504,74 @@ local function GetRaidEJItemLink(itemID)
     return result
 end
 
+-- Builds a raid item link showing the correct Voidcore reward track and ilvl.
+-- Keeps linkLevel (f[10]) for correct ilvl; clears specID (f[11]) which suppresses
+-- the "Upgrade Level" display when set.
+local function BuildRaidTooltipLink(itemLink, difficultyID)
+    local info = VCA.RaidVoidcoreTooltip[difficultyID]
+    if not info or not itemLink or itemLink == "" then
+        return nil
+    end
+
+    local itemString = itemLink:match("item[%-?%d:]+")
+    if not itemString then
+        return nil
+    end
+
+    local fields = {}
+    for field in (itemString .. ":"):gmatch("([^:]*):") do
+        fields[#fields + 1] = field
+    end
+    while #fields < 14 do
+        fields[#fields + 1] = ""
+    end
+
+    local numBonuses = tonumber(fields[14]) or 0
+    local itemID = tonumber(fields[2])
+    local isSpecial = VCA.RaidTooltipExtraBonusItems and VCA.RaidTooltipExtraBonusItems[itemID]
+
+    -- Check for encounter-specific bonus override (keyed by difficulty + encounterID).
+    local encounterBonus = VCA.RaidEncounterTooltipBonus
+        and VCA.RaidEncounterTooltipBonus[difficultyID]
+        and VCA.RaidEncounterTooltipBonus[difficultyID][Panel.sourceID]
+
+    fields[11] = "" -- clear loot specID; its presence suppresses the track label
+    fields[13] = info.ctx
+
+    -- Build new bonus list: [tag?, 13708 if special+non-mythic, track]
+    local newBonuses = {}
+    if encounterBonus then
+        newBonuses = encounterBonus
+    elseif isSpecial and difficultyID == VCA.Difficulty.RAID_MYTHIC then
+        -- Special items on Mythic use 3524 (original Mythic tag) instead of 13335.
+        newBonuses = {"3524", tostring(info.bonus)}
+    else
+        if info.tag then
+            newBonuses[#newBonuses + 1] = tostring(info.tag)
+        end
+        if isSpecial then
+            newBonuses[#newBonuses + 1] = "13708"
+        end
+        newBonuses[#newBonuses + 1] = tostring(info.bonus)
+    end
+
+    for _ = 1, numBonuses do
+        table.remove(fields, 15)
+    end
+    fields[14] = tostring(#newBonuses)
+    for i, b in ipairs(newBonuses) do
+        table.insert(fields, 14 + i, b)
+    end
+
+    -- Zero numModifiers so source modifier data cannot override the injected rank.
+    local numModsPos = 15 + #newBonuses
+    if fields[numModsPos] then
+        fields[numModsPos] = "0"
+    end
+
+    return table.concat(fields, ":")
+end
+
 -- ── Tooltip: obtained-spec lines ───────────────────────────────────────────
 -- Appends "Obtained as:" spec lines to whatever tooltip is currently open.
 -- Called before every GameTooltip:Show() on item icon hover.
@@ -650,9 +718,7 @@ local function GetOrCreateItemRow(pool, parent)
             if Panel.sourceType == VCA.ContentType.MYTHIC_PLUS and rf.itemSlot ~= "" then
                 modified = BuildMythicPlusTooltipLink(link)
             elseif Panel.sourceType == VCA.ContentType.RAID then
-                -- Use the EJ's own link for this item — it already has the
-                -- correct difficulty / Myth track bonus IDs for this boss.
-                modified = GetRaidEJItemLink(rf.itemID)
+                modified = BuildRaidTooltipLink(link, Panel.difficultyID)
             end
             if modified then
                 local ok = pcall(GameTooltip.SetHyperlink, GameTooltip, modified)

@@ -295,12 +295,15 @@ function LootPool.GetEncounterItems(encounterID, difficultyID, classID, specID)
 
     local items = {}
     local complete = true
+    local exclusions = VCA.LootPoolExclusions and VCA.LootPoolExclusions[encounterID]
     for _, itemID in ipairs(itemIDs) do
-        local item = EnrichItemID(itemID)
-        if item.name == "" then
-            complete = false
+        if not (exclusions and exclusions[itemID]) then
+            local item = EnrichItemID(itemID)
+            if item.name == "" then
+                complete = false
+            end
+            items[#items + 1] = item
         end
-        items[#items + 1] = item
     end
 
     if #items > 0 and complete then
@@ -330,10 +333,19 @@ function LootPool.GetEncounterItemsForSpec(encounterID, difficultyID, classID, s
         return {}
     end
 
-    local items = (encounterData.bySpec and encounterData.bySpec[difficultyID] and
+    local rawItems = (encounterData.bySpec and encounterData.bySpec[difficultyID] and
                       encounterData.bySpec[difficultyID][specID]) or {}
-    _cache[key] = items
-    return items
+    local exclusions = VCA.LootPoolExclusions and VCA.LootPoolExclusions[encounterID]
+    if exclusions then
+        local filtered = {}
+        for _, id in ipairs(rawItems) do
+            if not exclusions[id] then filtered[#filtered + 1] = id end
+        end
+        _cache[key] = filtered
+        return filtered
+    end
+    _cache[key] = rawItems
+    return rawItems
 end
 
 -- ── Public: per-instance reads (M+ dungeons) ─────────────────────────────────
@@ -448,13 +460,20 @@ function LootPool.GetEncounterItemsForClass(encounterID, difficultyID, classID, 
         return {}
     end
 
-    local items = (encounterData.byClass and encounterData.byClass[difficultyID] and
+    local rawItems = (encounterData.byClass and encounterData.byClass[difficultyID] and
                       encounterData.byClass[difficultyID][classID]) or {}
-    _cache[key] = items
-    return items
+    local exclusions = VCA.LootPoolExclusions and VCA.LootPoolExclusions[encounterID]
+    if exclusions then
+        local filtered = {}
+        for _, id in ipairs(rawItems) do
+            if not exclusions[id] then filtered[#filtered + 1] = id end
+        end
+        _cache[key] = filtered
+        return filtered
+    end
+    _cache[key] = rawItems
+    return rawItems
 end
-
--- Returns item IDs for any spec of a class across an entire dungeon instance.
 function LootPool.GetInstanceItemsForClass(instanceID, difficultyID, classID)
     local key = CacheKey("iic", instanceID, difficultyID, classID)
     if _cache[key] then

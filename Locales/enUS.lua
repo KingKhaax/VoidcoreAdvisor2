@@ -38,6 +38,7 @@ L["TOGGLE_OVERVIEW_HIDE"] = "Click to hide the dungeon overview."
 
 -- ── Slash commands (Init.lua) ─────────────────────────────────────────────────
 
+L["NEW_SEASON_RESET"] = "New season detected — selected items and obtained items have been cleared."
 L["RESET_CONFIRM"] = "All obtained-item data has been reset."
 L["COUNT_FORMAT"] = "%d item(s) marked as obtained via Voidcore."
 L["SPEC_FORMAT"] = "Effective loot spec ID: %s%s"

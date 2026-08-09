@@ -166,6 +166,10 @@ function LootPool.IsSeasonFilterReady()
     return _seasonFilterBuilt == true
 end
 
+function LootPool.GetSeasonFingerprint()
+    return GetSeasonFingerprint()
+end
+
 function LootPool.GetCachedSeasonDungeonByName(name)
     return _seasonDungeonByName[name]
 end

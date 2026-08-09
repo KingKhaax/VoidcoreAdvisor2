@@ -10,6 +10,7 @@ local L = VCA.L
 local function GetDefaults()
     return {
         schemaVersion = VCA.SCHEMA_VERSION,
+        seasonFingerprint = nil,
         obtained = {},
         selectedItems = {}, -- { ["TYPE:sourceID:diffID"] = { [itemID]=true, ... } }
         bonusRollLog = {}, -- raw BONUS_ROLL_RESULT entries for manual verification
@@ -64,6 +65,7 @@ local function InitDB()
         _G[VCA.CHAR_DB_NAME].obtained = _G[VCA.CHAR_DB_NAME].obtained or {}
         _G[VCA.CHAR_DB_NAME].selectedItems = _G[VCA.CHAR_DB_NAME].selectedItems or {}
         _G[VCA.CHAR_DB_NAME].bonusRollLog = _G[VCA.CHAR_DB_NAME].bonusRollLog or {}
+        -- seasonFingerprint may be absent in saves from older versions; nil is fine.
         if _G[VCA.CHAR_DB_NAME].minimized == nil then
             _G[VCA.CHAR_DB_NAME].minimized = false
         end
@@ -133,6 +135,18 @@ initFrame:SetScript("OnEvent", function(self, event, ...)
         -- Always build the season filter immediately so the Reminder and other
         -- features work even when logging in directly inside an instance.
         VCA.LootPool.BuildSeasonFilter()
+
+        -- Clear per-character data when the season has changed.
+        local newFingerprint = VCA.LootPool.GetSeasonFingerprint()
+        if newFingerprint then
+            local db = _G[VCA.CHAR_DB_NAME]
+            if db.seasonFingerprint ~= newFingerprint then
+                db.obtained = {}
+                db.selectedItems = {}
+                db.seasonFingerprint = newFingerprint
+                print("|cff9370DBVoidcoreAdvisor:|r " .. L["NEW_SEASON_RESET"])
+            end
+        end
 
         -- Defer the heavy item-cache warmup until outside an instance.
         ScheduleDeferredWarmup(4)

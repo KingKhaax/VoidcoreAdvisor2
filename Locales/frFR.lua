@@ -32,6 +32,7 @@ L["CLEAR_SELECTED"] = "Effacer la sélection"
 -- ── Slash commands ────────────────────────────────────────────────────────────
 
 L["RESET_CONFIRM"] = "Toutes les données d'objets obtenus ont été réinitialisées."
+L["NEW_SEASON_RESET"] = "Nouvelle saison détectée — les objets sélectionnés et obtenus ont été effacés."
 L["COUNT_FORMAT"] = "%d objet(s) marqué(s) comme obtenu(s) via Noyau du Vide."
 L["SPEC_FORMAT"] = "ID de spécialisation de butin active : %s%s"
 L["FOLLOWS_ACTIVE_SPEC"] = " (suit la spécialisation active)"

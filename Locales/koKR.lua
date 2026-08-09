@@ -32,6 +32,8 @@ L["CLEAR_SELECTED"] = "선택 해제"
 -- ── Slash commands ────────────────────────────────────────────────────────────
 
 L["RESET_CONFIRM"] = "획득한 아이템 데이터가 모두 초기화되었습니다."
+L["NEW_SEASON_RESET"] =
+    "새 시즌이 감지되었습니다 — 선택한 아이템과 획득한 아이템이 초기화되었습니다."
 L["COUNT_FORMAT"] = "공허핵으로 획득한 아이템 %d개가 표시되어 있습니다."
 L["SPEC_FORMAT"] = "현재 전리품 전문화 ID: %s%s"
 L["FOLLOWS_ACTIVE_SPEC"] = " (활성 전문화를 따름)"

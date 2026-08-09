@@ -32,6 +32,7 @@ L["CLEAR_SELECTED"] = "Limpar seleção"
 -- ── Slash commands ────────────────────────────────────────────────────────────
 
 L["RESET_CONFIRM"] = "Todos os dados de itens obtidos foram redefinidos."
+L["NEW_SEASON_RESET"] = "Nova temporada detectada — itens selecionados e obtidos foram apagados."
 L["COUNT_FORMAT"] = "%d item(ns) marcado(s) como obtido(s) via Núcleo do Vazio."
 L["SPEC_FORMAT"] = "ID de especialização de saque ativa: %s%s"
 L["FOLLOWS_ACTIVE_SPEC"] = " (segue a especialização ativa)"

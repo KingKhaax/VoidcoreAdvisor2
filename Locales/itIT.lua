@@ -32,6 +32,7 @@ L["CLEAR_SELECTED"] = "Cancella selezione"
 -- ── Slash commands ────────────────────────────────────────────────────────────
 
 L["RESET_CONFIRM"] = "Tutti i dati degli oggetti ottenuti sono stati reimpostati."
+L["NEW_SEASON_RESET"] = "Nuova stagione rilevata — gli oggetti selezionati e ottenuti sono stati cancellati."
 L["COUNT_FORMAT"] = "%d oggetto/i contrassegnato/i come ottenuto/i tramite Nucleo del Vuoto."
 L["SPEC_FORMAT"] = "ID specializzazione bottino attiva: %s%s"
 L["FOLLOWS_ACTIVE_SPEC"] = " (segue la specializzazione attiva)"

@@ -32,6 +32,7 @@ L["CLEAR_SELECTED"] = "Auswahl aufheben"
 -- ── Slash commands ────────────────────────────────────────────────────────────
 
 L["RESET_CONFIRM"] = "Alle erhaltenen Gegenstände wurden zurückgesetzt."
+L["NEW_SEASON_RESET"] = "Neue Saison erkannt — ausgewählte und erhaltene Gegenstände wurden gelöscht."
 L["COUNT_FORMAT"] = "%d Gegenstand/Gegenstände als über Leerenkern erhalten markiert."
 L["SPEC_FORMAT"] = "Aktive Beutespezialisierungs-ID: %s%s"
 L["FOLLOWS_ACTIVE_SPEC"] = " (folgt aktiver Spezialisierung)"

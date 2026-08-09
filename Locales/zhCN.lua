@@ -32,6 +32,7 @@ L["CLEAR_SELECTED"] = "清除选择"
 -- ── Slash commands ────────────────────────────────────────────────────────────
 
 L["RESET_CONFIRM"] = "所有已获取物品数据已重置。"
+L["NEW_SEASON_RESET"] = "检测到新赛季——已选择和已获取的物品已清除。"
 L["COUNT_FORMAT"] = "已标记 %d 件物品为通过虚空核心获取。"
 L["SPEC_FORMAT"] = "当前拾取专精 ID：%s%s"
 L["FOLLOWS_ACTIVE_SPEC"] = "（跟随当前专精）"

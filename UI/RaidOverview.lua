@@ -7,6 +7,17 @@ local L = VCA.L
 VCA.RaidOverview = {}
 local Overview = VCA.RaidOverview
 
+local function GetDifficultyName(diffID)
+    if diffID == VCA.Difficulty.RAID_NORMAL then
+        return L["DIFFICULTY_NORMAL"] or "Normal"
+    elseif diffID == VCA.Difficulty.RAID_HEROIC then
+        return L["DIFFICULTY_HEROIC"] or "Heroic"
+    elseif diffID == VCA.Difficulty.RAID_MYTHIC then
+        return L["DIFFICULTY_MYTHIC"] or "Mythic"
+    end
+    return "Unknown"
+end
+
 local PANEL_WIDTH = 480
 local HEADER_H = 56
 local COL_HEADER_H = 20
@@ -101,6 +112,11 @@ raidScanBtn:SetScript("OnClick", function()
         end
         return
     end
+    local diffID = Overview.difficultyID or VCA.Difficulty.RAID_MYTHIC
+    local diffName = GetDifficultyName(diffID)
+    local bodyText = string.format(L["RAID_SCAN_CONFIRM_BODY"], diffName, diffName)
+    StaticPopupDialogs["VOIDCORE_RAID_SCAN_CONFIRM"].text =
+        L["RAID_SCAN_CONFIRM_TITLE"] .. "\n\n|cffaaaaaa" .. bodyText .. "|r"
     StaticPopup_Show("VOIDCORE_RAID_SCAN_CONFIRM")
 end)
 
@@ -109,7 +125,7 @@ StaticPopupDialogs["VOIDCORE_RAID_SCAN_CONFIRM"] = {
     button1 = YES,
     button2 = NO,
     OnAccept = function()
-        VCA.VoidcacheScan.StartRaid()
+        VCA.VoidcacheScan.StartRaid(Overview.difficultyID)
     end,
     timeout = 0,
     whileDead = true,
@@ -541,15 +557,5 @@ refreshFrame:RegisterEvent("EJ_LOOT_DATA_RECIEVED")
 refreshFrame:SetScript("OnEvent", function()
     if frame:IsShown() then
         Populate()
-    end
-end)
-
-local raidScanConfirmTextFrame = CreateFrame("Frame")
-raidScanConfirmTextFrame:RegisterEvent("ADDON_LOADED")
-raidScanConfirmTextFrame:SetScript("OnEvent", function(self, event, name)
-    if name == VCA.ADDON_NAME then
-        StaticPopupDialogs["VOIDCORE_RAID_SCAN_CONFIRM"].text =
-            VCA.L["RAID_SCAN_CONFIRM_TITLE"] .. "\n\n|cffaaaaaa" .. VCA.L["RAID_SCAN_CONFIRM_BODY"] .. "|r"
-        self:UnregisterAllEvents()
     end
 end)

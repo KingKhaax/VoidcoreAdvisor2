@@ -450,12 +450,11 @@ end)
 
 -- ── Raid name cache ───────────────────────────────────────────────────────────
 
-local function BuildEncounterNameCache(encounterID, specID)
+local function BuildEncounterNameCache(encounterID, specID, diffID)
     local raidData = VCA.SeasonData and VCA.SeasonData.raids[encounterID]
     if not raidData then
         return {}
     end
-    local diffID = VCA.Difficulty.RAID_MYTHIC
     local specItems = raidData.bySpec and raidData.bySpec[diffID] and raidData.bySpec[diffID][specID] or {}
     local nameCache = {}
     for _, itemID in ipairs(specItems) do
@@ -501,14 +500,15 @@ local function FinalizeRaidScan()
         return
     end
 
-    local diffID = VCA.Difficulty.RAID_MYTHIC
+    local diffID = _raidState.difficultyID
     local contentType = VCA.ContentType.RAID
 
-    -- 1. Snapshot existing RAID mythic obtained entries before clearing (enables restore).
+    -- 1. Snapshot existing RAID obtained entries for this difficulty before clearing (enables restore).
     db.obtained = db.obtained or {}
     db.obtainedBackup = db.obtainedBackup or {}
     db.obtainedBackup.raid = {}
     db.obtainedBackup.raidTime = time()
+    db.obtainedBackup.raidDiffID = diffID
     for key, val in pairs(db.obtained) do
         if key:sub(1, 5) == "RAID:" then
             local _, kDiff = key:match("^RAID:%d+:(%d+):")
@@ -518,7 +518,7 @@ local function FinalizeRaidScan()
         end
     end
 
-    -- Clear all existing mythic raid obtained entries — scan result is authoritative.
+    -- Clear all existing obtained entries for this raid difficulty — scan result is authoritative.
     for key in pairs(db.obtained) do
         -- Keys are formatted as "RAID:encounterID:diffID:specID:itemID"
         if key:sub(1, 5) == "RAID:" then
@@ -658,7 +658,8 @@ function Scan.IsRaidRunning()
     return _raidState ~= nil and _raidState.running == true
 end
 
-function Scan.StartRaid()
+function Scan.StartRaid(difficultyID)
+    difficultyID = difficultyID or VCA.Difficulty.RAID_MYTHIC
     local canScan, reason = Scan.CanScan()
     if not canScan then
         return false, reason
@@ -704,12 +705,12 @@ function Scan.StartRaid()
     end)
 
     -- Pre-build name caches.
-    Log(string.format("Starting raid scan: %d spec(s), %d encounter(s)", #specs, #encounters))
+    Log(string.format("Starting raid scan: %d spec(s), %d encounter(s), difficultyID=%d", #specs, #encounters, difficultyID))
     local nameCaches = {}
     for _, specEntry in ipairs(specs) do
         nameCaches[specEntry.specID] = {}
         for _, enc in ipairs(encounters) do
-            nameCaches[specEntry.specID][enc.encounterID] = BuildEncounterNameCache(enc.encounterID, specEntry.specID)
+            nameCaches[specEntry.specID][enc.encounterID] = BuildEncounterNameCache(enc.encounterID, specEntry.specID, difficultyID)
         end
     end
 
@@ -717,6 +718,7 @@ function Scan.StartRaid()
         running = true,
         specs = specs,
         encounters = encounters,
+        difficultyID = difficultyID,
         specIdx = 1,
         encounterIdx = 1,
         retries = 0,
@@ -797,7 +799,7 @@ function Scan.RestoreBackup(contentType)
     end
 
     if wantRaid then
-        local diffID = VCA.Difficulty.RAID_MYTHIC
+        local diffID = backup.raidDiffID or VCA.Difficulty.RAID_MYTHIC
         for key in pairs(db.obtained) do
             if key:sub(1, 5) == "RAID:" then
                 local _, kDiff = key:match("^RAID:%d+:(%d+):")

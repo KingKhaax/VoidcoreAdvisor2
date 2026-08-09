@@ -181,7 +181,11 @@ L["SCAN_UNAVAILABLE_COMBAT"] = "Cannot scan while in combat."
 L["SCAN_UNAVAILABLE_INSTANCE"] = "Cannot scan while inside a dungeon."
 L["RAID_SCAN_CONFIRM_TITLE"] = "Scan Raid Loot Specs?"
 L["RAID_SCAN_CONFIRM_BODY"] =
-    "This will scan the Nebulous Voidcache tooltip for each of your loot specializations across all raid encounters.\n\nScanning the following difficulty:\n|cffffff00Mythic|r|cffaaaaaa\n\nExisting Mythic raid obtained data will be reset.\n\nDo not enter combat during the scan."
+    "This will scan the Nebulous Voidcache tooltip for each of your loot specializations across all raid encounters.\n\nScanning the following difficulty:\n|cffffff00%s|r|cffaaaaaa\n\nExisting %s raid obtained data will be reset.\n\nDo not enter combat during the scan."
+
+L["DIFFICULTY_NORMAL"] = "Normal"
+L["DIFFICULTY_HEROIC"] = "Heroic"
+L["DIFFICULTY_MYTHIC"] = "Mythic"
 
 L["RAID_OVERVIEW_SUBTITLE"] = "Raid Bosses — Loot Chance"
 L["RAID_OVERVIEW_COL_BOSS"] = "BOSS"

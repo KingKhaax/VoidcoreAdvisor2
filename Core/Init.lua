@@ -120,7 +120,6 @@ initFrame:SetScript("OnEvent", function(self, event, ...)
             return
         end
         InitDB()
-        VCA.LootPool.LoadPersistedCache()
         self:UnregisterEvent("ADDON_LOADED")
 
     elseif event == "PLAYER_ENTERING_WORLD" then

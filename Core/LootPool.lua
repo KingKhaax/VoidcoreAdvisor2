@@ -21,74 +21,6 @@ LootPool._reentryGuard = false
 
 local _cache = {}
 local GetSeasonFingerprint
-local PERSISTED_CACHE_VERSION = 26 -- bumped: mount IDs and housing items filtered from persisted entries
-local _persistableCacheTags = {
-    eic = true,
-    eis = true,
-    iic = true,
-    iis = true
-}
-
-local function CopyArray(source)
-    local copy = {}
-    for i = 1, #source do
-        copy[i] = source[i]
-    end
-    return copy
-end
-
-local function GetPersistentCacheDB()
-    local db = _G[VCA.CHAR_DB_NAME]
-    if type(db) ~= "table" then
-        return nil
-    end
-
-    if type(db.lootCache) ~= "table" then
-        db.lootCache = {
-            version = PERSISTED_CACHE_VERSION,
-            fingerprint = nil,
-            entries = {}
-        }
-    end
-
-    local cacheDB = db.lootCache
-    if cacheDB.version ~= PERSISTED_CACHE_VERSION then
-        cacheDB.version = PERSISTED_CACHE_VERSION
-        cacheDB.fingerprint = nil
-        cacheDB.entries = {}
-    elseif type(cacheDB.entries) ~= "table" then
-        cacheDB.entries = {}
-    end
-
-    return cacheDB
-end
-
-local function PersistCacheEntry(key, value)
-    local tag = key:match("^([^:]+):")
-    if not _persistableCacheTags[tag] or type(value) ~= "table" then
-        return
-    end
-
-    local cacheDB = GetPersistentCacheDB()
-    if not cacheDB then
-        return
-    end
-
-    cacheDB.entries[key] = CopyArray(value)
-    if GetSeasonFingerprint then
-        local fingerprint = GetSeasonFingerprint()
-        if fingerprint and fingerprint ~= "" then
-            cacheDB.fingerprint = fingerprint
-        end
-    end
-end
-
-local function ClearPersistedCache()
-    local db = _G[VCA.CHAR_DB_NAME]
-    if type(db) == "table" then
-        db.lootCache = nil
-    end
-end
 
 local function CacheKey(...)
     local parts = {}
@@ -100,7 +32,6 @@ end
 
 function LootPool.InvalidateCache()
     wipe(_cache)
-    ClearPersistedCache()
 end
 
 -- -- Season filter -------------------------------------------------------------
@@ -136,49 +67,6 @@ GetSeasonFingerprint = function()
     end
 
     return table.concat(parts, ",")
-end
-
-local function SyncPersistedSeasonFingerprint()
-    local cacheDB = GetPersistentCacheDB()
-    if not cacheDB then
-        return
-    end
-
-    local fingerprint = GetSeasonFingerprint()
-    if not fingerprint or fingerprint == "" then
-        return
-    end
-
-    if type(cacheDB.fingerprint) == "string" and cacheDB.fingerprint ~= "" and cacheDB.fingerprint ~= fingerprint then
-        wipe(_cache)
-        cacheDB.entries = {}
-    end
-
-    cacheDB.fingerprint = fingerprint
-end
-
-function LootPool.LoadPersistedCache()
-    local cacheDB = GetPersistentCacheDB()
-    if not cacheDB or type(cacheDB.entries) ~= "table" then
-        return
-    end
-
-    local fingerprint = GetSeasonFingerprint()
-    if fingerprint and fingerprint ~= "" then
-        if type(cacheDB.fingerprint) == "string" and cacheDB.fingerprint ~= "" and cacheDB.fingerprint ~= fingerprint then
-            cacheDB.entries = {}
-            cacheDB.fingerprint = fingerprint
-            return
-        end
-        cacheDB.fingerprint = fingerprint
-    end
-
-    for key, itemIDs in pairs(cacheDB.entries) do
-        local tag = key:match("^([^:]+):")
-        if _persistableCacheTags[tag] and type(itemIDs) == "table" then
-            _cache[key] = CopyArray(itemIDs)
-        end
-    end
 end
 
 function LootPool.BuildSeasonFilter()
@@ -265,7 +153,6 @@ function LootPool.BuildSeasonFilter()
 
     if #_seasonDungeonList > 0 or next(_seasonRaidIDs) then
         _seasonFilterBuilt = true
-        SyncPersistedSeasonFingerprint()
     end
 end
 
@@ -442,7 +329,6 @@ function LootPool.GetEncounterItemsForSpec(encounterID, difficultyID, classID, s
     local items = (encounterData.bySpec and encounterData.bySpec[difficultyID] and
                       encounterData.bySpec[difficultyID][specID]) or {}
     _cache[key] = items
-    PersistCacheEntry(key, items)
     return items
 end
 
@@ -536,7 +422,6 @@ function LootPool.GetInstanceItemsForSpec(instanceID, difficultyID, classID, spe
 
     local items = (dungeonData.bySpec and dungeonData.bySpec[specID]) or {}
     _cache[key] = items
-    PersistCacheEntry(key, items)
     return items
 end
 
@@ -562,7 +447,6 @@ function LootPool.GetEncounterItemsForClass(encounterID, difficultyID, classID, 
     local items = (encounterData.byClass and encounterData.byClass[difficultyID] and
                       encounterData.byClass[difficultyID][classID]) or {}
     _cache[key] = items
-    PersistCacheEntry(key, items)
     return items
 end
 
@@ -584,7 +468,6 @@ function LootPool.GetInstanceItemsForClass(instanceID, difficultyID, classID)
 
     local items = (dungeonData.byClass and dungeonData.byClass[classID]) or {}
     _cache[key] = items
-    PersistCacheEntry(key, items)
     return items
 end
 

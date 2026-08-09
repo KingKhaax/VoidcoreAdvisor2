@@ -244,10 +244,9 @@ syncFrame:RegisterEvent("CHALLENGE_MODE_MAPS_UPDATE")
 syncFrame:SetScript("OnEvent", function(self, event)
     if event == "CHALLENGE_MODE_MAPS_UPDATE" then
         -- M+ rotation may have changed (new season); rebuild season state and
-        -- drop persisted loot caches so future reads repopulate trusted data.
+        -- invalidate in-session loot cache so future reads repopulate from fresh data.
         VCA.LootPool.InvalidateCache()
         VCA.LootPool.BuildSeasonFilter()
-        VCA.LootPool.LoadPersistedCache()
         return
     end
 

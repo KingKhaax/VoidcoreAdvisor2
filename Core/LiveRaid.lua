@@ -70,32 +70,33 @@ local function ReadLoot(classID, specID)
     return ids, sample, true
 end
 
+-- Looks for the raid that contains one of the wanted boss IDs in the newest EJ
+-- tiers. EJ_GetEncounterInfoByIndex returns the journal encounter ID (3rd) and
+-- the dungeon encounter ID (7th, the one BigWigs and ENCOUNTER_END use).
 local function FindRaid()
-    for _, wanted in ipairs(WANTED_ENCOUNTERS) do
-        if not (VCA.SeasonData and VCA.SeasonData.raids and VCA.SeasonData.raids[wanted]) then
-            local numTiers = EJ_GetNumTiers()
-            for tier = numTiers, math.max(1, numTiers - 1), -1 do
-                EJ_SelectTier(tier)
-                local idx = 1
-                while true do
-                    local instanceID = EJ_GetInstanceByIndex(idx, true)
-                    if not instanceID then
-                        break
-                    end
-                    local e = 1
-                    while true do
-                        local _, _, encounterID = EJ_GetEncounterInfoByIndex(e, instanceID)
-                        if not encounterID then
-                            break
-                        end
-                        if encounterID == wanted then
-                            return instanceID
-                        end
-                        e = e + 1
-                    end
-                    idx = idx + 1
-                end
+    local numTiers = EJ_GetNumTiers()
+    for tier = numTiers, math.max(1, numTiers - 1), -1 do
+        EJ_SelectTier(tier)
+        local idx = 1
+        while true do
+            local instanceID = EJ_GetInstanceByIndex(idx, true)
+            if not instanceID then
+                break
             end
+            local e = 1
+            while true do
+                local _, _, journalID, _, _, _, dungeonID = EJ_GetEncounterInfoByIndex(e, instanceID)
+                if not journalID then
+                    break
+                end
+                for _, wanted in ipairs(WANTED_ENCOUNTERS) do
+                    if dungeonID == wanted or journalID == wanted then
+                        return instanceID
+                    end
+                end
+                e = e + 1
+            end
+            idx = idx + 1
         end
     end
 end
@@ -182,14 +183,21 @@ local function Refresh()
     end
 end
 
-local function TryScan(attempt)
+local function Say(verbose, text)
+    if verbose then
+        print("|cff9370DBVoidcoreAdvisor 2.0:|r " .. text)
+    end
+end
+
+local function TryScan(attempt, verbose)
     local store = GetDB()
     if not store then
         return
     end
     if InCombatLockdown() or IsInInstance() then
+        Say(verbose, "Cannot read the Encounter Journal in combat or inside an instance.")
         C_Timer.After(10, function()
-            TryScan(attempt)
+            TryScan(attempt, verbose)
         end)
         return
     end
@@ -203,6 +211,10 @@ local function TryScan(attempt)
 
     local instanceID = FindRaid()
     if not instanceID then
+        Say(verbose, "The new raid was not found in the Encounter Journal.")
+        return
+    end
+    if store[instanceID] and store[instanceID].raids and not verbose then
         return
     end
 
@@ -214,10 +226,18 @@ local function TryScan(attempt)
         Refresh()
         print("|cff9370DBVoidcoreAdvisor:|r " .. (VCA.L["LIVE_RAID_ADDED"] or "New raid loot loaded from the Encounter Journal."))
     elseif attempt < MAX_ATTEMPTS then
+        Say(verbose, "Item data is still loading, retrying...")
         C_Timer.After(4, function()
-            TryScan(attempt + 1)
+            TryScan(attempt + 1, verbose)
         end)
+    else
+        Say(verbose, "Could not read the raid loot (item data did not load).")
     end
+end
+
+-- /vca2 liveraid: force a scan and report what happened.
+function LiveRaid.Run(verbose)
+    TryScan(1, verbose)
 end
 
 local frame = CreateFrame("Frame")

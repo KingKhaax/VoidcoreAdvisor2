@@ -217,3 +217,7 @@ L["MARK_MODE_ACTIVE"] = "Cliquez sur un objet pour le marquer (cliquez ici pour 
 L["MARK_MODE_TIP"] = "À utiliser pour les objets obtenus avec un jet de Noyau du Vide que l'addon n'a pas suivis. Tant que le mode est actif, cliquez sur un objet pour le marquer comme obtenu pour toutes les spécialisations, ou cliquez de nouveau pour le démarquer."
 L["RAID_NOT_IN_DATA"] = "Ce raid n'est pas encore dans les données de butin de l'addon. Il se charge automatiquement quand c'est possible ; sinon, mettez à jour VoidcoreAdvisor 2.0."
 L["ORIGINAL_ADDON_LOADED"] = "Le VoidcoreAdvisor d'origine est aussi activé. Désactivez-le : les deux versions ne peuvent pas fonctionner ensemble."
+L["BONUS_ROLL_POPUP_ROLL"] = "Voulez-vous vraiment dépenser votre Noyau du Vide nébuleux pour un jet bonus ?"
+L["BONUS_ROLL_POPUP_PASS"] = "Voulez-vous vraiment passer ce jet bonus ?"
+L["OPTIONS_BRC_CONFIRM"] = "Demander confirmation avant de lancer ou de passer"
+L["OPTIONS_BRC_CONFIRM_TOOLTIP"] = "Affiche un message « Êtes-vous sûr ? » quand vous cliquez sur Lancer ou Passer."

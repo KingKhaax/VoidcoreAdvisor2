@@ -217,3 +217,7 @@ L["MARK_MODE_ACTIVE"] = "Clique em um item para marcá-lo (clique aqui para para
 L["MARK_MODE_TIP"] = "Use para itens que você obteve com uma rolagem de Núcleo do Vazio e que o addon não registrou. Enquanto ativo, clique em um item para marcá-lo como obtido em todas as especializações, ou clique de novo para desmarcar."
 L["RAID_NOT_IN_DATA"] = "Esta raide ainda não está nos dados de saque do addon. Ela é carregada automaticamente quando possível; caso contrário, atualize o VoidcoreAdvisor 2.0."
 L["ORIGINAL_ADDON_LOADED"] = "O VoidcoreAdvisor original também está ativado. Desative-o: as duas versões não podem funcionar juntas."
+L["BONUS_ROLL_POPUP_ROLL"] = "Tem certeza de que deseja gastar seu Núcleo do Vazio nebuloso em uma rolagem bônus?"
+L["BONUS_ROLL_POPUP_PASS"] = "Tem certeza de que deseja passar esta rolagem bônus?"
+L["OPTIONS_BRC_CONFIRM"] = "Pedir confirmação ao rolar ou passar"
+L["OPTIONS_BRC_CONFIRM_TOOLTIP"] = "Mostra uma mensagem \"Tem certeza?\" ao clicar em Rolar ou Passar."

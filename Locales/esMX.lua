@@ -218,3 +218,7 @@ L["MARK_MODE_ACTIVE"] = "Haz clic en un objeto para marcarlo (clic aquí para te
 L["MARK_MODE_TIP"] = "Úsalo para objetos que conseguiste con una tirada de Núcleo del Vacío y que el addon no registró. Mientras esté activo, haz clic en un objeto para marcarlo como obtenido en todas las especializaciones, o de nuevo para desmarcarlo."
 L["RAID_NOT_IN_DATA"] = "Esta banda todavía no está en los datos de botín del addon. Se carga sola cuando es posible; si no, actualiza VoidcoreAdvisor 2.0."
 L["ORIGINAL_ADDON_LOADED"] = "El VoidcoreAdvisor original también está activado. Desactívalo: no pueden funcionar al mismo tiempo."
+L["BONUS_ROLL_POPUP_ROLL"] = "¿Estás seguro de que quieres gastar tu Núcleo del Vacío nebuloso en una tirada extra?"
+L["BONUS_ROLL_POPUP_PASS"] = "¿Estás seguro de que quieres pasar esta tirada extra?"
+L["OPTIONS_BRC_CONFIRM"] = "Pedir confirmación al tirar o pasar"
+L["OPTIONS_BRC_CONFIRM_TOOLTIP"] = "Muestra un mensaje de «¿Estás seguro?» al pulsar Tirar o Pasar."

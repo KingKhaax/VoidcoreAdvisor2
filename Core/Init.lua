@@ -24,6 +24,7 @@ local function GetGlobalDefaults()
         reminderEnabled = true,
         bonusRollConfirmEnabled = true,
         brcSpecListEnabled = true,
+        brcConfirmEnabled = true,
         brcDefaultOnV2 = true
     }
 end
@@ -54,6 +55,9 @@ local function InitDB()
         end
         -- 2.0 turns the roll confirmation window on by default; apply it once
         -- to saves created while it was off by default.
+        if gdb.brcConfirmEnabled == nil then
+            gdb.brcConfirmEnabled = true
+        end
         if not gdb.brcDefaultOnV2 then
             gdb.brcDefaultOnV2 = true
             gdb.bonusRollConfirmEnabled = true
@@ -269,6 +273,9 @@ SlashCmdList["VOIDCOREADVISOR"] = function(msg)
     elseif cmd == "reminder" then
         -- Force-evaluate the reminder, ignoring the already-shown guard.
         VCA.Reminder.ForceEvaluate()
+
+    elseif cmd == "liveraid" then
+        VCA.LiveRaid.Run(true)
 
     else
         print("|cff9370DBVoidcoreAdvisor:|r " .. L["HELP_HEADER"])

@@ -217,3 +217,7 @@ L["MARK_MODE_ACTIVE"] = "Gegenstand anklicken, um ihn zu markieren (hier klicken
 L["MARK_MODE_TIP"] = "Für Gegenstände aus einem Leerenkern-Wurf, die das Addon nicht erfasst hat. Solange aktiv, markiert ein Klick den Gegenstand für alle Spezialisierungen als erhalten; erneut klicken hebt die Markierung auf."
 L["RAID_NOT_IN_DATA"] = "Dieser Schlachtzug ist noch nicht in den Beutedaten des Addons. Er wird nach Möglichkeit automatisch geladen; andernfalls aktualisiere VoidcoreAdvisor 2.0."
 L["ORIGINAL_ADDON_LOADED"] = "Das originale VoidcoreAdvisor ist ebenfalls aktiv. Deaktiviere es: beide Versionen können nicht zusammen laufen."
+L["BONUS_ROLL_POPUP_ROLL"] = "Bist du sicher, dass du deinen Nebulösen Leerenkern für einen Bonuswurf ausgeben möchtest?"
+L["BONUS_ROLL_POPUP_PASS"] = "Bist du sicher, dass du diesen Bonuswurf auslassen möchtest?"
+L["OPTIONS_BRC_CONFIRM"] = "Vor Würfeln oder Passen nachfragen"
+L["OPTIONS_BRC_CONFIRM_TOOLTIP"] = "Zeigt eine Sicherheitsabfrage, wenn du auf Würfeln oder Passen klickst."

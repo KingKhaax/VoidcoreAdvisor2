@@ -32,6 +32,11 @@ local function IsEnabled()
     return gdb and gdb.bonusRollConfirmEnabled == true
 end
 
+local function IsConfirmEnabled()
+    local gdb = _G[VCA.GLOBAL_DB_NAME]
+    return not gdb or gdb.brcConfirmEnabled ~= false
+end
+
 local function IsSpecListEnabled()
     local gdb = _G[VCA.GLOBAL_DB_NAME]
     return gdb and gdb.brcSpecListEnabled == true
@@ -150,20 +155,28 @@ win:EnableMouseMotion(true)
 win:SetClampedToScreen(true)
 win:Hide()
 win:SetBackdrop({
-    bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background-Dark",
-    edgeFile = "Interface\\DialogFrame\\UI-DialogBox-Border",
-    tile = true,
-    tileSize = 32,
-    edgeSize = 32,
+    bgFile = "Interface\\Buttons\\WHITE8X8",
+    edgeFile = "Interface\\Buttons\\WHITE8X8",
+    edgeSize = 3,
     insets = {
-        left = 11,
-        right = 12,
-        top = 12,
-        bottom = 11
+        left = 3,
+        right = 3,
+        top = 3,
+        bottom = 3
     }
 })
-win:SetBackdropColor(0.05, 0.02, 0.12, 0.95)
-win:SetBackdropBorderColor(0.58, 0.0, 0.82, 1)
+win:SetBackdropColor(0.07, 0.07, 0.09, 0.97)
+win:SetBackdropBorderColor(0.36, 0.38, 0.43, 1)
+
+-- Thin black line just inside the grey frame, like the stock popup frames.
+local winInnerEdge = CreateFrame("Frame", nil, win, "BackdropTemplate")
+winInnerEdge:SetPoint("TOPLEFT", win, "TOPLEFT", 3, -3)
+winInnerEdge:SetPoint("BOTTOMRIGHT", win, "BOTTOMRIGHT", -3, 3)
+winInnerEdge:SetBackdrop({
+    edgeFile = "Interface\\Buttons\\WHITE8X8",
+    edgeSize = 1
+})
+winInnerEdge:SetBackdropBorderColor(0, 0, 0, 1)
 
 -- Title – hidden in compact layout
 local winTitle = win:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
@@ -191,6 +204,12 @@ winItemIcon:SetSize(40, 40)
 winItemIcon:SetPoint("TOPLEFT", win, "TOPLEFT", 16, -14)
 winItemIcon:SetTexCoord(0.08, 0.92, 0.08, 0.92)
 winItemIcon:Hide()
+
+-- Epic-quality frame around the item icon
+local winItemBorder = win:CreateTexture(nil, "BACKGROUND")
+winItemBorder:SetColorTexture(0.64, 0.21, 0.93, 1)
+winItemBorder:SetPoint("TOPLEFT", winItemIcon, "TOPLEFT", -2, 2)
+winItemBorder:SetPoint("BOTTOMRIGHT", winItemIcon, "BOTTOMRIGHT", 2, -2)
 
 -- Transparent button over the icon for tooltip hit-testing
 local winIconBtn = CreateFrame("Button", nil, win)
@@ -241,7 +260,11 @@ timerBar:SetHeight(8)
 timerBar:SetPoint("TOPLEFT", win, "TOPLEFT", 16, -62)
 timerBar:SetPoint("TOPRIGHT", win, "TOPRIGHT", -16, -62)
 timerBar:SetStatusBarTexture("Interface\\TargetingFrame\\UI-StatusBar")
-timerBar:SetStatusBarColor(0.58, 0.0, 0.82, 1)
+timerBar:SetStatusBarColor(0.62, 0.22, 0.9, 1)
+local timerBorder = timerBar:CreateTexture(nil, "BACKGROUND", nil, -1)
+timerBorder:SetColorTexture(0, 0, 0, 1)
+timerBorder:SetPoint("TOPLEFT", timerBar, "TOPLEFT", -1, 1)
+timerBorder:SetPoint("BOTTOMRIGHT", timerBar, "BOTTOMRIGHT", 1, -1)
 timerBar:SetMinMaxValues(0, 1)
 timerBar:SetValue(1)
 local timerBg = timerBar:CreateTexture(nil, "BACKGROUND")
@@ -523,31 +546,73 @@ local winRollPrompt = win:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
 winRollPrompt:SetText(L["BONUS_ROLL_CONFIRM_QUESTION"])
 winRollPrompt:Hide()
 
-local rollBtn = CreateFrame("Button", nil, win, "UIPanelButtonTemplate")
-rollBtn:SetHeight(22)
-rollBtn:SetNormalTexture("")
-rollBtn:SetPushedTexture("")
-rollBtn:SetHighlightTexture("")
-rollBtn:SetDisabledTexture("")
-rollBtn:SetText(ROLL_BTN_TEXT)
-rollBtn:SetScript("OnClick", function()
-    StaticPopup_Show("VOIDCORE_BONUS_ROLL", L["BONUS_ROLL_POPUP_ROLL"])
-end)
+-- Flat button with a coloured fill, black border and gold label.
+local function CreateSkinnedButton(r, g, b)
+    local btn = CreateFrame("Button", nil, win, "BackdropTemplate")
+    btn:SetHeight(24)
+    btn:SetBackdrop({
+        bgFile = "Interface\\Buttons\\WHITE8X8",
+        edgeFile = "Interface\\Buttons\\WHITE8X8",
+        edgeSize = 1
+    })
+    btn:SetBackdropColor(r, g, b, 1)
+    btn:SetBackdropBorderColor(0, 0, 0, 1)
+    btn:SetNormalFontObject("GameFontNormal")
+    btn:SetHighlightFontObject("GameFontHighlight")
+    local shine = btn:CreateTexture(nil, "ARTWORK")
+    shine:SetPoint("TOPLEFT", btn, "TOPLEFT", 1, -1)
+    shine:SetPoint("TOPRIGHT", btn, "TOPRIGHT", -1, -1)
+    shine:SetHeight(1)
+    shine:SetColorTexture(1, 1, 1, 0.28)
+    local hover = btn:CreateTexture(nil, "HIGHLIGHT")
+    hover:SetAllPoints()
+    hover:SetColorTexture(1, 1, 1, 0.14)
+    btn:SetScript("OnMouseDown", function(self)
+        self:SetBackdropColor(r * 0.7, g * 0.7, b * 0.7, 1)
+    end)
+    btn:SetScript("OnMouseUp", function(self)
+        self:SetBackdropColor(r, g, b, 1)
+    end)
+    return btn
+end
 
--- â”€â”€ Pass button â€” 2-click confirmation â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+local function DoRoll()
+    BRC.Hide()
+    if not isPreview and BonusRollFrame and BonusRollFrame.PromptFrame and BonusRollFrame.PromptFrame.RollButton then
+        BonusRollFrame.PromptFrame.RollButton:Click()
+    end
+end
 
-local passBtn = CreateFrame("Button", nil, win, "UIPanelButtonTemplate")
-passBtn:SetHeight(22)
-passBtn:SetNormalTexture("")
-passBtn:SetPushedTexture("")
-passBtn:SetHighlightTexture("")
-passBtn:SetDisabledTexture("")
-passBtn:SetText(PASS_BTN_TEXT)
-passBtn:SetScript("OnClick", function()
+local function DoPass()
     if isPreview then
         BRC.Uninject()
     elseif BonusRollFrame and BonusRollFrame.PromptFrame and BonusRollFrame.PromptFrame.PassButton then
         BonusRollFrame.PromptFrame.PassButton:Click()
+    end
+end
+
+BRC.DoRoll = DoRoll
+BRC.DoPass = DoPass
+
+local rollBtn = CreateSkinnedButton(0.14, 0.42, 0.16)
+rollBtn:SetText(ROLL_BTN_TEXT)
+rollBtn:SetScript("OnClick", function()
+    if IsConfirmEnabled() then
+        StaticPopup_Show("VOIDCORE_BONUS_ROLL", L["BONUS_ROLL_POPUP_ROLL"])
+    else
+        DoRoll()
+    end
+end)
+
+-- â”€â”€ Pass button â€” 2-click confirmation â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+
+local passBtn = CreateSkinnedButton(0.5, 0.09, 0.09)
+passBtn:SetText(PASS_BTN_TEXT)
+passBtn:SetScript("OnClick", function()
+    if IsConfirmEnabled() then
+        StaticPopup_Show("VOIDCORE_BONUS_PASS", L["BONUS_ROLL_POPUP_PASS"])
+    else
+        DoPass()
     end
 end)
 
@@ -1039,6 +1104,7 @@ function BRC.Uninject()
     end
     win:Hide()
     StaticPopup_Hide("VOIDCORE_BONUS_ROLL")
+    StaticPopup_Hide("VOIDCORE_BONUS_PASS")
     cachedItemLink = nil
     cachedDisplayItemID = nil
     cachedSpecIcon = nil
@@ -1056,10 +1122,20 @@ StaticPopupDialogs["VOIDCORE_BONUS_ROLL"] = {
     button1 = L["BONUS_ROLL_CONFIRM_ROLL"],
     button2 = CANCEL,
     OnAccept = function()
-        BRC.Hide()
-        if not isPreview and BonusRollFrame and BonusRollFrame.PromptFrame and BonusRollFrame.PromptFrame.RollButton then
-            BonusRollFrame.PromptFrame.RollButton:Click()
-        end
+        BRC.DoRoll()
+    end,
+    timeout = 0,
+    whileDead = true,
+    hideOnEscape = true,
+    preferredIndex = 3
+}
+
+StaticPopupDialogs["VOIDCORE_BONUS_PASS"] = {
+    text = "%s",
+    button1 = L["BONUS_ROLL_CONFIRM_PASS"],
+    button2 = CANCEL,
+    OnAccept = function()
+        BRC.DoPass()
     end,
     timeout = 0,
     whileDead = true,

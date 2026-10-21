@@ -106,6 +106,19 @@ frame:SetScript("OnEvent", function(self, event, loadedAddon)
         Settings.CreateCheckbox(bonusRollCategory, setting, L["OPTIONS_BRC_SPEC_LIST_TOOLTIP"])
     end
 
+    -- ── Ask for confirmation before rolling or passing ───────────────────
+    do
+        local variable = "VoidcoreAdvisor_BRCConfirm"
+        local name = L["OPTIONS_BRC_CONFIRM"]
+        local variableKey = "brcConfirmEnabled"
+        local variableTbl = _G[VCA.GLOBAL_DB_NAME]
+        local default = true
+
+        local setting = Settings.RegisterAddOnSetting(bonusRollCategory, variable, variableKey, variableTbl,
+            type(default), name, default)
+        Settings.CreateCheckbox(bonusRollCategory, setting, L["OPTIONS_BRC_CONFIRM_TOOLTIP"])
+    end
+
     -- ── Finish ────────────────────────────────────────────────────────────
     Settings.RegisterAddOnCategory(category)
 end)

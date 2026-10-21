@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.0.2
+- Bonus roll window restyled: grey double frame, epic-coloured item border, green Roll and red Pass buttons.
+- New option to ask "Are you sure?" before rolling or passing (on by default).
+- Fixed the automatic reading of new raids (The Unbinding of Kith'ix): it looked the boss up with the wrong ID. New command /vca2 liveraid forces the scan and prints what happened.
+
 ## 2.0.1
 - Fixed rolls that were not tracked when the boss selected in the Encounter Journal was not the boss that dropped the item: the item is now searched in the whole raid, and the saved roll log is replayed on login so past rolls get marked.
 - New "Mark rolled item" button in the loot column to mark items by hand.

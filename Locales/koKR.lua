@@ -218,3 +218,7 @@ L["MARK_MODE_ACTIVE"] = "아이템을 클릭해 표시하세요 (여기를 클�
 L["MARK_MODE_TIP"] = "공허 핵 굴림으로 얻었지만 애드온이 기록하지 못한 아이템에 사용하세요. 켜 두면 아이템을 클릭해 모든 전문화에서 획득한 것으로 표시하고, 다시 클릭하면 표시를 해제합니다."
 L["RAID_NOT_IN_DATA"] = "이 공격대는 아직 애드온의 전리품 데이터에 없습니다. 가능하면 자동으로 불러오며, 그렇지 않으면 VoidcoreAdvisor 2.0을 업데이트하세요."
 L["ORIGINAL_ADDON_LOADED"] = "원본 VoidcoreAdvisor도 활성화되어 있습니다. 비활성화하세요. 두 버전은 함께 작동할 수 없습니다."
+L["BONUS_ROLL_POPUP_ROLL"] = "공허 핵을 사용해 추가 굴림을 하시겠습니까?"
+L["BONUS_ROLL_POPUP_PASS"] = "이 추가 굴림을 넘기시겠습니까?"
+L["OPTIONS_BRC_CONFIRM"] = "굴리기 또는 넘기기 전에 확인 요청"
+L["OPTIONS_BRC_CONFIRM_TOOLTIP"] = "굴리기나 넘기기를 누르면 '정말입니까?' 메시지를 표시합니다."

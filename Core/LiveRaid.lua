@@ -224,7 +224,7 @@ local function TryScan(attempt, verbose)
         store[instanceID] = entry
         Inject(entry)
         Refresh()
-        print("|cff9370DBVoidcoreAdvisor:|r " .. (VCA.L["LIVE_RAID_ADDED"] or "New raid loot loaded from the Encounter Journal."))
+        print("|cff9370DBVoidcoreAdvisor 2.0:|r " .. (VCA.L["LIVE_RAID_ADDED"] or "New raid loot loaded from the Encounter Journal."))
     elseif attempt < MAX_ATTEMPTS then
         Say(verbose, "Item data is still loading, retrying...")
         C_Timer.After(4, function()

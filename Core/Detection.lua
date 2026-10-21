@@ -452,7 +452,7 @@ function Detection.ReplayBonusRollLog(verbose)
     local log = VCA.Data and VCA.Data.GetBonusRollLog and VCA.Data.GetBonusRollLog()
     if not log or #log == 0 then
         if verbose then
-            print("|cff9370DBVoidcoreAdvisor:|r Replay: log is empty.")
+            print("|cff9370DBVoidcoreAdvisor 2.0:|r Replay: log is empty.")
         end
         return
     end
@@ -467,14 +467,14 @@ function Detection.ReplayBonusRollLog(verbose)
                     if verbose then
                         local name = C_Item.GetItemNameByID(entry.itemID) or tostring(entry.itemID)
                         print(string.format(
-                            "|cff9370DBVoidcoreAdvisor:|r Replay [%d]: marked across all raid encounters — %s (spec=%s)",
+                            "|cff9370DBVoidcoreAdvisor 2.0:|r Replay [%d]: marked across all raid encounters — %s (spec=%s)",
                             i, name, tostring(entry.specID)))
                     end
                 else
                     incomplete = incomplete + 1
                     if verbose then
                         print(string.format(
-                            "|cff9370DBVoidcoreAdvisor:|r Replay [%d]: skipped — incomplete entry (itemID=%s specID=%s source=%s:%s diff=%s)",
+                            "|cff9370DBVoidcoreAdvisor 2.0:|r Replay [%d]: skipped — incomplete entry (itemID=%s specID=%s source=%s:%s diff=%s)",
                             i, tostring(entry.itemID), tostring(entry.specID), tostring(entry.sourceType),
                             tostring(entry.sourceID), tostring(entry.difficultyID)))
                     end
@@ -499,14 +499,14 @@ function Detection.ReplayBonusRollLog(verbose)
                         if verbose then
                             local name = C_Item.GetItemNameByID(entry.itemID) or tostring(entry.itemID)
                             print(string.format(
-                                "|cff9370DBVoidcoreAdvisor:|r Replay [%d]: re-marked across all raid difficulties — %s (spec=%s)",
+                                "|cff9370DBVoidcoreAdvisor 2.0:|r Replay [%d]: re-marked across all raid difficulties — %s (spec=%s)",
                                 i, name, tostring(entry.specID)))
                         end
                     else
                         incomplete = incomplete + 1
                         if verbose then
                             print(string.format(
-                                "|cff9370DBVoidcoreAdvisor:|r Replay [%d]: skipped — item no longer in season pool (itemID=%s)",
+                                "|cff9370DBVoidcoreAdvisor 2.0:|r Replay [%d]: skipped — item no longer in season pool (itemID=%s)",
                                 i, tostring(entry.itemID)))
                         end
                     end
@@ -527,14 +527,14 @@ function Detection.ReplayBonusRollLog(verbose)
                         if verbose then
                             local name = C_Item.GetItemNameByID(entry.itemID) or tostring(entry.itemID)
                             print(string.format(
-                                "|cff9370DBVoidcoreAdvisor:|r Replay [%d]: marked across all sources — %s (spec=%s)",
+                                "|cff9370DBVoidcoreAdvisor 2.0:|r Replay [%d]: marked across all sources — %s (spec=%s)",
                                 i, name, tostring(entry.specID)))
                         end
                     else
                         incomplete = incomplete + 1
                         if verbose then
                             print(string.format(
-                                "|cff9370DBVoidcoreAdvisor:|r Replay [%d]: skipped — incomplete entry (itemID=%s specID=%s source=%s:%s diff=%s)",
+                                "|cff9370DBVoidcoreAdvisor 2.0:|r Replay [%d]: skipped — incomplete entry (itemID=%s specID=%s source=%s:%s diff=%s)",
                                 i, tostring(entry.itemID), tostring(entry.specID), tostring(entry.sourceType),
                                 tostring(entry.sourceID), tostring(entry.difficultyID)))
                         end
@@ -543,7 +543,7 @@ function Detection.ReplayBonusRollLog(verbose)
                     incomplete = incomplete + 1
                     if verbose then
                         print(string.format(
-                            "|cff9370DBVoidcoreAdvisor:|r Replay [%d]: skipped — incomplete entry (itemID=%s specID=%s source=%s:%s diff=%s)",
+                            "|cff9370DBVoidcoreAdvisor 2.0:|r Replay [%d]: skipped — incomplete entry (itemID=%s specID=%s source=%s:%s diff=%s)",
                             i, tostring(entry.itemID), tostring(entry.specID), tostring(entry.sourceType),
                             tostring(entry.sourceID), tostring(entry.difficultyID)))
                     end
@@ -577,7 +577,7 @@ function Detection.ReplayBonusRollLog(verbose)
                         if verbose then
                             local name = C_Item.GetItemNameByID(entry.itemID) or tostring(entry.itemID)
                             print(string.format(
-                                "|cff9370DBVoidcoreAdvisor:|r Replay [%d]: upgraded bare → %s tier for %s (spec=%s)",
+                                "|cff9370DBVoidcoreAdvisor 2.0:|r Replay [%d]: upgraded bare → %s tier for %s (spec=%s)",
                                 i, isHighTier and "≥10" or "<10", name, tostring(entry.specID)))
                         end
                     end
@@ -585,7 +585,7 @@ function Detection.ReplayBonusRollLog(verbose)
                 skipped = skipped + 1
                 if verbose then
                     local name = C_Item.GetItemNameByID(entry.itemID) or tostring(entry.itemID)
-                    print(string.format("|cff9370DBVoidcoreAdvisor:|r Replay [%d]: already obtained — %s (spec=%s)",
+                    print(string.format("|cff9370DBVoidcoreAdvisor 2.0:|r Replay [%d]: already obtained — %s (spec=%s)",
                         i, name, tostring(entry.specID)))
                 end
             else
@@ -606,7 +606,7 @@ function Detection.ReplayBonusRollLog(verbose)
                 if verbose then
                     local name = C_Item.GetItemNameByID(entry.itemID) or tostring(entry.itemID)
                     print(string.format(
-                        "|cff9370DBVoidcoreAdvisor:|r Replay [%d]: %s spec=%s source=%s:%s — classID=%s poolSize=%s inPool=%s",
+                        "|cff9370DBVoidcoreAdvisor 2.0:|r Replay [%d]: %s spec=%s source=%s:%s — classID=%s poolSize=%s inPool=%s",
                         i, name, tostring(entry.specID), source.sourceType, tostring(source.sourceID),
                         tostring(classID), cachedPool and tostring(#cachedPool) or "nil", tostring(inPool)))
                 end
@@ -619,7 +619,7 @@ function Detection.ReplayBonusRollLog(verbose)
                             .IsObtained(source.sourceType, source.sourceID, source.difficultyID, entry.specID,
                             entry.itemID) then
                         print(string.format(
-                            "|cff9370DBVoidcoreAdvisor:|r Replay [%d]: pool complete — cycle reset for spec %s.", i,
+                            "|cff9370DBVoidcoreAdvisor 2.0:|r Replay [%d]: pool complete — cycle reset for spec %s.", i,
                             tostring(entry.specID)))
                     end
                 elseif TryRecoverRaidSource(entry.itemID, source, entry.specID) then
@@ -632,7 +632,7 @@ function Detection.ReplayBonusRollLog(verbose)
     end
     if verbose then
         print(string.format(
-            "|cff9370DBVoidcoreAdvisor:|r Replay complete: %d marked, %d already obtained, %d not in pool, %d incomplete.",
+            "|cff9370DBVoidcoreAdvisor 2.0:|r Replay complete: %d marked, %d already obtained, %d not in pool, %d incomplete.",
             marked, skipped, nomatch, incomplete))
     end
 end
@@ -732,7 +732,7 @@ local function CacheActiveKeystoneRun()
             status = "running"
         })
     end
-    print(string.format("|cff9370DBVoidcoreAdvisor:|r Key detected - %s +%d.", instanceName or "Unknown", level))
+    print(string.format("|cff9370DBVoidcoreAdvisor 2.0:|r Key detected - %s +%d.", instanceName or "Unknown", level))
 end
 
 function handlers.CHALLENGE_MODE_START()
@@ -777,7 +777,7 @@ function handlers.PLAYER_ENTERING_WORLD()
                                              VCA.LootPool.GetSeasonRaidByName(instanceName2))
                 if ejInstanceID then
                     PersistRaidContext(ejInstanceID, difficultyID)
-                    print(string.format("|cff9370DBVoidcoreAdvisor:|r Raid detected - %s (%s).",
+                    print(string.format("|cff9370DBVoidcoreAdvisor 2.0:|r Raid detected - %s (%s).",
                         instanceName2 or "Unknown", difficultyName or tostring(difficultyID)))
                 else
                     ClearPersistedRaidContext()

@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.1.2
+- The loot of The Unbinding of Kith'ix (Normal, Heroic and Mythic, every class and spec) now ships with the addon in Core/SeasonDataExtra.lua, so nobody needs to scan it. It stays outside the season fingerprint, so obtained items are never reset.
+- The "new raid not in the loot data" message ignores world boss entries such as the expansion's own "Midnight" entry.
+
 ## 2.1.1
 - Bonus roll window: the timer bar no longer covers the cost line when the item name takes two lines.
 - Panel: the loot spec label no longer overlaps the spec column title (it is shortened instead).

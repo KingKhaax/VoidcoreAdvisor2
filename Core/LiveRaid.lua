@@ -71,6 +71,12 @@ local function ReadLoot(classID, specID)
     return ids, sample, true
 end
 
+-- Real raids support the Normal/Heroic/Mythic difficulties; world boss entries such
+-- as the expansion's own "Midnight" entry do not. The instance must be selected.
+local function IsRaidInstance()
+    return EJ_IsValidInstanceDifficulty(14) or EJ_IsValidInstanceDifficulty(15) or EJ_IsValidInstanceDifficulty(16)
+end
+
 local function Say(verbose, text)
     if verbose then
         print(VCA.Theme.title .. "VoidcoreAdvisor Reborn:|r " .. text)
@@ -110,7 +116,7 @@ local function FindRaid(verbose)
                 end
                 e = e + 1
             end
-            if not known and tier == numTiers then
+            if not known and tier == numTiers and IsRaidInstance() then
                 fallback = fallback or instanceID
             end
             idx = idx + 1
@@ -270,7 +276,10 @@ local function CheckOutdated()
             break
         end
         if not VCA.LootPool.IsCurrentSeasonRaid(instanceID) then
-            unknown[#unknown + 1] = name or tostring(instanceID)
+            EJ_SelectInstance(instanceID)
+            if IsRaidInstance() then
+                unknown[#unknown + 1] = name or tostring(instanceID)
+            end
         end
         idx = idx + 1
     end
@@ -298,6 +307,10 @@ frame:SetScript("OnEvent", function(self, event, name)
             return
         end
         self:UnregisterEvent("ADDON_LOADED")
+        -- Raids shipped with the addon (Core/SeasonDataExtra.lua).
+        for _, entry in pairs(VCA.SeasonDataExtra or {}) do
+            Inject(entry)
+        end
         local store = GetDB()
         if store then
             for _, entry in pairs(store) do

@@ -3,7 +3,7 @@
 local addonName, VCA = ...
 
 VCA.ADDON_NAME = addonName
-VCA.VERSION = (C_AddOns and C_AddOns.GetAddOnMetadata and C_AddOns.GetAddOnMetadata("VoidcoreAdvisorReborn", "Version")) or "2.2.2"
+VCA.VERSION = (C_AddOns and C_AddOns.GetAddOnMetadata and C_AddOns.GetAddOnMetadata("VoidcoreAdvisorReborn", "Version")) or "2.2.3"
 VCA.SCHEMA_VERSION = 2
 VCA.CHAR_DB_NAME = "VoidcoreAdvisorCharDB"
 VCA.GLOBAL_DB_NAME = "VoidcoreAdvisorDB"
@@ -18,8 +18,10 @@ VCA.ContentType = {
 
 -- ── Nebulous Voidcore costs ───────────────────────────────────────────────────
 VCA.VoidcoreCost = {
-    RAID = 2, -- raid bosses cost 2 Nebulous Voidcores
-    MYTHIC_PLUS = 1 -- M+ / Bountiful Delves / Prey Hunts cost 1
+    -- Fallback only: the bonus roll prompt reports the real cost (currencyCost) and the
+    -- roll window uses that when it is available.
+    RAID = 1,
+    MYTHIC_PLUS = 1
 }
 
 -- ── Encounter Journal difficulty IDs ─────────────────────────────────────────

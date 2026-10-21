@@ -1,5 +1,8 @@
 # Changelog
 
+## 2.2.3
+- The bonus roll window showed a cost of 2 for raid bosses; it now shows the real cost reported by the roll prompt (and 1 when the prompt gives none). The cost in the panel header follows the same fallback.
+
 ## 2.2.2
 - The "new raid not in the loot data" message no longer names the expansion's world boss entry ("Midnight"): entries named like the expansion or without a map are ignored.
 

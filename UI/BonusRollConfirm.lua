@@ -1040,8 +1040,9 @@ function BRC.Show()
     -- Voidcore count + cost
     local currInfo = C_CurrencyInfo and C_CurrencyInfo.GetCurrencyInfo(VCA.VOIDCORE_CURRENCY_ID)
     local owned = currInfo and currInfo.quantity or 0
-    local cost = (source and source.sourceType == VCA.ContentType.RAID) and VCA.VoidcoreCost.RAID or
-                     VCA.VoidcoreCost.MYTHIC_PLUS
+    local cost = (cachedPromptData and cachedPromptData.currencyCost) or
+                     ((source and source.sourceType == VCA.ContentType.RAID) and VCA.VoidcoreCost.RAID or
+                         VCA.VoidcoreCost.MYTHIC_PLUS)
     winVoidcoreInfo:SetText(string.format(L["BONUS_ROLL_CONFIRM_COST"], cost, owned))
 
     local dynY = LayoutDynamicSection(source, specID, -122)
@@ -1211,8 +1212,9 @@ function BRC.ShowPreview()
     end
     cachedSource = source
 
-    local cost = (source and source.sourceType == VCA.ContentType.RAID) and VCA.VoidcoreCost.RAID or
-                     VCA.VoidcoreCost.MYTHIC_PLUS
+    local cost = (cachedPromptData and cachedPromptData.currencyCost) or
+                     ((source and source.sourceType == VCA.ContentType.RAID) and VCA.VoidcoreCost.RAID or
+                         VCA.VoidcoreCost.MYTHIC_PLUS)
     winVoidcoreInfo:SetText(string.format(L["BONUS_ROLL_CONFIRM_COST"], cost, owned))
 
     local dynY = LayoutDynamicSection(source, specID, -122)

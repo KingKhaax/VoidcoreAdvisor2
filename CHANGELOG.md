@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.2.1
+- New /void scan [raid 14|15|16] command: reads the Voidcache of every spec to mark the items you already got from the Voidcores you spent (the same scan as the Scan Loot Specs buttons).
+- A one-time hint about /void scan for characters that have nothing marked yet.
+
 ## 2.2.0
 - 22 color themes: venom green (default), void purple, arcane blue, light, fire, frost, red and one for each of the 13 classes, using the class colors.
 - Two themes that follow you: "Style of my class" and "Style of my specialization". They change by themselves when you switch character or specialization.

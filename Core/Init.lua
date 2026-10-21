@@ -167,6 +167,18 @@ initFrame:SetScript("OnEvent", function(self, event, ...)
             end
         end
 
+        -- One-time hint for characters that have nothing marked yet.
+        do
+            local cdb = _G[VCA.CHAR_DB_NAME]
+            local gdb = _G[VCA.GLOBAL_DB_NAME]
+            if cdb and gdb and not gdb.scanTipShown and next(cdb.obtained or {}) == nil then
+                gdb.scanTipShown = true
+                C_Timer.After(10, function()
+                    print(VCA.Theme.title .. "VoidcoreAdvisor Reborn:|r " .. L["SCAN_TIP"])
+                end)
+            end
+        end
+
         -- Defer the heavy item-cache warmup until outside an instance.
         ScheduleDeferredWarmup(4)
 
@@ -282,6 +294,22 @@ SlashCmdList["VOIDCOREADVISOR"] = function(msg)
     elseif cmd == "liveraid" then
         VCA.LiveRaid.Run(true)
 
+    elseif cmd == "scan" then
+        -- Reads the Voidcache of every spec to mark the items you already got from
+        -- the Voidcores you spent. "/void scan" = Mythic+ dungeons, "/void scan raid [14|15|16]".
+        local scan = VCA.VoidcacheScan
+        local ok, reason
+        if (msg:match("^%s*%S+%s+(%S+)") or ""):lower() == "raid" then
+            ok, reason = scan.StartRaid(tonumber(msg:match("^%s*%S+%s+%S+%s+(%d+)")) or VCA.Difficulty.RAID_HEROIC)
+        else
+            ok, reason = scan.Start()
+        end
+        if ok == false then
+            local text = (reason == "COMBAT" and L["SCAN_UNAVAILABLE_COMBAT"]) or
+                             (reason == "INSTANCE" and L["SCAN_UNAVAILABLE_INSTANCE"]) or tostring(reason)
+            print(VCA.Theme.title .. "VoidcoreAdvisor Reborn:|r " .. text)
+        end
+
     elseif cmd == "panel" then
         VCA.OpenPanel(msg:match("^%s*%S+%s+(.-)%s*$"))
 
@@ -323,6 +351,7 @@ SlashCmdList["VOIDCOREADVISOR"] = function(msg)
         print(L["HELP_VERSION"])
         print(L["HELP_REPLAYLOG"])
         print(L["HELP_RESTORE"])
+        print(L["HELP_SCAN"])
         print(L["HELP_PANEL"])
         print(L["HELP_MISSING"])
         print(L["HELP_EXPORT"])

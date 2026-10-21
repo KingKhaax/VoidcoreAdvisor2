@@ -40,12 +40,12 @@ L["SOURCE_FORMAT"] = "Source active — type : %s  IDsource : %s  difficulté : 
 L["NO_ACTIVE_SOURCE"] = "Aucune source active définie."
 L["VERSION_FORMAT"] = "Version %s"
 L["HELP_HEADER"] = "Commandes :"
-L["HELP_RESET"] = "  /vca reset    – réinitialiser les données d'objets obtenus"
-L["HELP_COUNT"] = "  /vca count    – afficher le nombre total d'objets obtenus"
-L["HELP_SPEC"] = "  /vca spec     – afficher l'ID de spécialisation de butin"
-L["HELP_SOURCE"] = "  /vca source   – afficher la source de détection active"
-L["HELP_VERSION"] = "  /vca version  – afficher la version de l'addon"
-L["HELP_RESTORE"] = "  /vca restore  – restaurer les données de butin depuis la sauvegarde"
+L["HELP_RESET"] = "  /vca2 reset    – réinitialiser les données d'objets obtenus"
+L["HELP_COUNT"] = "  /vca2 count    – afficher le nombre total d'objets obtenus"
+L["HELP_SPEC"] = "  /vca2 spec     – afficher l'ID de spécialisation de butin"
+L["HELP_SOURCE"] = "  /vca2 source   – afficher la source de détection active"
+L["HELP_VERSION"] = "  /vca2 version  – afficher la version de l'addon"
+L["HELP_RESTORE"] = "  /vca2 restore  – restaurer les données de butin depuis la sauvegarde"
 
 -- ── Panel UI (ajouts) ─────────────────────────────────────────────────────────
 
@@ -163,7 +163,7 @@ L["RAID_SCAN_CONFIRM_BODY"] =
 
 -- ── Commandes slash (ajouts) ──────────────────────────────────────────────────
 
-L["HELP_REPLAYLOG"] = "  /vca replaylog – réappliquer toutes les entrées du journal de jets comme obtenues"
+L["HELP_REPLAYLOG"] = "  /vca2 replaylog – réappliquer toutes les entrées du journal de jets comme obtenues"
 L["RESTORE_COMPLETE"] = "%d objet(s) restauré(s) depuis la sauvegarde."
 L["RESTORE_NO_BACKUP"] = "Aucune sauvegarde disponible. Effectuez d'abord un scan."
 L["RESTORE_FAILED"] = "La restauration a échoué."
@@ -204,3 +204,16 @@ L["OPTIONS_BRC_SPEC_LIST"] = "Afficher les objets restants par spécialisation"
 L["OPTIONS_BRC_SPEC_LIST_TOOLTIP"] =
     "Affiche une liste des objets restants pour chacune de vos spécialisations dans la fenêtre de jet bonus."
 L["BRC_SWITCH_SPEC_TIP"] = "Switch specialization to %s"
+
+-- ── VoidcoreAdvisor 2.0 additions ─────────────────────────────────────────────
+L["BRC_SWITCH_SPEC_TIP"] = "Passer à la spécialisation %s"
+L["SPEC_LIST_TOOLTIP"] = "Butin restant pour chaque spécialisation de butin"
+L["BONUS_ROLL_WANTED_TOOLTIP_TITLE"] = "Objets souhaités"
+L["DIFFICULTY_NORMAL"] = "Normal"
+L["DIFFICULTY_HEROIC"] = "Héroïque"
+L["DIFFICULTY_MYTHIC"] = "Mythique"
+L["MARK_MODE_BUTTON"] = "Marquer un objet obtenu"
+L["MARK_MODE_ACTIVE"] = "Cliquez sur un objet pour le marquer (cliquez ici pour arrêter)"
+L["MARK_MODE_TIP"] = "À utiliser pour les objets obtenus avec un jet de Noyau du Vide que l'addon n'a pas suivis. Tant que le mode est actif, cliquez sur un objet pour le marquer comme obtenu pour toutes les spécialisations, ou cliquez de nouveau pour le démarquer."
+L["RAID_NOT_IN_DATA"] = "Ce raid n'est pas encore dans les données de butin de l'addon. Il se charge automatiquement quand c'est possible ; sinon, mettez à jour VoidcoreAdvisor 2.0."
+L["ORIGINAL_ADDON_LOADED"] = "Le VoidcoreAdvisor d'origine est aussi activé. Désactivez-le : les deux versions ne peuvent pas fonctionner ensemble."

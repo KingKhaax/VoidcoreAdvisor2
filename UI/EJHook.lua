@@ -69,6 +69,8 @@ _s.IsCurrentSeasonDungeonInstance = IsCurrentSeasonDungeonInstance
 
 -- ── Hook: boss encounter selected ────────────────────────────────────────────
 
+local _warnedRaidIDs = {}
+
 hooksecurefunc("EJ_SelectEncounter", function(encounterID)
     if VCA.LootPool._reentryGuard then
         return
@@ -86,6 +88,10 @@ hooksecurefunc("EJ_SelectEncounter", function(encounterID)
         end
 
         if not VCA.LootPool.IsCurrentSeasonRaid(journalInstanceID) then
+            if not _warnedRaidIDs[journalInstanceID] and EJ_GetNumTiers and EJ_GetCurrentTier() == EJ_GetNumTiers() then
+                _warnedRaidIDs[journalInstanceID] = true
+                print("|cff9370DBVoidcoreAdvisor 2.0:|r " .. VCA.L["RAID_NOT_IN_DATA"])
+            end
             VCA.Panel.Hide()
             EJHook.UpdateToggleVisibility()
             return

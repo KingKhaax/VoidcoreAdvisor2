@@ -319,6 +319,39 @@ clearItemBtn:SetScript("OnLeave", function()
 end)
 clearItemBtn:Hide()
 
+-- Mark-roll mode: while active, clicking a loot row marks (or unmarks) the item
+-- as obtained for every spec, for rolls the addon did not track.
+Panel.markMode = false
+local markModeBtn = CreateFrame("Button", nil, contentArea)
+markModeBtn:SetHeight(16)
+markModeBtn:SetPoint("LEFT", lootColHeader, "RIGHT", 10, 0)
+local markModeText = markModeBtn:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+markModeText:SetPoint("LEFT")
+markModeBtn.text = markModeText
+local function UpdateMarkModeButton()
+    if Panel.markMode then
+        markModeText:SetText("|cffffd100" .. L["MARK_MODE_ACTIVE"] .. "|r")
+    else
+        markModeText:SetText("|cff66ff66+|r " .. L["MARK_MODE_BUTTON"])
+    end
+    markModeBtn:SetWidth(markModeText:GetStringWidth() + 4)
+end
+markModeBtn:SetScript("OnClick", function()
+    Panel.markMode = not Panel.markMode
+    UpdateMarkModeButton()
+end)
+markModeBtn:SetScript("OnEnter", function(self)
+    GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+    GameTooltip:SetText(L["MARK_MODE_BUTTON"], 1, 1, 1)
+    GameTooltip:AddLine(L["MARK_MODE_TIP"], nil, nil, nil, true)
+    GameTooltip:Show()
+end)
+markModeBtn:SetScript("OnLeave", function()
+    GameTooltip:Hide()
+end)
+markModeBtn:Hide()
+UpdateMarkModeButton()
+
 local lootSpecLabel = contentArea:CreateFontString(nil, "OVERLAY", "GameFontNormal")
 lootSpecLabel:SetJustifyH("RIGHT")
 lootSpecLabel:SetText("")
@@ -761,6 +794,14 @@ local function GetOrCreateItemRow(pool, parent)
         if not id then
             return
         end
+        if Panel.markMode then
+            local cb = row.checkbox
+            local toggle = cb:GetScript("OnClick")
+            if toggle and cb.itemID == id then
+                toggle(cb)
+            end
+            return
+        end
         if self.dimmed then
             return
         end
@@ -1133,6 +1174,9 @@ function Panel.ClearContext()
     specColHeader:SetText("|cffb048f8" .. L["COL_SPEC_RANKING"] .. "|r")
     clearSpecBtn:Hide()
     clearItemBtn:Hide()
+    markModeBtn:Hide()
+    Panel.markMode = false
+    UpdateMarkModeButton()
     keyLevelMenu:Hide()
 end
 
@@ -1145,6 +1189,7 @@ function Panel.Refresh()
     if not Panel.sourceID then
         return
     end
+    markModeBtn:Show()
 
     -- Update loot spec label
     local lootSpecID = VCA.SpecInfo.GetEffectiveLootSpecID()

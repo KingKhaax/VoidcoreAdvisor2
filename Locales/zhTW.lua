@@ -40,12 +40,12 @@ L["SOURCE_FORMAT"] = "目前來源 - 類型：%s  來源ID：%s  難度：%s"
 L["NO_ACTIVE_SOURCE"] = "未設定活動來源。"
 L["VERSION_FORMAT"] = "版本 %s"
 L["HELP_HEADER"] = "指令："
-L["HELP_RESET"] = "  /vca reset    – 重設所有已取得物品資料"
-L["HELP_COUNT"] = "  /vca count    – 顯示已取得物品總數"
-L["HELP_SPEC"] = "  /vca spec     – 顯示拾取專精 ID"
-L["HELP_SOURCE"] = "  /vca source   – 顯示目前偵測來源"
-L["HELP_VERSION"] = "  /vca version  – 顯示插件版本"
-L["HELP_RESTORE"] = "  /vca restore  – 從掃描前備份還原已獲得資料"
+L["HELP_RESET"] = "  /vca2 reset    – 重設所有已取得物品資料"
+L["HELP_COUNT"] = "  /vca2 count    – 顯示已取得物品總數"
+L["HELP_SPEC"] = "  /vca2 spec     – 顯示拾取專精 ID"
+L["HELP_SOURCE"] = "  /vca2 source   – 顯示目前偵測來源"
+L["HELP_VERSION"] = "  /vca2 version  – 顯示插件版本"
+L["HELP_RESTORE"] = "  /vca2 restore  – 從掃描前備份還原已獲得資料"
 
 -- ── 面板 UI（補充）────────────────────────────────────────────────────────────
 
@@ -163,7 +163,7 @@ L["RAID_SCAN_CONFIRM_BODY"] =
 
 -- ── 斜線指令（補充）──────────────────────────────────────────────────────────
 
-L["HELP_REPLAYLOG"] = "  /vca replaylog – 重新將所有擲骰記錄條目標記為已取得"
+L["HELP_REPLAYLOG"] = "  /vca2 replaylog – 重新將所有擲骰記錄條目標記為已取得"
 L["RESTORE_COMPLETE"] = "已從備份還原 %d 件物品。"
 L["RESTORE_NO_BACKUP"] = "沒有可用備份。請先執行掃描。"
 L["RESTORE_FAILED"] = "還原失敗。"
@@ -201,3 +201,16 @@ L["OPTIONS_BONUS_ROLL_CONFIRM_TOOLTIP"] =
 L["OPTIONS_BRC_SPEC_LIST"] = "顯示每個專精的剩餘物品"
 L["OPTIONS_BRC_SPEC_LIST_TOOLTIP"] = "在額外擲骰視窗中顯示每個專精的剩餘物品列表。"
 L["BRC_SWITCH_SPEC_TIP"] = "Switch specialization to %s"
+
+-- ── VoidcoreAdvisor 2.0 additions ─────────────────────────────────────────────
+L["BRC_SWITCH_SPEC_TIP"] = "切換到%s專精"
+L["SPEC_LIST_TOOLTIP"] = "各拾取專精的剩餘戰利品"
+L["BONUS_ROLL_WANTED_TOOLTIP_TITLE"] = "想要的物品"
+L["DIFFICULTY_NORMAL"] = "普通"
+L["DIFFICULTY_HEROIC"] = "英雄"
+L["DIFFICULTY_MYTHIC"] = "傳奇"
+L["MARK_MODE_BUTTON"] = "標記已獲得物品"
+L["MARK_MODE_ACTIVE"] = "點擊物品進行標記（點擊此處結束）"
+L["MARK_MODE_TIP"] = "用於透過虛空之核擲骰獲得、但插件未記錄的物品。啟用後，點擊物品即可將其標記為所有專精已獲得，再次點擊則取消標記。"
+L["RAID_NOT_IN_DATA"] = "此團隊副本尚未包含在插件的戰利品資料中。條件允許時會自動載入；否則請更新 VoidcoreAdvisor 2.0。"
+L["ORIGINAL_ADDON_LOADED"] = "原版 VoidcoreAdvisor 也已啟用。請停用它：兩個版本無法同時執行。"

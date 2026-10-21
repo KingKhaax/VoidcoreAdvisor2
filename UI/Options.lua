@@ -63,7 +63,7 @@ frame:SetScript("OnEvent", function(self, event, loadedAddon)
         local name = L["OPTIONS_BONUS_ROLL_CONFIRM"]
         local variableKey = "bonusRollConfirmEnabled"
         local variableTbl = _G[VCA.GLOBAL_DB_NAME]
-        local default = false
+        local default = true
 
         local setting = Settings.RegisterAddOnSetting(bonusRollCategory, variable, variableKey, variableTbl,
             type(default), name, default)

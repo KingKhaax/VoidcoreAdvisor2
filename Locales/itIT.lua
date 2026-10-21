@@ -40,12 +40,12 @@ L["SOURCE_FORMAT"] = "Fonte attiva — tipo: %s  IDfonte: %s  difficoltà: %s"
 L["NO_ACTIVE_SOURCE"] = "Nessuna fonte attiva impostata."
 L["VERSION_FORMAT"] = "Versione %s"
 L["HELP_HEADER"] = "Comandi:"
-L["HELP_RESET"] = "  /vca reset    – reimposta dati degli oggetti ottenuti"
-L["HELP_COUNT"] = "  /vca count    – mostra il totale degli oggetti ottenuti"
-L["HELP_SPEC"] = "  /vca spec     – mostra l'ID della specializzazione bottino"
-L["HELP_SOURCE"] = "  /vca source   – mostra la fonte di rilevamento attiva"
-L["HELP_VERSION"] = "  /vca version  – mostra la versione dell'addon"
-L["HELP_RESTORE"] = "  /vca restore  – ripristina i dati del bottino dal backup pre-scansione"
+L["HELP_RESET"] = "  /vca2 reset    – reimposta dati degli oggetti ottenuti"
+L["HELP_COUNT"] = "  /vca2 count    – mostra il totale degli oggetti ottenuti"
+L["HELP_SPEC"] = "  /vca2 spec     – mostra l'ID della specializzazione bottino"
+L["HELP_SOURCE"] = "  /vca2 source   – mostra la fonte di rilevamento attiva"
+L["HELP_VERSION"] = "  /vca2 version  – mostra la versione dell'addon"
+L["HELP_RESTORE"] = "  /vca2 restore  – ripristina i dati del bottino dal backup pre-scansione"
 
 -- ── Panel UI (aggiunte) ───────────────────────────────────────────────────────
 
@@ -163,7 +163,7 @@ L["RAID_SCAN_CONFIRM_BODY"] =
 
 -- ── Comandi slash (aggiunte) ──────────────────────────────────────────────────
 
-L["HELP_REPLAYLOG"] = "  /vca replaylog – riapplica tutte le voci del registro dei tiri come ottenute"
+L["HELP_REPLAYLOG"] = "  /vca2 replaylog – riapplica tutte le voci del registro dei tiri come ottenute"
 L["RESTORE_COMPLETE"] = "%d oggetto/i ripristinato/i dal backup."
 L["RESTORE_NO_BACKUP"] = "Nessun backup disponibile. Esegui prima una scansione."
 L["RESTORE_FAILED"] = "Ripristino fallito."
@@ -204,3 +204,16 @@ L["OPTIONS_BRC_SPEC_LIST"] = "Mostra oggetti rimanenti per specializzazione"
 L["OPTIONS_BRC_SPEC_LIST_TOOLTIP"] =
     "Mostra un elenco di oggetti rimanenti per ciascuna delle tue specializzazioni nella finestra di tiro bonus."
 L["BRC_SWITCH_SPEC_TIP"] = "Switch specialization to %s"
+
+-- ── VoidcoreAdvisor 2.0 additions ─────────────────────────────────────────────
+L["BRC_SWITCH_SPEC_TIP"] = "Passa alla specializzazione %s"
+L["SPEC_LIST_TOOLTIP"] = "Bottino rimanente per ogni specializzazione del bottino"
+L["BONUS_ROLL_WANTED_TOOLTIP_TITLE"] = "Oggetti desiderati"
+L["DIFFICULTY_NORMAL"] = "Normale"
+L["DIFFICULTY_HEROIC"] = "Eroico"
+L["DIFFICULTY_MYTHIC"] = "Mitico"
+L["MARK_MODE_BUTTON"] = "Segna oggetto ottenuto"
+L["MARK_MODE_ACTIVE"] = "Clicca su un oggetto per segnarlo (clicca qui per terminare)"
+L["MARK_MODE_TIP"] = "Usalo per gli oggetti ottenuti con un tiro Nucleo del Vuoto che l'addon non ha registrato. Finché è attivo, clicca su un oggetto per segnarlo come ottenuto per tutte le specializzazioni, o clicca di nuovo per rimuovere il segno."
+L["RAID_NOT_IN_DATA"] = "Questa incursione non è ancora nei dati di bottino dell'addon. Si carica automaticamente quando possibile; altrimenti aggiorna VoidcoreAdvisor 2.0."
+L["ORIGINAL_ADDON_LOADED"] = "Anche il VoidcoreAdvisor originale è attivo. Disattivalo: le due versioni non possono funzionare insieme."

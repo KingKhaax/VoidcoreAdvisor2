@@ -40,12 +40,12 @@ L["SOURCE_FORMAT"] = "Aktive Quelle — Typ: %s  QuellenID: %s  Schwierigkeit: %
 L["NO_ACTIVE_SOURCE"] = "Keine aktive Quelle gesetzt."
 L["VERSION_FORMAT"] = "Version %s"
 L["HELP_HEADER"] = "Befehle:"
-L["HELP_RESET"] = "  /vca reset    – alle erhaltenen Gegenstände zurücksetzen"
-L["HELP_COUNT"] = "  /vca count    – Gesamtzahl erhaltener Gegenstände anzeigen"
-L["HELP_SPEC"] = "  /vca spec     – aktive Beutespezialisierungs-ID anzeigen"
-L["HELP_SOURCE"] = "  /vca source   – aktive Erkennungsquelle anzeigen"
-L["HELP_VERSION"] = "  /vca version  – Addon-Version anzeigen"
-L["HELP_RESTORE"] = "  /vca restore  – Beutedaten aus Scan-Backup wiederherstellen"
+L["HELP_RESET"] = "  /vca2 reset    – alle erhaltenen Gegenstände zurücksetzen"
+L["HELP_COUNT"] = "  /vca2 count    – Gesamtzahl erhaltener Gegenstände anzeigen"
+L["HELP_SPEC"] = "  /vca2 spec     – aktive Beutespezialisierungs-ID anzeigen"
+L["HELP_SOURCE"] = "  /vca2 source   – aktive Erkennungsquelle anzeigen"
+L["HELP_VERSION"] = "  /vca2 version  – Addon-Version anzeigen"
+L["HELP_RESTORE"] = "  /vca2 restore  – Beutedaten aus Scan-Backup wiederherstellen"
 
 -- ── Panel UI (Ergänzungen) ────────────────────────────────────────────────────
 
@@ -163,7 +163,7 @@ L["RAID_SCAN_CONFIRM_BODY"] =
 
 -- ── Slash-Befehle (Ergänzungen) ───────────────────────────────────────────────
 
-L["HELP_REPLAYLOG"] = "  /vca replaylog – alle Roll-Protokolleinträge erneut als erhalten anwenden"
+L["HELP_REPLAYLOG"] = "  /vca2 replaylog – alle Roll-Protokolleinträge erneut als erhalten anwenden"
 L["RESTORE_COMPLETE"] = "%d Gegenstand/Gegenstände aus Backup wiederhergestellt."
 L["RESTORE_NO_BACKUP"] = "Kein Backup verfügbar. Führe zuerst einen Scan durch."
 L["RESTORE_FAILED"] = "Wiederherstellung fehlgeschlagen."
@@ -204,3 +204,16 @@ L["OPTIONS_BRC_SPEC_LIST"] = "Verbleibende Gegenstände pro Spezialisierung anze
 L["OPTIONS_BRC_SPEC_LIST_TOOLTIP"] =
     "Zeigt eine Liste verbleibender Gegenstände für jede deiner Spezialisierungen im Bonuswurffenster an."
 L["BRC_SWITCH_SPEC_TIP"] = "Switch specialization to %s"
+
+-- ── VoidcoreAdvisor 2.0 additions ─────────────────────────────────────────────
+L["BRC_SWITCH_SPEC_TIP"] = "Zu Spezialisierung %s wechseln"
+L["SPEC_LIST_TOOLTIP"] = "Verbleibende Beute für jede Beutespezialisierung"
+L["BONUS_ROLL_WANTED_TOOLTIP_TITLE"] = "Gewünschte Gegenstände"
+L["DIFFICULTY_NORMAL"] = "Normal"
+L["DIFFICULTY_HEROIC"] = "Heroisch"
+L["DIFFICULTY_MYTHIC"] = "Mythisch"
+L["MARK_MODE_BUTTON"] = "Erhaltenen Gegenstand markieren"
+L["MARK_MODE_ACTIVE"] = "Gegenstand anklicken, um ihn zu markieren (hier klicken zum Beenden)"
+L["MARK_MODE_TIP"] = "Für Gegenstände aus einem Leerenkern-Wurf, die das Addon nicht erfasst hat. Solange aktiv, markiert ein Klick den Gegenstand für alle Spezialisierungen als erhalten; erneut klicken hebt die Markierung auf."
+L["RAID_NOT_IN_DATA"] = "Dieser Schlachtzug ist noch nicht in den Beutedaten des Addons. Er wird nach Möglichkeit automatisch geladen; andernfalls aktualisiere VoidcoreAdvisor 2.0."
+L["ORIGINAL_ADDON_LOADED"] = "Das originale VoidcoreAdvisor ist ebenfalls aktiv. Deaktiviere es: beide Versionen können nicht zusammen laufen."

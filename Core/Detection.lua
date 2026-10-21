@@ -362,6 +362,20 @@ local function TryMarkItemInAllRaidEncounters(itemID, raidInstanceID, difficulty
     return anyMarked
 end
 
+-- The source can point at the boss selected in the Encounter Journal instead of
+-- the boss that dropped the roll.  When the item is not in that boss's pool,
+-- search the whole raid the boss belongs to.
+local function TryRecoverRaidSource(itemID, source, specID)
+    if not (source and source.sourceType == VCA.ContentType.RAID and source.sourceID) then
+        return false
+    end
+    local raidData = VCA.SeasonData and VCA.SeasonData.raids and VCA.SeasonData.raids[source.sourceID]
+    if not (raidData and raidData.instanceID) then
+        return false
+    end
+    return TryMarkItemInAllRaidEncounters(itemID, raidData.instanceID, source.difficultyID, specID)
+end
+
 -- Last-resort recovery for log entries with only itemID+specID and no source
 -- context at all (pre-raid-detection logs).  Searches every SeasonData raid
 -- encounter (all eligible difficulties) first; if found there, returns without
@@ -608,6 +622,8 @@ function Detection.ReplayBonusRollLog(verbose)
                             "|cff9370DBVoidcoreAdvisor:|r Replay [%d]: pool complete — cycle reset for spec %s.", i,
                             tostring(entry.specID)))
                     end
+                elseif TryRecoverRaidSource(entry.itemID, source, entry.specID) then
+                    marked = marked + 1
                 else
                     nomatch = nomatch + 1
                 end
@@ -646,7 +662,8 @@ local function ProcessPendingRewards()
             resolved = TryMarkItemInAllRaidEncounters(entry.itemID, source.raidInstanceID, source.difficultyID,
                 entry.specID)
         else
-            resolved = TryResolveReward(entry.itemID, source, entry.specID)
+            resolved = TryResolveReward(entry.itemID, source, entry.specID) or
+                           TryRecoverRaidSource(entry.itemID, source, entry.specID)
         end
         if not resolved then
             remaining[#remaining + 1] = {
@@ -674,7 +691,7 @@ local function ProcessRewardItem(itemID, specID, sourceHint)
         if TryMarkItemInAllRaidEncounters(itemID, source.raidInstanceID, source.difficultyID, specID) then
             return
         end
-    elseif TryResolveReward(itemID, source, specID) then
+    elseif TryResolveReward(itemID, source, specID) or TryRecoverRaidSource(itemID, source, specID) then
         return
     end
 

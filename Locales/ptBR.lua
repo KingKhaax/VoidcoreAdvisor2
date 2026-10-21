@@ -40,12 +40,12 @@ L["SOURCE_FORMAT"] = "Fonte ativa — tipo: %s  IDfonte: %s  dificuldade: %s"
 L["NO_ACTIVE_SOURCE"] = "Nenhuma fonte ativa definida."
 L["VERSION_FORMAT"] = "Versão %s"
 L["HELP_HEADER"] = "Comandos:"
-L["HELP_RESET"] = "  /vca reset    – redefinir dados de itens obtidos"
-L["HELP_COUNT"] = "  /vca count    – mostrar total de itens marcados como obtidos"
-L["HELP_SPEC"] = "  /vca spec     – mostrar ID de especialização de saque"
-L["HELP_SOURCE"] = "  /vca source   – mostrar fonte de detecção ativa"
-L["HELP_VERSION"] = "  /vca version  – mostrar versão do addon"
-L["HELP_RESTORE"] = "  /vca restore  – restaurar dados de saque do backup pré-varredura"
+L["HELP_RESET"] = "  /vca2 reset    – redefinir dados de itens obtidos"
+L["HELP_COUNT"] = "  /vca2 count    – mostrar total de itens marcados como obtidos"
+L["HELP_SPEC"] = "  /vca2 spec     – mostrar ID de especialização de saque"
+L["HELP_SOURCE"] = "  /vca2 source   – mostrar fonte de detecção ativa"
+L["HELP_VERSION"] = "  /vca2 version  – mostrar versão do addon"
+L["HELP_RESTORE"] = "  /vca2 restore  – restaurar dados de saque do backup pré-varredura"
 
 -- ── Panel UI (adições) ────────────────────────────────────────────────────────
 
@@ -163,7 +163,7 @@ L["RAID_SCAN_CONFIRM_BODY"] =
 
 -- ── Comandos slash (adições) ──────────────────────────────────────────────────
 
-L["HELP_REPLAYLOG"] = "  /vca replaylog – reaplicar todas as entradas do registro de rolagens como obtidas"
+L["HELP_REPLAYLOG"] = "  /vca2 replaylog – reaplicar todas as entradas do registro de rolagens como obtidas"
 L["RESTORE_COMPLETE"] = "%d item(ns) restaurado(s) do backup."
 L["RESTORE_NO_BACKUP"] = "Nenhum backup disponível. Execute um escaneamento primeiro."
 L["RESTORE_FAILED"] = "A restauração falhou."
@@ -204,3 +204,16 @@ L["OPTIONS_BRC_SPEC_LIST"] = "Mostrar itens restantes por especialização"
 L["OPTIONS_BRC_SPEC_LIST_TOOLTIP"] =
     "Exibe uma lista de itens restantes para cada uma de suas especializações na janela de rolagem bônus."
 L["BRC_SWITCH_SPEC_TIP"] = "Switch specialization to %s"
+
+-- ── VoidcoreAdvisor 2.0 additions ─────────────────────────────────────────────
+L["BRC_SWITCH_SPEC_TIP"] = "Trocar para a especialização %s"
+L["SPEC_LIST_TOOLTIP"] = "Saque restante de cada especialização de saque"
+L["BONUS_ROLL_WANTED_TOOLTIP_TITLE"] = "Itens desejados"
+L["DIFFICULTY_NORMAL"] = "Normal"
+L["DIFFICULTY_HEROIC"] = "Heroico"
+L["DIFFICULTY_MYTHIC"] = "Mítico"
+L["MARK_MODE_BUTTON"] = "Marcar item obtido"
+L["MARK_MODE_ACTIVE"] = "Clique em um item para marcá-lo (clique aqui para parar)"
+L["MARK_MODE_TIP"] = "Use para itens que você obteve com uma rolagem de Núcleo do Vazio e que o addon não registrou. Enquanto ativo, clique em um item para marcá-lo como obtido em todas as especializações, ou clique de novo para desmarcar."
+L["RAID_NOT_IN_DATA"] = "Esta raide ainda não está nos dados de saque do addon. Ela é carregada automaticamente quando possível; caso contrário, atualize o VoidcoreAdvisor 2.0."
+L["ORIGINAL_ADDON_LOADED"] = "O VoidcoreAdvisor original também está ativado. Desative-o: as duas versões não podem funcionar juntas."

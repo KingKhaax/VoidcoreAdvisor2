@@ -48,7 +48,7 @@ The scan iterates over every spec and dungeon (or raid boss) in a sequence desig
 
 **Raid scan** — click the **Scan Loot Specs** button in the top-right corner of the Raid Overview panel. The Raid Overview appears when the Encounter Journal is open on a raid's main page without a specific boss selected. The same restrictions apply: must be outside an instance and not already scanning.
 
-Before the scan writes its results, a snapshot of all existing obtained data for that content type is saved to `SavedVariables`. If the results look wrong, run `/vca restore` to roll back to the pre-scan state. M+ and raid backups are stored independently so running one scan never overwrites the other's backup.
+Before the scan writes its results, a snapshot of all existing obtained data for that content type is saved to `SavedVariables`. If the results look wrong, run `/vca2 restore` to roll back to the pre-scan state. M+ and raid backups are stored independently so running one scan never overwrites the other's backup.
 
 ### Bonus Roll Confirmation
 

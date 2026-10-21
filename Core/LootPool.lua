@@ -1,11 +1,7 @@
 -- VoidcoreAdvisor: LootPool
--- Reads loot tables from the Encounter Journal for a given source and spec.
--- The EJ filter and difficulty state is saved before each read and fully
--- restored afterwards so normal EJ browsing is not disturbed.
---
--- NOTE: EJ_SelectInstance / EJ_SelectEncounter change global EJ state.
--- Callers should avoid calling these functions while the EJ frame is animating
--- a page transition (i.e. during an OnShow / OnHide handler).
+-- Serves loot tables for raid bosses and Mythic+ dungeons from the static
+-- SeasonData (plus raids read at runtime by LiveRaid.lua) and exposes the
+-- season filter used to decide which instances get the panel.
 local _, VCA = ...
 
 VCA.LootPool = {}
@@ -275,9 +271,8 @@ local function WarnMissingSeasonData()
         return
     end
     _warnedMissingSeasonData = true
-    print("|cff66ccffVoidcoreAdvisor:|r |cffff4444SeasonData is missing.|r  " ..
-              "Enable VoidcoreAdvisorGen, type |cffffd700/vcagen run|r, then copy " ..
-              "the output into Core/SeasonData.lua and rebuild.")
+    print("|cff66ccffVoidcoreAdvisor 2.0:|r |cffff4444Loot data is missing.|r  " ..
+              "Please update the addon to the latest version.")
 end
 
 -- ── Static loot reads ─────────────────────────────────────────────────────────

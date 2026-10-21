@@ -40,12 +40,12 @@ L["SOURCE_FORMAT"] = "当前来源 - 类型：%s  来源ID：%s  难度：%s"
 L["NO_ACTIVE_SOURCE"] = "未设置活动来源。"
 L["VERSION_FORMAT"] = "版本 %s"
 L["HELP_HEADER"] = "命令："
-L["HELP_RESET"] = "  /vca reset    – 重置所有已获取物品数据"
-L["HELP_COUNT"] = "  /vca count    – 显示已获取物品总数"
-L["HELP_SPEC"] = "  /vca spec     – 显示拾取专精 ID"
-L["HELP_SOURCE"] = "  /vca source   – 显示当前检测来源"
-L["HELP_VERSION"] = "  /vca version  – 显示插件版本"
-L["HELP_RESTORE"] = "  /vca restore  – 从扫描前备份恢复已获得数据"
+L["HELP_RESET"] = "  /vca2 reset    – 重置所有已获取物品数据"
+L["HELP_COUNT"] = "  /vca2 count    – 显示已获取物品总数"
+L["HELP_SPEC"] = "  /vca2 spec     – 显示拾取专精 ID"
+L["HELP_SOURCE"] = "  /vca2 source   – 显示当前检测来源"
+L["HELP_VERSION"] = "  /vca2 version  – 显示插件版本"
+L["HELP_RESTORE"] = "  /vca2 restore  – 从扫描前备份恢复已获得数据"
 
 -- ── 面板 UI（补充）────────────────────────────────────────────────────────────
 
@@ -163,7 +163,7 @@ L["RAID_SCAN_CONFIRM_BODY"] =
 
 -- ── 斜线命令（补充）──────────────────────────────────────────────────────────
 
-L["HELP_REPLAYLOG"] = "  /vca replaylog – 重新将所有掷骰日志条目标记为已获得"
+L["HELP_REPLAYLOG"] = "  /vca2 replaylog – 重新将所有掷骰日志条目标记为已获得"
 L["RESTORE_COMPLETE"] = "已从备份恢复 %d 件物品。"
 L["RESTORE_NO_BACKUP"] = "没有可用备份。请先运行扫描。"
 L["RESTORE_FAILED"] = "恢复失败。"
@@ -201,3 +201,16 @@ L["OPTIONS_BONUS_ROLL_CONFIRM_TOOLTIP"] =
 L["OPTIONS_BRC_SPEC_LIST"] = "显示每个专精的剩余物品"
 L["OPTIONS_BRC_SPEC_LIST_TOOLTIP"] = "在额外掷骰窗口中显示每个专精的剩余物品列表。"
 L["BRC_SWITCH_SPEC_TIP"] = "Switch specialization to %s"
+
+-- ── VoidcoreAdvisor 2.0 additions ─────────────────────────────────────────────
+L["BRC_SWITCH_SPEC_TIP"] = "切换到%s专精"
+L["SPEC_LIST_TOOLTIP"] = "各拾取专精的剩余战利品"
+L["BONUS_ROLL_WANTED_TOOLTIP_TITLE"] = "想要的物品"
+L["DIFFICULTY_NORMAL"] = "普通"
+L["DIFFICULTY_HEROIC"] = "英雄"
+L["DIFFICULTY_MYTHIC"] = "史诗"
+L["MARK_MODE_BUTTON"] = "标记已获得物品"
+L["MARK_MODE_ACTIVE"] = "点击物品进行标记（点击此处结束）"
+L["MARK_MODE_TIP"] = "用于通过虚空之核骰点获得、但插件未记录的物品。开启后，点击物品即可将其标记为所有专精已获得，再次点击则取消标记。"
+L["RAID_NOT_IN_DATA"] = "该团队副本尚未包含在插件的战利品数据中。条件允许时会自动加载；否则请更新 VoidcoreAdvisor 2.0。"
+L["ORIGINAL_ADDON_LOADED"] = "原版 VoidcoreAdvisor 也已启用。请禁用它：两个版本不能同时运行。"

@@ -41,12 +41,12 @@ L["SOURCE_FORMAT"] = "활성 출처 — 유형: %s  출처ID: %s  난이도: %s"
 L["NO_ACTIVE_SOURCE"] = "활성 출처가 설정되지 않았습니다."
 L["VERSION_FORMAT"] = "버전 %s"
 L["HELP_HEADER"] = "명령어:"
-L["HELP_RESET"] = "  /vca reset    – 획득 아이템 데이터 초기화"
-L["HELP_COUNT"] = "  /vca count    – 획득한 아이템 총 수 표시"
-L["HELP_SPEC"] = "  /vca spec     – 전리품 전문화 ID 표시"
-L["HELP_SOURCE"] = "  /vca source   – 활성 감지 출처 표시"
-L["HELP_VERSION"] = "  /vca version  – 애드온 버전 표시"
-L["HELP_RESTORE"] = "  /vca restore  – 스캔 이전 백업에서 획득 데이터 복원"
+L["HELP_RESET"] = "  /vca2 reset    – 획득 아이템 데이터 초기화"
+L["HELP_COUNT"] = "  /vca2 count    – 획득한 아이템 총 수 표시"
+L["HELP_SPEC"] = "  /vca2 spec     – 전리품 전문화 ID 표시"
+L["HELP_SOURCE"] = "  /vca2 source   – 활성 감지 출처 표시"
+L["HELP_VERSION"] = "  /vca2 version  – 애드온 버전 표시"
+L["HELP_RESTORE"] = "  /vca2 restore  – 스캔 이전 백업에서 획득 데이터 복원"
 
 -- ── 패널 UI (추가) ────────────────────────────────────────────────────────────
 
@@ -164,7 +164,7 @@ L["RAID_SCAN_CONFIRM_BODY"] =
 
 -- ── 슬래시 명령어 (추가) ──────────────────────────────────────────────────────
 
-L["HELP_REPLAYLOG"] = "  /vca replaylog – 모든 주사위 기록 항목을 다시 획득으로 적용"
+L["HELP_REPLAYLOG"] = "  /vca2 replaylog – 모든 주사위 기록 항목을 다시 획득으로 적용"
 L["RESTORE_COMPLETE"] = "백업에서 %d개 아이템이 복원되었습니다."
 L["RESTORE_NO_BACKUP"] = "사용 가능한 백업이 없습니다. 먼저 스캔을 실행하세요."
 L["RESTORE_FAILED"] = "복원에 실패했습니다."
@@ -205,3 +205,16 @@ L["OPTIONS_BRC_SPEC_LIST"] = "전문화별 남은 아이템 표시"
 L["OPTIONS_BRC_SPEC_LIST_TOOLTIP"] =
     "보너스 주사위 창에서 각 전문화의 남은 아이템 목록을 표시합니다."
 L["BRC_SWITCH_SPEC_TIP"] = "Switch specialization to %s"
+
+-- ── VoidcoreAdvisor 2.0 additions ─────────────────────────────────────────────
+L["BRC_SWITCH_SPEC_TIP"] = "%s 전문화로 전환"
+L["SPEC_LIST_TOOLTIP"] = "각 전리품 전문화별 남은 전리품"
+L["BONUS_ROLL_WANTED_TOOLTIP_TITLE"] = "원하는 아이템"
+L["DIFFICULTY_NORMAL"] = "일반"
+L["DIFFICULTY_HEROIC"] = "영웅"
+L["DIFFICULTY_MYTHIC"] = "신화"
+L["MARK_MODE_BUTTON"] = "획득한 아이템 표시"
+L["MARK_MODE_ACTIVE"] = "아이템을 클릭해 표시하세요 (여기를 클릭하면 종료)"
+L["MARK_MODE_TIP"] = "공허 핵 굴림으로 얻었지만 애드온이 기록하지 못한 아이템에 사용하세요. 켜 두면 아이템을 클릭해 모든 전문화에서 획득한 것으로 표시하고, 다시 클릭하면 표시를 해제합니다."
+L["RAID_NOT_IN_DATA"] = "이 공격대는 아직 애드온의 전리품 데이터에 없습니다. 가능하면 자동으로 불러오며, 그렇지 않으면 VoidcoreAdvisor 2.0을 업데이트하세요."
+L["ORIGINAL_ADDON_LOADED"] = "원본 VoidcoreAdvisor도 활성화되어 있습니다. 비활성화하세요. 두 버전은 함께 작동할 수 없습니다."

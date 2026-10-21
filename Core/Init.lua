@@ -22,8 +22,9 @@ end
 local function GetGlobalDefaults()
     return {
         reminderEnabled = true,
-        bonusRollConfirmEnabled = false,
-        brcSpecListEnabled = true
+        bonusRollConfirmEnabled = true,
+        brcSpecListEnabled = true,
+        brcDefaultOnV2 = true
     }
 end
 
@@ -49,7 +50,13 @@ local function InitDB()
             gdb.reminderEnabled = true
         end
         if gdb.bonusRollConfirmEnabled == nil then
-            gdb.bonusRollConfirmEnabled = false
+            gdb.bonusRollConfirmEnabled = true
+        end
+        -- 2.0 turns the roll confirmation window on by default; apply it once
+        -- to saves created while it was off by default.
+        if not gdb.brcDefaultOnV2 then
+            gdb.brcDefaultOnV2 = true
+            gdb.bonusRollConfirmEnabled = true
         end
         if gdb.brcSpecListEnabled == nil then
             gdb.brcSpecListEnabled = true
@@ -123,6 +130,9 @@ initFrame:SetScript("OnEvent", function(self, event, ...)
         end
         InitDB()
         self:UnregisterEvent("ADDON_LOADED")
+        if C_AddOns and C_AddOns.IsAddOnLoaded and C_AddOns.IsAddOnLoaded("VoidcoreAdvisor") then
+            print("|cff9370DBVoidcoreAdvisor 2.0:|r |cffff4444" .. L["ORIGINAL_ADDON_LOADED"] .. "|r")
+        end
 
     elseif event == "PLAYER_ENTERING_WORLD" then
         -- Run only once per session. BuildSeasonFilter is called immediately
@@ -168,8 +178,8 @@ end
 
 -- ── Slash commands ────────────────────────────────────────────────────────────
 
-SLASH_VOIDCOREADVISOR1 = "/vca"
-SLASH_VOIDCOREADVISOR2 = "/voidcoreadvisor"
+SLASH_VOIDCOREADVISOR1 = "/vca2"
+SLASH_VOIDCOREADVISOR2 = "/voidcoreadvisor2"
 
 SlashCmdList["VOIDCOREADVISOR"] = function(msg)
     local cmd = (msg:match("^%s*(%S+)") or ""):lower()

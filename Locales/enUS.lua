@@ -8,7 +8,7 @@ VCA.L = L
 
 -- ── Panel UI ──────────────────────────────────────────────────────────────────
 
-L["PANEL_TITLE"] = "|cffb048f8Voidcore|r|cffddddddAdvisor|r"
+L["PANEL_TITLE"] = "|cff8fe36bVoidcore|r|cffffffffAdvisor|r"
 
 L["COL_LOOT"] = "LOOT"
 L["COL_SPEC_RANKING"] = "SPEC RANKING"
@@ -61,7 +61,7 @@ L["RESTORE_FAILED"] = "Restore failed."
 
 -- ── Reminder popup (Reminder.lua) ─────────────────────────────────────────────
 
-L["REMINDER_TITLE"] = "|cffb048f8Voidcore|r|cffddddddAdvisor|r"
+L["REMINDER_TITLE"] = "|cff8fe36bVoidcore|r|cffffffffAdvisor|r"
 L["REMINDER_SUBTITLE"] = "Optimize your loot spec for Nebulous Voidcore rewards!"
 L["REMINDER_VOIDCORE_COUNT"] = "You have |cffffff00%d|r Nebulous Voidcore(s)"
 L["REMINDER_CURRENT_SPEC"] = "Current loot spec:"
@@ -83,7 +83,7 @@ L["REMINDER_SPEC_REMAINING"] = "%d remaining"
 L["REMINDER_SPEC_NONE"] = "none remaining"
 
 -- ── Voidcore Pool Reset warning popup (Reminder.lua) ─────────────────────────
-L["WARNING_TITLE"] = "|cffb048f8Voidcore|r|cffddddddAdvisor|r"
+L["WARNING_TITLE"] = "|cff8fe36bVoidcore|r|cffffffffAdvisor|r"
 L["WARNING_SUBTITLE"] = "Loot Pool Reset Risk"
 L["WARNING_VOIDCORE_COUNT"] = "You have |cffffff00%d|r Nebulous Voidcore(s)"
 L["WARNING_FAVORED_SPEC"] = "You are using the favored loot spec:"

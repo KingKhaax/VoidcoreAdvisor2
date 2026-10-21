@@ -90,7 +90,7 @@ hooksecurefunc("EJ_SelectEncounter", function(encounterID)
         if not VCA.LootPool.IsCurrentSeasonRaid(journalInstanceID) then
             if not _warnedRaidIDs[journalInstanceID] and EJ_GetNumTiers and EJ_GetCurrentTier() == EJ_GetNumTiers() then
                 _warnedRaidIDs[journalInstanceID] = true
-                print("|cff9370DBVoidcoreAdvisor Reborn:|r " .. VCA.L["RAID_NOT_IN_DATA"])
+                print("|cff8fe36bVoidcoreAdvisor Reborn:|r " .. VCA.L["RAID_NOT_IN_DATA"])
             end
             VCA.Panel.Hide()
             EJHook.UpdateToggleVisibility()
@@ -358,6 +358,8 @@ syncFrame:SetScript("OnEvent", function(self, event)
     local toggleIcon = toggleBtn:CreateTexture(nil, "ARTWORK")
     toggleIcon:SetAllPoints()
     toggleIcon:SetAtlas("azeritereforger-glow")
+    toggleIcon:SetDesaturated(true)
+    toggleIcon:SetVertexColor(0.56, 0.89, 0.42, 1)
 
     local toggleHighlight = toggleBtn:CreateTexture(nil, "HIGHLIGHT")
     toggleHighlight:SetSize(32, 32)
@@ -402,13 +404,14 @@ syncFrame:SetScript("OnEvent", function(self, event)
     local overviewIcon = overviewToggleBtn:CreateTexture(nil, "ARTWORK")
     overviewIcon:SetAllPoints()
     overviewIcon:SetAtlas("azeritereforger-glow")
-    overviewIcon:SetVertexColor(0.75, 0.85, 1, 1)
+    overviewIcon:SetDesaturated(true)
+    overviewIcon:SetVertexColor(0.56, 0.89, 0.42, 1)
 
     local overviewHighlight = overviewToggleBtn:CreateTexture(nil, "HIGHLIGHT")
     overviewHighlight:SetSize(32, 32)
     overviewHighlight:SetPoint("CENTER")
     overviewHighlight:SetAtlas("azeritereforger-glow")
-    overviewHighlight:SetVertexColor(0.2, 0.8, 1, 0.7)
+    overviewHighlight:SetVertexColor(1, 0.82, 0, 0.7)
 
     overviewToggleBtn:SetScript("OnClick", function()
         if VCA.DungeonOverview.IsMinimized() then

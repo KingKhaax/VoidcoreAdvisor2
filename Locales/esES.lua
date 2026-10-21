@@ -7,7 +7,7 @@ local L = VCA.L
 
 -- ── Panel UI ──────────────────────────────────────────────────────────────────
 
-L["PANEL_TITLE"] = "|cffb048f8Voidcore|r|cffddddddAdvisor|r"
+L["PANEL_TITLE"] = "|cff8fe36bVoidcore|r|cffffffffAdvisor|r"
 
 L["COL_LOOT"] = "BOTÍN"
 L["COL_SPEC_RANKING"] = "RANKING DE ESPEC."
@@ -58,7 +58,7 @@ L["TOGGLE_OVERVIEW_HIDE"] = "Haz clic para ocultar el resumen de mazmorras."
 
 -- ── Ventana de recordatorio (Reminder.lua) ────────────────────────────────────
 
-L["REMINDER_TITLE"] = "|cffb048f8Voidcore|r|cffddddddAdvisor|r"
+L["REMINDER_TITLE"] = "|cff8fe36bVoidcore|r|cffffffffAdvisor|r"
 L["REMINDER_SUBTITLE"] =
     "¡Optimiza tu especialización de botín para las recompensas del Núcleo del Vacío nebuloso!"
 L["REMINDER_VOIDCORE_COUNT"] = "Tienes |cffffff00%d|r Núcleo(s) del Vacío nebuloso"
@@ -81,7 +81,7 @@ L["SPEC_LIST_ALL_OBTAINED"] = "todos obtenidos"
 
 -- ── Popup de aviso de reinicio del grupo de botín (Reminder.lua) ─────────────
 
-L["WARNING_TITLE"] = "|cffb048f8Voidcore|r|cffddddddAdvisor|r"
+L["WARNING_TITLE"] = "|cff8fe36bVoidcore|r|cffffffffAdvisor|r"
 L["WARNING_SUBTITLE"] = "Riesgo de reinicio del grupo de botín"
 L["WARNING_VOIDCORE_COUNT"] = "Tienes |cffffff00%d|r Núcleo(s) del Vacío nebuloso"
 L["WARNING_FAVORED_SPEC"] = "Estás usando la especialización de botín favorita:"

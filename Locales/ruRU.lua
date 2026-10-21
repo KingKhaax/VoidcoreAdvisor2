@@ -7,7 +7,7 @@ local L = VCA.L
 
 -- ── Panel UI ──────────────────────────────────────────────────────────────────
 
-L["PANEL_TITLE"] = "|cffb048f8Voidcore|r|cffddddddСоветник|r"
+L["PANEL_TITLE"] = "|cff8fe36bVoidcore|r|cffffffffСоветник|r"
 
 L["COL_LOOT"] = "ДОБЫЧА"
 L["COL_SPEC_RANKING"] = "РЕЙТИНГ СПЕКОВ"
@@ -63,7 +63,7 @@ L["TOGGLE_OVERVIEW_HIDE"] = "Нажмите, чтобы скрыть обзор 
 
 -- ── Всплывающее напоминание (Reminder.lua) ───────────────────────────────────
 
-L["REMINDER_TITLE"] = "|cffb048f8Voidcore|r|cffddddddСоветник|r"
+L["REMINDER_TITLE"] = "|cff8fe36bVoidcore|r|cffffffffСоветник|r"
 L["REMINDER_SUBTITLE"] =
     "Оптимизируйте специализацию добычи для наград Туманного ядра Бездны!"
 L["REMINDER_VOIDCORE_COUNT"] = "У вас |cffffff00%d|r Туманное/ых ядер Бездны"
@@ -86,7 +86,7 @@ L["SPEC_LIST_ALL_OBTAINED"] = "все получено"
 
 -- ── Всплывающее предупреждение о сбросе пула добычи (Reminder.lua) ─────────
 
-L["WARNING_TITLE"] = "|cffb048f8Voidcore|r|cffddddddСоветник|r"
+L["WARNING_TITLE"] = "|cff8fe36bVoidcore|r|cffffffffСоветник|r"
 L["WARNING_SUBTITLE"] = "Риск сброса пула добычи"
 L["WARNING_VOIDCORE_COUNT"] = "У вас |cffffff00%d|r Туманное/ых ядер Бездны"
 L["WARNING_FAVORED_SPEC"] =

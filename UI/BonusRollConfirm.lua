@@ -165,8 +165,8 @@ win:SetBackdrop({
         bottom = 3
     }
 })
-win:SetBackdropColor(0.07, 0.07, 0.09, 0.97)
-win:SetBackdropBorderColor(0.36, 0.38, 0.43, 1)
+win:SetBackdropColor(0.063, 0.125, 0.086, 0.97)
+win:SetBackdropBorderColor(0.30, 0.54, 0.35, 1)
 
 -- Thin black line just inside the grey frame, like the stock popup frames.
 local winInnerEdge = CreateFrame("Frame", nil, win, "BackdropTemplate")
@@ -181,7 +181,7 @@ winInnerEdge:SetBackdropBorderColor(0, 0, 0, 1)
 -- Title – hidden in compact layout
 local winTitle = win:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
 winTitle:SetPoint("TOP", win, "TOP", 0, -14)
-winTitle:SetText("|cffb048f8VoidcoreAdvisor|r")
+winTitle:SetText("|cff9fe08aVoidcoreAdvisor|r")
 winTitle:Hide()
 
 -- Subtitle – hidden in compact layout
@@ -192,7 +192,7 @@ winSubtitle:Hide()
 
 -- Header divider – hidden in compact layout
 local winHeaderDiv = win:CreateTexture(nil, "ARTWORK")
-winHeaderDiv:SetColorTexture(0.58, 0.0, 0.82, 0.4)
+winHeaderDiv:SetColorTexture(0.30, 0.54, 0.35, 0.4)
 winHeaderDiv:SetHeight(1)
 winHeaderDiv:SetPoint("TOPLEFT", win, "TOPLEFT", 16, -62)
 winHeaderDiv:SetPoint("TOPRIGHT", win, "TOPRIGHT", -16, -62)
@@ -260,7 +260,7 @@ timerBar:SetHeight(8)
 timerBar:SetPoint("TOPLEFT", win, "TOPLEFT", 16, -62)
 timerBar:SetPoint("TOPRIGHT", win, "TOPRIGHT", -16, -62)
 timerBar:SetStatusBarTexture("Interface\\TargetingFrame\\UI-StatusBar")
-timerBar:SetStatusBarColor(0.62, 0.22, 0.9, 1)
+timerBar:SetStatusBarColor(0.44, 0.78, 0.35, 1)
 local timerBorder = timerBar:CreateTexture(nil, "BACKGROUND", nil, -1)
 timerBorder:SetColorTexture(0, 0, 0, 1)
 timerBorder:SetPoint("TOPLEFT", timerBar, "TOPLEFT", -1, 1)
@@ -269,11 +269,11 @@ timerBar:SetMinMaxValues(0, 1)
 timerBar:SetValue(1)
 local timerBg = timerBar:CreateTexture(nil, "BACKGROUND")
 timerBg:SetAllPoints()
-timerBg:SetColorTexture(0.12, 0.04, 0.20, 0.8)
+timerBg:SetColorTexture(0.04, 0.10, 0.06, 0.8)
 
 -- Separator between timer and spec row
 local topSep = win:CreateTexture(nil, "ARTWORK")
-topSep:SetColorTexture(0.58, 0.0, 0.82, 0.35)
+topSep:SetColorTexture(0.30, 0.54, 0.35, 0.35)
 topSep:SetHeight(1)
 topSep:SetPoint("TOPLEFT", win, "TOPLEFT", 16, -78)
 topSep:SetPoint("TOPRIGHT", win, "TOPRIGHT", -16, -78)
@@ -396,7 +396,7 @@ end)
 
 -- Dynamic loot section (only shown when Detection recognises the source)
 local lootSep = win:CreateTexture(nil, "ARTWORK")
-lootSep:SetColorTexture(0.58, 0.0, 0.82, 0.35)
+lootSep:SetColorTexture(0.30, 0.54, 0.35, 0.35)
 lootSep:SetHeight(1)
 lootSep:Hide()
 
@@ -422,7 +422,7 @@ warnBody:Hide()
 
 -- Per-spec remaining item counts section
 local specListSep = win:CreateTexture(nil, "ARTWORK")
-specListSep:SetColorTexture(0.58, 0.0, 0.82, 0.35)
+specListSep:SetColorTexture(0.30, 0.54, 0.35, 0.35)
 specListSep:SetHeight(1)
 specListSep:Hide()
 

@@ -7,7 +7,7 @@ local L = VCA.L
 
 -- ── Panel UI ──────────────────────────────────────────────────────────────────
 
-L["PANEL_TITLE"] = "|cffb048f8Voidcore|r|cffddddddAdvisor|r"
+L["PANEL_TITLE"] = "|cff8fe36bVoidcore|r|cffffffffAdvisor|r"
 
 L["COL_LOOT"] = "BOTTINO"
 L["COL_SPEC_RANKING"] = "CLASSIFICA SPEC."
@@ -58,7 +58,7 @@ L["TOGGLE_OVERVIEW_HIDE"] = "Clic per nascondere il riepilogo delle spedizioni."
 
 -- ── Popup di promemoria (Reminder.lua) ───────────────────────────────────────
 
-L["REMINDER_TITLE"] = "|cffb048f8Voidcore|r|cffddddddAdvisor|r"
+L["REMINDER_TITLE"] = "|cff8fe36bVoidcore|r|cffffffffAdvisor|r"
 L["REMINDER_SUBTITLE"] = "Ottimizza la tua specializzazione bottino per le ricompense del Nucleo del Vuoto nebuloso!"
 L["REMINDER_VOIDCORE_COUNT"] = "Hai |cffffff00%d|r Nucleo/i del Vuoto nebuloso"
 L["REMINDER_CURRENT_SPEC"] = "Spec. bottino corrente:"
@@ -80,7 +80,7 @@ L["SPEC_LIST_ALL_OBTAINED"] = "tutti ottenuti"
 
 -- ── Popup avviso reset pool bottino (Reminder.lua) ────────────────────────────
 
-L["WARNING_TITLE"] = "|cffb048f8Voidcore|r|cffddddddAdvisor|r"
+L["WARNING_TITLE"] = "|cff8fe36bVoidcore|r|cffffffffAdvisor|r"
 L["WARNING_SUBTITLE"] = "Rischio reset pool bottino"
 L["WARNING_VOIDCORE_COUNT"] = "Hai |cffffff00%d|r Nucleo/i del Vuoto nebuloso"
 L["WARNING_FAVORED_SPEC"] = "Stai usando la specializzazione bottino preferita:"

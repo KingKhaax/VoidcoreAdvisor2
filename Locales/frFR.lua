@@ -7,7 +7,7 @@ local L = VCA.L
 
 -- ── Panel UI ──────────────────────────────────────────────────────────────────
 
-L["PANEL_TITLE"] = "|cffb048f8Voidcore|r|cffddddddConseiller|r"
+L["PANEL_TITLE"] = "|cff8fe36bVoidcore|r|cffffffffConseiller|r"
 
 L["COL_LOOT"] = "BUTIN"
 L["COL_SPEC_RANKING"] = "CLASSEMENT SPÉC."
@@ -58,7 +58,7 @@ L["TOGGLE_OVERVIEW_HIDE"] = "Cliquer pour masquer la vue d'ensemble des donjons.
 
 -- ── Popup de rappel (Reminder.lua) ───────────────────────────────────────────
 
-L["REMINDER_TITLE"] = "|cffb048f8Voidcore|r|cffddddddConseiller|r"
+L["REMINDER_TITLE"] = "|cff8fe36bVoidcore|r|cffffffffConseiller|r"
 L["REMINDER_SUBTITLE"] = "Optimisez votre spécialisation de butin pour les récompenses du Noyau du Vide nébuleux !"
 L["REMINDER_VOIDCORE_COUNT"] = "Vous avez |cffffff00%d|r Noyau(x) du Vide nébuleux"
 L["REMINDER_CURRENT_SPEC"] = "Spécialisation de butin actuelle :"
@@ -80,7 +80,7 @@ L["SPEC_LIST_ALL_OBTAINED"] = "tous obtenus"
 
 -- ── Popup d'avertissement de réinitialisation du groupe de butin (Reminder.lua) ──
 
-L["WARNING_TITLE"] = "|cffb048f8Voidcore|r|cffddddddConseiller|r"
+L["WARNING_TITLE"] = "|cff8fe36bVoidcore|r|cffffffffConseiller|r"
 L["WARNING_SUBTITLE"] = "Risque de réinitialisation du groupe de butin"
 L["WARNING_VOIDCORE_COUNT"] = "Vous avez |cffffff00%d|r Noyau(x) du Vide nébuleux"
 L["WARNING_FAVORED_SPEC"] = "Vous utilisez la spécialisation de butin favorite :"

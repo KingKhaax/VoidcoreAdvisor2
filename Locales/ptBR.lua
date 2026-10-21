@@ -7,7 +7,7 @@ local L = VCA.L
 
 -- ── Panel UI ──────────────────────────────────────────────────────────────────
 
-L["PANEL_TITLE"] = "|cffb048f8Voidcore|r|cffddddddAdvisor|r"
+L["PANEL_TITLE"] = "|cff8fe36bVoidcore|r|cffffffffAdvisor|r"
 
 L["COL_LOOT"] = "SAQUE"
 L["COL_SPEC_RANKING"] = "RANKING DE ESPEC."
@@ -58,7 +58,7 @@ L["TOGGLE_OVERVIEW_HIDE"] = "Clique para ocultar o resumo das masmorras."
 
 -- ── Popup de lembrete (Reminder.lua) ─────────────────────────────────────────
 
-L["REMINDER_TITLE"] = "|cffb048f8Voidcore|r|cffddddddAdvisor|r"
+L["REMINDER_TITLE"] = "|cff8fe36bVoidcore|r|cffffffffAdvisor|r"
 L["REMINDER_SUBTITLE"] = "Otimize sua especialização de saque para as recompensas do Núcleo do Vazio Nebuloso!"
 L["REMINDER_VOIDCORE_COUNT"] = "Você tem |cffffff00%d|r Núcleo(s) do Vazio Nebuloso"
 L["REMINDER_CURRENT_SPEC"] = "Especialização de saque atual:"
@@ -80,7 +80,7 @@ L["SPEC_LIST_ALL_OBTAINED"] = "todos obtidos"
 
 -- ── Popup de aviso de redefinição do grupo de saque (Reminder.lua) ───────────
 
-L["WARNING_TITLE"] = "|cffb048f8Voidcore|r|cffddddddAdvisor|r"
+L["WARNING_TITLE"] = "|cff8fe36bVoidcore|r|cffffffffAdvisor|r"
 L["WARNING_SUBTITLE"] = "Risco de redefinição do grupo de saque"
 L["WARNING_VOIDCORE_COUNT"] = "Você tem |cffffff00%d|r Núcleo(s) do Vazio Nebuloso"
 L["WARNING_FAVORED_SPEC"] = "Você está usando a especialização de saque favorita:"

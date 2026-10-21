@@ -52,20 +52,32 @@ frame:SetClampedToScreen(true)
 frame:Hide()
 
 frame:SetBackdrop({
-    bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background-Dark",
-    edgeFile = "Interface\\DialogFrame\\UI-DialogBox-Border",
-    tile = true,
-    tileSize = 32,
-    edgeSize = 32,
+    bgFile = "Interface\\Buttons\\WHITE8X8",
+    edgeFile = "Interface\\Buttons\\WHITE8X8",
+    edgeSize = 1,
     insets = {
-        left = 11,
-        right = 12,
-        top = 12,
-        bottom = 11
+        left = 1,
+        right = 1,
+        top = 1,
+        bottom = 1
     }
 })
-frame:SetBackdropColor(0.05, 0.02, 0.12, 0.95) -- dark void-purple
-frame:SetBackdropBorderColor(0.58, 0.0, 0.82, 1) -- purple glow border
+frame:SetBackdropColor(0.063, 0.125, 0.086, 0.97) -- dark venom green glass
+frame:SetBackdropBorderColor(0.30, 0.54, 0.35, 1)
+
+-- Gold corner brackets (top-left and bottom-right), like the stock frames.
+local function CornerBracket(point, dx, dy)
+    local h = frame:CreateTexture(nil, "OVERLAY")
+    h:SetColorTexture(0.80, 0.70, 0.48, 1)
+    h:SetSize(11, 1)
+    h:SetPoint(point, frame, point, dx, dy)
+    local v = frame:CreateTexture(nil, "OVERLAY")
+    v:SetColorTexture(0.80, 0.70, 0.48, 1)
+    v:SetSize(1, 11)
+    v:SetPoint(point, frame, point, dx, dy)
+end
+CornerBracket("TOPLEFT", 0, 0)
+CornerBracket("BOTTOMRIGHT", 0, 0)
 
 -- ── Anchor helper ─────────────────────────────────────────────────────────────
 
@@ -86,7 +98,7 @@ end
 -- Title
 local titleText = frame:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
 titleText:SetPoint("TOPLEFT", 18, -16)
-titleText:SetText(L["PANEL_TITLE"])
+titleText:SetText("|cff8fe36bVoidcore|r|cffffffffAdvisor|r")
 
 -- X close button (uses the standard Blizzard close button template)
 local closeBtn = CreateFrame("Button", nil, frame, "UIPanelCloseButton")
@@ -119,7 +131,7 @@ Panel.infoLabel = infoLabel
 
 -- Horizontal divider
 local divider = frame:CreateTexture(nil, "ARTWORK")
-divider:SetColorTexture(0.58, 0.0, 0.82, 0.4)
+divider:SetColorTexture(0.16, 0.25, 0.18, 1)
 divider:SetPoint("TOPLEFT", frame, "TOPLEFT", 16, -HEADER_H)
 divider:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -16, -HEADER_H)
 divider:SetHeight(1)
@@ -155,7 +167,7 @@ _s.RightColWidth = RightColWidth
 local lootColHeader = contentArea:CreateFontString(nil, "OVERLAY", "GameFontNormal")
 lootColHeader:SetPoint("TOPLEFT", contentArea, "TOPLEFT", PADDING, -6)
 lootColHeader:SetJustifyH("LEFT")
-lootColHeader:SetText("|cffb048f8LOOT|r")
+lootColHeader:SetText("|cff9fe08aLOOT|r")
 
 -- X button to clear all spec selections (near the center divider in loot column header)
 local clearSpecBtn = CreateFrame("Button", nil, contentArea)
@@ -227,8 +239,8 @@ keyLevelMenu:SetBackdrop({
         bottom = 3
     }
 })
-keyLevelMenu:SetBackdropColor(0.05, 0.02, 0.12, 0.95)
-keyLevelMenu:SetBackdropBorderColor(0.58, 0.0, 0.82, 1)
+keyLevelMenu:SetBackdropColor(0.063, 0.125, 0.086, 0.97)
+keyLevelMenu:SetBackdropBorderColor(0.30, 0.54, 0.35, 1)
 keyLevelMenu:Hide()
 
 local keyLevelOptions = {2, 3, 4, 5, 6, 7, 8, 9, 10}
@@ -245,7 +257,7 @@ for i, level in ipairs(keyLevelOptions) do
 
     local highlight = btn:CreateTexture(nil, "HIGHLIGHT")
     highlight:SetAllPoints(btn)
-    highlight:SetColorTexture(0.58, 0.0, 0.82, 0.3)
+    highlight:SetColorTexture(0.56, 0.89, 0.42, 0.25)
 
     btn:SetScript("OnClick", function(self)
         selectedKeyLevel = self.level
@@ -296,7 +308,7 @@ end)
 
 local specColHeader = contentArea:CreateFontString(nil, "OVERLAY", "GameFontNormal")
 specColHeader:SetJustifyH("LEFT")
-specColHeader:SetText("|cffb048f8" .. L["COL_SPEC_RANKING"] .. "|r")
+specColHeader:SetText("|cff9fe08a" .. L["COL_SPEC_RANKING"] .. "|r")
 
 -- X button to clear all item selections (near the center divider in spec column header)
 local clearItemBtn = CreateFrame("Button", nil, contentArea)
@@ -322,19 +334,36 @@ clearItemBtn:Hide()
 -- Mark-roll mode: while active, clicking a loot row marks (or unmarks) the item
 -- as obtained for every spec, for rolls the addon did not track.
 Panel.markMode = false
-local markModeBtn = CreateFrame("Button", nil, contentArea)
-markModeBtn:SetHeight(16)
-markModeBtn:SetPoint("LEFT", lootColHeader, "RIGHT", 10, 0)
-local markModeText = markModeBtn:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
-markModeText:SetPoint("LEFT")
+-- Bar fixed to the bottom of the loot column, so it never collides with the
+-- key level selector that sits next to the "LOOT" title on Mythic+ sources.
+local MARK_BAR_H = 24
+local markModeBtn = CreateFrame("Button", nil, contentArea, "BackdropTemplate")
+markModeBtn:SetHeight(MARK_BAR_H)
+markModeBtn:SetBackdrop({
+    bgFile = "Interface\\Buttons\\WHITE8X8",
+    edgeFile = "Interface\\Buttons\\WHITE8X8",
+    edgeSize = 1
+})
+markModeBtn:SetBackdropBorderColor(0, 0, 0, 1)
+local markModeText = markModeBtn:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
+markModeText:SetPoint("CENTER")
 markModeBtn.text = markModeText
+local markShine = markModeBtn:CreateTexture(nil, "ARTWORK")
+markShine:SetPoint("TOPLEFT", markModeBtn, "TOPLEFT", 1, -1)
+markShine:SetPoint("TOPRIGHT", markModeBtn, "TOPRIGHT", -1, -1)
+markShine:SetHeight(1)
+markShine:SetColorTexture(1, 1, 1, 0.28)
+local markHover = markModeBtn:CreateTexture(nil, "HIGHLIGHT")
+markHover:SetAllPoints()
+markHover:SetColorTexture(1, 1, 1, 0.12)
 local function UpdateMarkModeButton()
     if Panel.markMode then
-        markModeText:SetText("|cffffd100" .. L["MARK_MODE_ACTIVE"] .. "|r")
+        markModeBtn:SetBackdropColor(0.45, 0.35, 0.05, 1)
+        markModeText:SetText("|cffffe9a3" .. L["MARK_MODE_ACTIVE"] .. "|r")
     else
-        markModeText:SetText("|cff66ff66+|r " .. L["MARK_MODE_BUTTON"])
+        markModeBtn:SetBackdropColor(0.14, 0.42, 0.16, 1)
+        markModeText:SetText("+ " .. L["MARK_MODE_BUTTON"])
     end
-    markModeBtn:SetWidth(markModeText:GetStringWidth() + 4)
 end
 markModeBtn:SetScript("OnClick", function()
     Panel.markMode = not Panel.markMode
@@ -412,7 +441,7 @@ _s.lootColHeader = lootColHeader
 _s.clearSpecBtn = clearSpecBtn
 _s.specColHeader = specColHeader
 _s.clearItemBtn = clearItemBtn
-colSep:SetColorTexture(0.58, 0.0, 0.82, 0.3)
+colSep:SetColorTexture(0.16, 0.25, 0.18, 1)
 colSep:SetWidth(1)
 
 -- Horizontal rule below column headers
@@ -675,6 +704,10 @@ local function GetOrCreateItemRow(pool, parent)
     selHighlight:SetColorTexture(1, 0.75, 0, 0)
     selHighlight:Hide()
 
+    local rowBg = rowFrame:CreateTexture(nil, "BACKGROUND", nil, -1)
+    rowBg:SetAllPoints(rowFrame)
+    rowBg:SetColorTexture(1, 1, 1, 0.04)
+
     -- Icon housed in its own Button so the tooltip fires only on icon hover.
     local iconButton = CreateFrame("Button", nil, rowFrame)
     iconButton:SetSize(ICON_SIZE, ICON_SIZE)
@@ -846,8 +879,14 @@ local function GetOrCreateSpecRow(pool, parent)
     -- Selection highlight (purple tint when spec is selected)
     local selHighlight = rowFrame:CreateTexture(nil, "BACKGROUND")
     selHighlight:SetAllPoints(rowFrame)
-    selHighlight:SetColorTexture(0.69, 0.28, 0.97, 0)
+    selHighlight:SetColorTexture(0.56, 0.89, 0.42, 0)
     selHighlight:Hide()
+
+    local rowLine = rowFrame:CreateTexture(nil, "BORDER")
+    rowLine:SetColorTexture(0.12, 0.2, 0.15, 1)
+    rowLine:SetHeight(1)
+    rowLine:SetPoint("BOTTOMLEFT", rowFrame, "BOTTOMLEFT", 0, 0)
+    rowLine:SetPoint("BOTTOMRIGHT", rowFrame, "BOTTOMRIGHT", 0, 0)
 
     local rankLabel = rowFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
     rankLabel:SetJustifyH("RIGHT")
@@ -902,7 +941,7 @@ local function GetOrCreateSpecRow(pool, parent)
         for _, r in ipairs(pool) do
             if r.frame:IsShown() and r.frame.specID then
                 if selectedSpecIDs[r.frame.specID] then
-                    r.selHighlight:SetColorTexture(0.69, 0.28, 0.97, 0.18)
+                    r.selHighlight:SetColorTexture(0.56, 0.89, 0.42, 0.14)
                     r.selHighlight:Show()
                 else
                     r.selHighlight:Hide()
@@ -1078,8 +1117,12 @@ local function DoLayout()
     -- Item scroll frame
     itemScrollFrame:ClearAllPoints()
     itemScrollFrame:SetPoint("TOPLEFT", contentArea, "TOPLEFT", PADDING, -(COL_HEADER_H + 8))
-    itemScrollFrame:SetPoint("BOTTOMLEFT", contentArea, "BOTTOMLEFT", PADDING, 4)
+    itemScrollFrame:SetPoint("BOTTOMLEFT", contentArea, "BOTTOMLEFT", PADDING, MARK_BAR_H + 10)
     itemScrollFrame:SetWidth(leftW - PADDING)
+
+    markModeBtn:ClearAllPoints()
+    markModeBtn:SetPoint("BOTTOMLEFT", contentArea, "BOTTOMLEFT", PADDING, 6)
+    markModeBtn:SetWidth(leftW - PADDING)
 
     itemScrollChild:SetWidth(leftW - PADDING)
 
@@ -1170,8 +1213,8 @@ function Panel.ClearContext()
     lootSpecLabel:SetText("")
     _currentVoidcacheID = nil
     voidcacheIconBtn:Hide()
-    lootColHeader:SetText("|cffb048f8" .. L["COL_LOOT"] .. "|r")
-    specColHeader:SetText("|cffb048f8" .. L["COL_SPEC_RANKING"] .. "|r")
+    lootColHeader:SetText("|cff9fe08a" .. L["COL_LOOT"] .. "|r")
+    specColHeader:SetText("|cff9fe08a" .. L["COL_SPEC_RANKING"] .. "|r")
     clearSpecBtn:Hide()
     clearItemBtn:Hide()
     markModeBtn:Hide()
@@ -1251,7 +1294,7 @@ end
 VCA.Detection.SetOnItemDetectedCallback(function(itemID, source)
     -- Chat message
     local itemName = C_Item.GetItemNameByID(itemID) or tostring(itemID)
-    print("|cffb048f8VoidcoreAdvisor Reborn:|r " .. string.format(L["DETECTED_OBTAINED"], "|cnIQ4:" .. itemName .. "|r"))
+    print("|cff9fe08aVoidcoreAdvisor Reborn:|r " .. string.format(L["DETECTED_OBTAINED"], "|cnIQ4:" .. itemName .. "|r"))
 
     -- Remove from saved selections now that it's obtained.
     VCA.Data.RemoveSelectedItem(source.sourceType, source.sourceID, source.difficultyID, itemID)

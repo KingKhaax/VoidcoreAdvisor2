@@ -7,7 +7,7 @@ local L = VCA.L
 
 -- ── Panel UI ──────────────────────────────────────────────────────────────────
 
-L["PANEL_TITLE"] = "|cffb048f8공허핵|r|cffdddddd도우미|r"
+L["PANEL_TITLE"] = "|cff9fe08a공허핵|r|cffdddddd도우미|r"
 
 L["COL_LOOT"] = "전리품"
 L["COL_SPEC_RANKING"] = "전문화 순위"
@@ -59,7 +59,7 @@ L["TOGGLE_OVERVIEW_HIDE"] = "클릭하여 던전 개요를 숨깁니다."
 
 -- ── 알림 팝업 (Reminder.lua) ──────────────────────────────────────────────────
 
-L["REMINDER_TITLE"] = "|cffb048f8공허핵|r|cffdddddd도우미|r"
+L["REMINDER_TITLE"] = "|cff9fe08a공허핵|r|cffdddddd도우미|r"
 L["REMINDER_SUBTITLE"] = "성운의 공허핵 보상을 위해 전리품 전문화를 최적화하세요!"
 L["REMINDER_VOIDCORE_COUNT"] = "성운의 공허핵이 |cffffff00%d|r개 있습니다"
 L["REMINDER_CURRENT_SPEC"] = "현재 전리품 전문화:"
@@ -81,7 +81,7 @@ L["SPEC_LIST_ALL_OBTAINED"] = "모두 획득"
 
 -- ── 공허 풀 초기화 경고 팝업 (Reminder.lua) ──────────────────────────────────
 
-L["WARNING_TITLE"] = "|cffb048f8공허핵|r|cffdddddd도우미|r"
+L["WARNING_TITLE"] = "|cff9fe08a공허핵|r|cffdddddd도우미|r"
 L["WARNING_SUBTITLE"] = "전리품 풀 초기화 위험"
 L["WARNING_VOIDCORE_COUNT"] = "성운의 공허핵 |cffffff00%d|r개 보유 중"
 L["WARNING_FAVORED_SPEC"] = "현재 선호 전리품 전문화를 사용 중입니다:"

@@ -7,7 +7,7 @@ local L = VCA.L
 
 -- ── Panel UI ──────────────────────────────────────────────────────────────────
 
-L["PANEL_TITLE"] = "|cffb048f8虛無核心|r|cffdddddd助手|r"
+L["PANEL_TITLE"] = "|cff9fe08a虛無核心|r|cffdddddd助手|r"
 
 L["COL_LOOT"] = "拾取"
 L["COL_SPEC_RANKING"] = "專精排名"
@@ -58,7 +58,7 @@ L["TOGGLE_OVERVIEW_HIDE"] = "點擊隱藏地城概覽。"
 
 -- ── 提醒彈窗（Reminder.lua）──────────────────────────────────────────────────
 
-L["REMINDER_TITLE"] = "|cffb048f8虛無核心|r|cffdddddd助手|r"
+L["REMINDER_TITLE"] = "|cff9fe08a虛無核心|r|cffdddddd助手|r"
 L["REMINDER_SUBTITLE"] = "優化您的拾取專精以獲得星雲虛無核心獎勵！"
 L["REMINDER_VOIDCORE_COUNT"] = "您有 |cffffff00%d|r 個星雲虛無核心"
 L["REMINDER_CURRENT_SPEC"] = "目前拾取專精："
@@ -80,7 +80,7 @@ L["SPEC_LIST_ALL_OBTAINED"] = "全部已獲得"
 
 -- ── 戰利品池重置警告彈窗（Reminder.lua）─────────────────────────────────────
 
-L["WARNING_TITLE"] = "|cffb048f8虛無核心|r|cffdddddd助手|r"
+L["WARNING_TITLE"] = "|cff9fe08a虛無核心|r|cffdddddd助手|r"
 L["WARNING_SUBTITLE"] = "戰利品池重置風險"
 L["WARNING_VOIDCORE_COUNT"] = "你有 |cffffff00%d|r 個星雲虛無核心"
 L["WARNING_FAVORED_SPEC"] = "你正在使用首選拾取專精："

@@ -56,8 +56,8 @@ frame:SetBackdrop({
         bottom = 11
     }
 })
-frame:SetBackdropColor(0.05, 0.02, 0.12, 0.95)
-frame:SetBackdropBorderColor(0.58, 0.0, 0.82, 1)
+frame:SetBackdropColor(0.063, 0.125, 0.086, 0.95)
+frame:SetBackdropBorderColor(0.30, 0.54, 0.35, 1)
 
 function Overview.AnchorToEJ()
     local ej = EncounterJournal
@@ -202,7 +202,7 @@ local function SetLoadingState(isLoading, pausedByEJ)
 end
 
 local divider = frame:CreateTexture(nil, "ARTWORK")
-divider:SetColorTexture(0.58, 0.0, 0.82, 0.4)
+divider:SetColorTexture(0.30, 0.54, 0.35, 0.4)
 divider:SetPoint("TOPLEFT", frame, "TOPLEFT", 16, -HEADER_H)
 divider:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -16, -HEADER_H)
 divider:SetHeight(1)
@@ -213,25 +213,25 @@ contentArea:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", 0, 11)
 
 local hdrBoss = contentArea:CreateFontString(nil, "OVERLAY", "GameFontNormal")
 hdrBoss:SetPoint("TOPLEFT", contentArea, "TOPLEFT", PADDING + COL_BOSS_X, -6)
-hdrBoss:SetText("|cffb048f8" .. L["RAID_OVERVIEW_COL_BOSS"] .. "|r")
+hdrBoss:SetText("|cff9fe08a" .. L["RAID_OVERVIEW_COL_BOSS"] .. "|r")
 
 local hdrSpec = contentArea:CreateFontString(nil, "OVERLAY", "GameFontNormal")
 hdrSpec:SetPoint("TOPLEFT", contentArea, "TOPLEFT", PADDING + COL_SPEC_NAME_X, -6)
-hdrSpec:SetText("|cffb048f8" .. L["DUNGEON_OVERVIEW_COL_SPEC"] .. "|r")
+hdrSpec:SetText("|cff9fe08a" .. L["DUNGEON_OVERVIEW_COL_SPEC"] .. "|r")
 
 local hdrLooted = contentArea:CreateFontString(nil, "OVERLAY", "GameFontNormal")
 hdrLooted:SetJustifyH("RIGHT")
 hdrLooted:SetWidth(COL_LOOTED_W)
 hdrLooted:SetWordWrap(false)
 hdrLooted:SetPoint("TOPRIGHT", contentArea, "TOPRIGHT", -PADDING + COL_LOOTED_R, -6)
-hdrLooted:SetText("|cffb048f8" .. L["DUNGEON_OVERVIEW_COL_LOOTED"] .. "|r")
+hdrLooted:SetText("|cff9fe08a" .. L["DUNGEON_OVERVIEW_COL_LOOTED"] .. "|r")
 
 local hdrChance = contentArea:CreateFontString(nil, "OVERLAY", "GameFontNormal")
 hdrChance:SetJustifyH("RIGHT")
 hdrChance:SetWidth(COL_PCT_W)
 hdrChance:SetWordWrap(false)
 hdrChance:SetPoint("TOPRIGHT", contentArea, "TOPRIGHT", -PADDING + COL_PCT_R, -6)
-hdrChance:SetText("|cffb048f8" .. L["DUNGEON_OVERVIEW_COL_CHANCE"] .. "|r")
+hdrChance:SetText("|cff9fe08a" .. L["DUNGEON_OVERVIEW_COL_CHANCE"] .. "|r")
 
 local colHeaderRule = contentArea:CreateTexture(nil, "ARTWORK")
 colHeaderRule:SetColorTexture(0.4, 0.4, 0.4, 0.3)
@@ -282,7 +282,7 @@ local function GetOrCreateRow(parent)
 
     local hoverHighlight = rowFrame:CreateTexture(nil, "HIGHLIGHT")
     hoverHighlight:SetAllPoints(rowFrame)
-    hoverHighlight:SetColorTexture(0.58, 0.0, 0.82, 0.12)
+    hoverHighlight:SetColorTexture(0.56, 0.89, 0.42, 0.12)
 
     local row = {
         frame = rowFrame,

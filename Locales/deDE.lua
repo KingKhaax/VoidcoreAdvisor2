@@ -7,7 +7,7 @@ local L = VCA.L
 
 -- ── Panel UI ──────────────────────────────────────────────────────────────────
 
-L["PANEL_TITLE"] = "|cffb048f8Voidcore|r|cffddddddBerater|r"
+L["PANEL_TITLE"] = "|cff8fe36bVoidcore|r|cffffffffBerater|r"
 
 L["COL_LOOT"] = "BEUTE"
 L["COL_SPEC_RANKING"] = "SPEZ.-RANKING"
@@ -58,7 +58,7 @@ L["TOGGLE_OVERVIEW_HIDE"] = "Klicken, um die Dungeon-Übersicht zu verbergen."
 
 -- ── Erinnerungs-Popup (Reminder.lua) ─────────────────────────────────────────
 
-L["REMINDER_TITLE"] = "|cffb048f8Voidcore|r|cffddddddBerater|r"
+L["REMINDER_TITLE"] = "|cff8fe36bVoidcore|r|cffffffffBerater|r"
 L["REMINDER_SUBTITLE"] = "Optimiere deine Beutespezialisierung für Nebulöse Leerenkerne!"
 L["REMINDER_VOIDCORE_COUNT"] = "Du hast |cffffff00%d|r Nebulösen Leerenkern(e)"
 L["REMINDER_CURRENT_SPEC"] = "Aktuelle Beutespezialisierung:"
@@ -80,7 +80,7 @@ L["SPEC_LIST_ALL_OBTAINED"] = "alle erhalten"
 
 -- ── Voidcore-Pool-Reset-Warnungs-Popup (Reminder.lua) ────────────────────────
 
-L["WARNING_TITLE"] = "|cffb048f8Voidcore|r|cffddddddBerater|r"
+L["WARNING_TITLE"] = "|cff8fe36bVoidcore|r|cffffffffBerater|r"
 L["WARNING_SUBTITLE"] = "Risiko: Beutepool-Rücksetzung"
 L["WARNING_VOIDCORE_COUNT"] = "Du hast |cffffff00%d|r Nebulösen Leerenkern(e)"
 L["WARNING_FAVORED_SPEC"] = "Du verwendest die bevorzugte Beutespezialisierung:"

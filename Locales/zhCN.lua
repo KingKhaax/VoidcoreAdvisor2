@@ -7,7 +7,7 @@ local L = VCA.L
 
 -- ── Panel UI ──────────────────────────────────────────────────────────────────
 
-L["PANEL_TITLE"] = "|cffb048f8虚空核心|r|cffdddddd助手|r"
+L["PANEL_TITLE"] = "|cff9fe08a虚空核心|r|cffdddddd助手|r"
 
 L["COL_LOOT"] = "拾取"
 L["COL_SPEC_RANKING"] = "专精排名"
@@ -58,7 +58,7 @@ L["TOGGLE_OVERVIEW_HIDE"] = "点击隐藏地下城概览。"
 
 -- ── 提醒弹窗（Reminder.lua）──────────────────────────────────────────────────
 
-L["REMINDER_TITLE"] = "|cffb048f8虚空核心|r|cffdddddd助手|r"
+L["REMINDER_TITLE"] = "|cff9fe08a虚空核心|r|cffdddddd助手|r"
 L["REMINDER_SUBTITLE"] = "优化你的拾取专精以获得星云虚空核心奖励！"
 L["REMINDER_VOIDCORE_COUNT"] = "你有 |cffffff00%d|r 个星云虚空核心"
 L["REMINDER_CURRENT_SPEC"] = "当前拾取专精："
@@ -80,7 +80,7 @@ L["SPEC_LIST_ALL_OBTAINED"] = "全部已获得"
 
 -- ── 战利品池重置警告弹窗（Reminder.lua）─────────────────────────────────────
 
-L["WARNING_TITLE"] = "|cffb048f8虚空核心|r|cffdddddd助手|r"
+L["WARNING_TITLE"] = "|cff9fe08a虚空核心|r|cffdddddd助手|r"
 L["WARNING_SUBTITLE"] = "战利品池重置风险"
 L["WARNING_VOIDCORE_COUNT"] = "你有 |cffffff00%d|r 个星云虚空核心"
 L["WARNING_FAVORED_SPEC"] = "你正在使用首选拾取专精："

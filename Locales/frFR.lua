@@ -40,12 +40,12 @@ L["SOURCE_FORMAT"] = "Source active — type : %s  IDsource : %s  difficulté : 
 L["NO_ACTIVE_SOURCE"] = "Aucune source active définie."
 L["VERSION_FORMAT"] = "Version %s"
 L["HELP_HEADER"] = "Commandes :"
-L["HELP_RESET"] = "  /vca2 reset    – réinitialiser les données d'objets obtenus"
-L["HELP_COUNT"] = "  /vca2 count    – afficher le nombre total d'objets obtenus"
-L["HELP_SPEC"] = "  /vca2 spec     – afficher l'ID de spécialisation de butin"
-L["HELP_SOURCE"] = "  /vca2 source   – afficher la source de détection active"
-L["HELP_VERSION"] = "  /vca2 version  – afficher la version de l'addon"
-L["HELP_RESTORE"] = "  /vca2 restore  – restaurer les données de butin depuis la sauvegarde"
+L["HELP_RESET"] = "  /void reset    – réinitialiser les données d'objets obtenus"
+L["HELP_COUNT"] = "  /void count    – afficher le nombre total d'objets obtenus"
+L["HELP_SPEC"] = "  /void spec     – afficher l'ID de spécialisation de butin"
+L["HELP_SOURCE"] = "  /void source   – afficher la source de détection active"
+L["HELP_VERSION"] = "  /void version  – afficher la version de l'addon"
+L["HELP_RESTORE"] = "  /void restore  – restaurer les données de butin depuis la sauvegarde"
 
 -- ── Panel UI (ajouts) ─────────────────────────────────────────────────────────
 
@@ -163,7 +163,7 @@ L["RAID_SCAN_CONFIRM_BODY"] =
 
 -- ── Commandes slash (ajouts) ──────────────────────────────────────────────────
 
-L["HELP_REPLAYLOG"] = "  /vca2 replaylog – réappliquer toutes les entrées du journal de jets comme obtenues"
+L["HELP_REPLAYLOG"] = "  /void replaylog – réappliquer toutes les entrées du journal de jets comme obtenues"
 L["RESTORE_COMPLETE"] = "%d objet(s) restauré(s) depuis la sauvegarde."
 L["RESTORE_NO_BACKUP"] = "Aucune sauvegarde disponible. Effectuez d'abord un scan."
 L["RESTORE_FAILED"] = "La restauration a échoué."

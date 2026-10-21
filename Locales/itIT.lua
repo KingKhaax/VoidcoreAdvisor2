@@ -40,12 +40,12 @@ L["SOURCE_FORMAT"] = "Fonte attiva — tipo: %s  IDfonte: %s  difficoltà: %s"
 L["NO_ACTIVE_SOURCE"] = "Nessuna fonte attiva impostata."
 L["VERSION_FORMAT"] = "Versione %s"
 L["HELP_HEADER"] = "Comandi:"
-L["HELP_RESET"] = "  /vca2 reset    – reimposta dati degli oggetti ottenuti"
-L["HELP_COUNT"] = "  /vca2 count    – mostra il totale degli oggetti ottenuti"
-L["HELP_SPEC"] = "  /vca2 spec     – mostra l'ID della specializzazione bottino"
-L["HELP_SOURCE"] = "  /vca2 source   – mostra la fonte di rilevamento attiva"
-L["HELP_VERSION"] = "  /vca2 version  – mostra la versione dell'addon"
-L["HELP_RESTORE"] = "  /vca2 restore  – ripristina i dati del bottino dal backup pre-scansione"
+L["HELP_RESET"] = "  /void reset    – reimposta dati degli oggetti ottenuti"
+L["HELP_COUNT"] = "  /void count    – mostra il totale degli oggetti ottenuti"
+L["HELP_SPEC"] = "  /void spec     – mostra l'ID della specializzazione bottino"
+L["HELP_SOURCE"] = "  /void source   – mostra la fonte di rilevamento attiva"
+L["HELP_VERSION"] = "  /void version  – mostra la versione dell'addon"
+L["HELP_RESTORE"] = "  /void restore  – ripristina i dati del bottino dal backup pre-scansione"
 
 -- ── Panel UI (aggiunte) ───────────────────────────────────────────────────────
 
@@ -163,7 +163,7 @@ L["RAID_SCAN_CONFIRM_BODY"] =
 
 -- ── Comandi slash (aggiunte) ──────────────────────────────────────────────────
 
-L["HELP_REPLAYLOG"] = "  /vca2 replaylog – riapplica tutte le voci del registro dei tiri come ottenute"
+L["HELP_REPLAYLOG"] = "  /void replaylog – riapplica tutte le voci del registro dei tiri come ottenute"
 L["RESTORE_COMPLETE"] = "%d oggetto/i ripristinato/i dal backup."
 L["RESTORE_NO_BACKUP"] = "Nessun backup disponibile. Esegui prima una scansione."
 L["RESTORE_FAILED"] = "Ripristino fallito."

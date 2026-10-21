@@ -349,7 +349,7 @@ function Data.LogBonusRoll(itemID, itemLink, specID, source)
     end
 end
 
--- Records a manually-checked obtained entry in the roll log so /vca2 rolls
+-- Records a manually-checked obtained entry in the roll log so /void rolls
 -- reflects manual panel selections.  isHighTier mirrors the tier context of
 -- the checkbox that was ticked (nil for raids / non-tiered sources).
 function Data.LogManualObtained(itemID, specID, source, isHighTier, itemLink)

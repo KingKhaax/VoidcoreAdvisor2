@@ -40,12 +40,12 @@ L["SOURCE_FORMAT"] = "Aktive Quelle — Typ: %s  QuellenID: %s  Schwierigkeit: %
 L["NO_ACTIVE_SOURCE"] = "Keine aktive Quelle gesetzt."
 L["VERSION_FORMAT"] = "Version %s"
 L["HELP_HEADER"] = "Befehle:"
-L["HELP_RESET"] = "  /vca2 reset    – alle erhaltenen Gegenstände zurücksetzen"
-L["HELP_COUNT"] = "  /vca2 count    – Gesamtzahl erhaltener Gegenstände anzeigen"
-L["HELP_SPEC"] = "  /vca2 spec     – aktive Beutespezialisierungs-ID anzeigen"
-L["HELP_SOURCE"] = "  /vca2 source   – aktive Erkennungsquelle anzeigen"
-L["HELP_VERSION"] = "  /vca2 version  – Addon-Version anzeigen"
-L["HELP_RESTORE"] = "  /vca2 restore  – Beutedaten aus Scan-Backup wiederherstellen"
+L["HELP_RESET"] = "  /void reset    – alle erhaltenen Gegenstände zurücksetzen"
+L["HELP_COUNT"] = "  /void count    – Gesamtzahl erhaltener Gegenstände anzeigen"
+L["HELP_SPEC"] = "  /void spec     – aktive Beutespezialisierungs-ID anzeigen"
+L["HELP_SOURCE"] = "  /void source   – aktive Erkennungsquelle anzeigen"
+L["HELP_VERSION"] = "  /void version  – Addon-Version anzeigen"
+L["HELP_RESTORE"] = "  /void restore  – Beutedaten aus Scan-Backup wiederherstellen"
 
 -- ── Panel UI (Ergänzungen) ────────────────────────────────────────────────────
 
@@ -163,7 +163,7 @@ L["RAID_SCAN_CONFIRM_BODY"] =
 
 -- ── Slash-Befehle (Ergänzungen) ───────────────────────────────────────────────
 
-L["HELP_REPLAYLOG"] = "  /vca2 replaylog – alle Roll-Protokolleinträge erneut als erhalten anwenden"
+L["HELP_REPLAYLOG"] = "  /void replaylog – alle Roll-Protokolleinträge erneut als erhalten anwenden"
 L["RESTORE_COMPLETE"] = "%d Gegenstand/Gegenstände aus Backup wiederhergestellt."
 L["RESTORE_NO_BACKUP"] = "Kein Backup verfügbar. Führe zuerst einen Scan durch."
 L["RESTORE_FAILED"] = "Wiederherstellung fehlgeschlagen."

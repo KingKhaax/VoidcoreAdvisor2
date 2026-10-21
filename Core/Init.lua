@@ -182,7 +182,7 @@ end
 
 -- ── Slash commands ────────────────────────────────────────────────────────────
 
-SLASH_VOIDCOREADVISOR1 = "/vca2"
+SLASH_VOIDCOREADVISOR1 = "/void"
 SLASH_VOIDCOREADVISOR2 = "/voidcoreadvisor2"
 
 SlashCmdList["VOIDCOREADVISOR"] = function(msg)

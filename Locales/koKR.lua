@@ -41,12 +41,12 @@ L["SOURCE_FORMAT"] = "활성 출처 — 유형: %s  출처ID: %s  난이도: %s"
 L["NO_ACTIVE_SOURCE"] = "활성 출처가 설정되지 않았습니다."
 L["VERSION_FORMAT"] = "버전 %s"
 L["HELP_HEADER"] = "명령어:"
-L["HELP_RESET"] = "  /vca2 reset    – 획득 아이템 데이터 초기화"
-L["HELP_COUNT"] = "  /vca2 count    – 획득한 아이템 총 수 표시"
-L["HELP_SPEC"] = "  /vca2 spec     – 전리품 전문화 ID 표시"
-L["HELP_SOURCE"] = "  /vca2 source   – 활성 감지 출처 표시"
-L["HELP_VERSION"] = "  /vca2 version  – 애드온 버전 표시"
-L["HELP_RESTORE"] = "  /vca2 restore  – 스캔 이전 백업에서 획득 데이터 복원"
+L["HELP_RESET"] = "  /void reset    – 획득 아이템 데이터 초기화"
+L["HELP_COUNT"] = "  /void count    – 획득한 아이템 총 수 표시"
+L["HELP_SPEC"] = "  /void spec     – 전리품 전문화 ID 표시"
+L["HELP_SOURCE"] = "  /void source   – 활성 감지 출처 표시"
+L["HELP_VERSION"] = "  /void version  – 애드온 버전 표시"
+L["HELP_RESTORE"] = "  /void restore  – 스캔 이전 백업에서 획득 데이터 복원"
 
 -- ── 패널 UI (추가) ────────────────────────────────────────────────────────────
 
@@ -164,7 +164,7 @@ L["RAID_SCAN_CONFIRM_BODY"] =
 
 -- ── 슬래시 명령어 (추가) ──────────────────────────────────────────────────────
 
-L["HELP_REPLAYLOG"] = "  /vca2 replaylog – 모든 주사위 기록 항목을 다시 획득으로 적용"
+L["HELP_REPLAYLOG"] = "  /void replaylog – 모든 주사위 기록 항목을 다시 획득으로 적용"
 L["RESTORE_COMPLETE"] = "백업에서 %d개 아이템이 복원되었습니다."
 L["RESTORE_NO_BACKUP"] = "사용 가능한 백업이 없습니다. 먼저 스캔을 실행하세요."
 L["RESTORE_FAILED"] = "복원에 실패했습니다."

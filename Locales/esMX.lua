@@ -40,12 +40,12 @@ L["SOURCE_FORMAT"] = "Fuente activa — tipo: %s  IDfuente: %s  dificultad: %s"
 L["NO_ACTIVE_SOURCE"] = "No hay ninguna fuente activa."
 L["VERSION_FORMAT"] = "Versión %s"
 L["HELP_HEADER"] = "Comandos:"
-L["HELP_RESET"] = "  /vca2 reset    – restablecer todos los datos de objetos obtenidos"
-L["HELP_COUNT"] = "  /vca2 count    – mostrar total de objetos marcados como obtenidos"
-L["HELP_SPEC"] = "  /vca2 spec     – mostrar ID de especialización de botín activa"
-L["HELP_SOURCE"] = "  /vca2 source   – mostrar fuente de detección activa"
-L["HELP_VERSION"] = "  /vca2 version  – mostrar versión del addon"
-L["HELP_RESTORE"] = "  /vca2 restore  – restaurar datos de botín del respaldo pre-escaneo"
+L["HELP_RESET"] = "  /void reset    – restablecer todos los datos de objetos obtenidos"
+L["HELP_COUNT"] = "  /void count    – mostrar total de objetos marcados como obtenidos"
+L["HELP_SPEC"] = "  /void spec     – mostrar ID de especialización de botín activa"
+L["HELP_SOURCE"] = "  /void source   – mostrar fuente de detección activa"
+L["HELP_VERSION"] = "  /void version  – mostrar versión del addon"
+L["HELP_RESTORE"] = "  /void restore  – restaurar datos de botín del respaldo pre-escaneo"
 
 -- ── Panel UI (adiciones) ──────────────────────────────────────────────────────
 
@@ -164,7 +164,7 @@ L["RAID_SCAN_CONFIRM_BODY"] =
 
 -- ── Comandos slash (adiciones) ────────────────────────────────────────────────
 
-L["HELP_REPLAYLOG"] = "  /vca2 replaylog – reaplicar todas las entradas del registro de tiradas como obtenidas"
+L["HELP_REPLAYLOG"] = "  /void replaylog – reaplicar todas las entradas del registro de tiradas como obtenidas"
 L["RESTORE_COMPLETE"] = "%d objeto(s) restaurado(s) desde el respaldo."
 L["RESTORE_NO_BACKUP"] = "No hay respaldo disponible. Realiza un escaneo primero."
 L["RESTORE_FAILED"] = "La restauración falló."

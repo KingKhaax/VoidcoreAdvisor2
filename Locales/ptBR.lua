@@ -40,12 +40,12 @@ L["SOURCE_FORMAT"] = "Fonte ativa — tipo: %s  IDfonte: %s  dificuldade: %s"
 L["NO_ACTIVE_SOURCE"] = "Nenhuma fonte ativa definida."
 L["VERSION_FORMAT"] = "Versão %s"
 L["HELP_HEADER"] = "Comandos:"
-L["HELP_RESET"] = "  /vca2 reset    – redefinir dados de itens obtidos"
-L["HELP_COUNT"] = "  /vca2 count    – mostrar total de itens marcados como obtidos"
-L["HELP_SPEC"] = "  /vca2 spec     – mostrar ID de especialização de saque"
-L["HELP_SOURCE"] = "  /vca2 source   – mostrar fonte de detecção ativa"
-L["HELP_VERSION"] = "  /vca2 version  – mostrar versão do addon"
-L["HELP_RESTORE"] = "  /vca2 restore  – restaurar dados de saque do backup pré-varredura"
+L["HELP_RESET"] = "  /void reset    – redefinir dados de itens obtidos"
+L["HELP_COUNT"] = "  /void count    – mostrar total de itens marcados como obtidos"
+L["HELP_SPEC"] = "  /void spec     – mostrar ID de especialização de saque"
+L["HELP_SOURCE"] = "  /void source   – mostrar fonte de detecção ativa"
+L["HELP_VERSION"] = "  /void version  – mostrar versão do addon"
+L["HELP_RESTORE"] = "  /void restore  – restaurar dados de saque do backup pré-varredura"
 
 -- ── Panel UI (adições) ────────────────────────────────────────────────────────
 
@@ -163,7 +163,7 @@ L["RAID_SCAN_CONFIRM_BODY"] =
 
 -- ── Comandos slash (adições) ──────────────────────────────────────────────────
 
-L["HELP_REPLAYLOG"] = "  /vca2 replaylog – reaplicar todas as entradas do registro de rolagens como obtidas"
+L["HELP_REPLAYLOG"] = "  /void replaylog – reaplicar todas as entradas do registro de rolagens como obtidas"
 L["RESTORE_COMPLETE"] = "%d item(ns) restaurado(s) do backup."
 L["RESTORE_NO_BACKUP"] = "Nenhum backup disponível. Execute um escaneamento primeiro."
 L["RESTORE_FAILED"] = "A restauração falhou."

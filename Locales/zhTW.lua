@@ -40,12 +40,12 @@ L["SOURCE_FORMAT"] = "目前來源 - 類型：%s  來源ID：%s  難度：%s"
 L["NO_ACTIVE_SOURCE"] = "未設定活動來源。"
 L["VERSION_FORMAT"] = "版本 %s"
 L["HELP_HEADER"] = "指令："
-L["HELP_RESET"] = "  /vca2 reset    – 重設所有已取得物品資料"
-L["HELP_COUNT"] = "  /vca2 count    – 顯示已取得物品總數"
-L["HELP_SPEC"] = "  /vca2 spec     – 顯示拾取專精 ID"
-L["HELP_SOURCE"] = "  /vca2 source   – 顯示目前偵測來源"
-L["HELP_VERSION"] = "  /vca2 version  – 顯示插件版本"
-L["HELP_RESTORE"] = "  /vca2 restore  – 從掃描前備份還原已獲得資料"
+L["HELP_RESET"] = "  /void reset    – 重設所有已取得物品資料"
+L["HELP_COUNT"] = "  /void count    – 顯示已取得物品總數"
+L["HELP_SPEC"] = "  /void spec     – 顯示拾取專精 ID"
+L["HELP_SOURCE"] = "  /void source   – 顯示目前偵測來源"
+L["HELP_VERSION"] = "  /void version  – 顯示插件版本"
+L["HELP_RESTORE"] = "  /void restore  – 從掃描前備份還原已獲得資料"
 
 -- ── 面板 UI（補充）────────────────────────────────────────────────────────────
 
@@ -163,7 +163,7 @@ L["RAID_SCAN_CONFIRM_BODY"] =
 
 -- ── 斜線指令（補充）──────────────────────────────────────────────────────────
 
-L["HELP_REPLAYLOG"] = "  /vca2 replaylog – 重新將所有擲骰記錄條目標記為已取得"
+L["HELP_REPLAYLOG"] = "  /void replaylog – 重新將所有擲骰記錄條目標記為已取得"
 L["RESTORE_COMPLETE"] = "已從備份還原 %d 件物品。"
 L["RESTORE_NO_BACKUP"] = "沒有可用備份。請先執行掃描。"
 L["RESTORE_FAILED"] = "還原失敗。"

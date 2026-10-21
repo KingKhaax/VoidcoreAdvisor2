@@ -235,7 +235,7 @@ local function TryScan(attempt, verbose)
     end
 end
 
--- /vca2 liveraid: force a scan and report what happened.
+-- /void liveraid: force a scan and report what happened.
 function LiveRaid.Run(verbose)
     TryScan(1, verbose)
 end

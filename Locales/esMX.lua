@@ -1,8 +1,8 @@
 -- VoidcoreAdvisor: Locale – Spanish (Mexico)
-if GetLocale() ~= "esMX" then
+local _, VCA = ...
+if (VCA.ForcedLocale or GetLocale()) ~= "esMX" then
     return
 end
-local _, VCA = ...
 local L = VCA.L
 
 -- ── Panel UI ──────────────────────────────────────────────────────────────────

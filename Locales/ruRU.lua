@@ -1,8 +1,8 @@
 -- VoidcoreAdvisor: Locale – Russian
-if GetLocale() ~= "ruRU" then
+local _, VCA = ...
+if (VCA.ForcedLocale or GetLocale()) ~= "ruRU" then
     return
 end
-local _, VCA = ...
 local L = VCA.L
 
 -- ── Panel UI ──────────────────────────────────────────────────────────────────

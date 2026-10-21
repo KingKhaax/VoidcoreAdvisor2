@@ -1,8 +1,8 @@
 -- VoidcoreAdvisor: Locale – Chinese (Simplified)
-if GetLocale() ~= "zhCN" then
+local _, VCA = ...
+if (VCA.ForcedLocale or GetLocale()) ~= "zhCN" then
     return
 end
-local _, VCA = ...
 local L = VCA.L
 
 -- ── Panel UI ──────────────────────────────────────────────────────────────────

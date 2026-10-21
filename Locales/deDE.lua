@@ -1,8 +1,8 @@
 -- VoidcoreAdvisor: Locale – German
-if GetLocale() ~= "deDE" then
+local _, VCA = ...
+if (VCA.ForcedLocale or GetLocale()) ~= "deDE" then
     return
 end
-local _, VCA = ...
 local L = VCA.L
 
 -- ── Panel UI ──────────────────────────────────────────────────────────────────

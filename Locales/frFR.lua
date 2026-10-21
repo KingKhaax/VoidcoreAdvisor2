@@ -1,8 +1,8 @@
 -- VoidcoreAdvisor: Locale – French
-if GetLocale() ~= "frFR" then
+local _, VCA = ...
+if (VCA.ForcedLocale or GetLocale()) ~= "frFR" then
     return
 end
-local _, VCA = ...
 local L = VCA.L
 
 -- ── Panel UI ──────────────────────────────────────────────────────────────────

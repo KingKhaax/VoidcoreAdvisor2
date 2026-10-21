@@ -62,8 +62,8 @@ frame:SetBackdrop({
         bottom = 1
     }
 })
-frame:SetBackdropColor(0.063, 0.125, 0.086, 0.97) -- dark venom green glass
-frame:SetBackdropBorderColor(0.30, 0.54, 0.35, 1)
+VCA.OnTheme(function() local t = VCA.Theme.bg; frame:SetBackdropColor(t[1], t[2], t[3], 0.97) end) -- dark venom green glass
+VCA.OnTheme(function() local t = VCA.Theme.border; frame:SetBackdropBorderColor(t[1], t[2], t[3], 1) end)
 
 -- Gold corner brackets (top-left and bottom-right), like the stock frames.
 local function CornerBracket(point, dx, dy)
@@ -83,11 +83,47 @@ CornerBracket("BOTTOMRIGHT", 0, 0)
 
 -- Positions the panel flush against the right edge of EncounterJournal.
 -- Safe to call multiple times (ClearAllPoints before re-anchoring).
+local function GetPlacement()
+    local gdb = _G[VCA.GLOBAL_DB_NAME]
+    return gdb and gdb.panelPlacement
+end
+
+local function ApplyPlacement(p)
+    frame:ClearAllPoints()
+    frame:SetPoint("TOPLEFT", UIParent, "BOTTOMLEFT", p.x, p.y)
+    frame:SetSize(p.w, p.h)
+end
+
+-- Freezes the current position and size so the panel can be moved or resized freely.
+local function Freeze()
+    local x, y = frame:GetLeft(), frame:GetTop()
+    if not (x and y) then
+        return nil
+    end
+    local p = {x = x, y = y, w = frame:GetWidth(), h = frame:GetHeight()}
+    ApplyPlacement(p)
+    return p
+end
+
+local function SavePlacement()
+    local gdb = _G[VCA.GLOBAL_DB_NAME]
+    local x, y = frame:GetLeft(), frame:GetTop()
+    if gdb and x and y then
+        gdb.panelPlacement = {x = x, y = y, w = frame:GetWidth(), h = frame:GetHeight()}
+    end
+end
+
 function Panel.AnchorToEJ()
     local ej = EncounterJournal
     if not ej then
         return
     end
+    local placement = GetPlacement()
+    if placement then
+        ApplyPlacement(placement)
+        return
+    end
+    frame:SetWidth(PANEL_WIDTH)
     frame:ClearAllPoints()
     frame:SetPoint("TOPLEFT", ej, "TOPRIGHT", 52, 0)
     frame:SetPoint("BOTTOMLEFT", ej, "BOTTOMRIGHT", 52, 0)
@@ -98,7 +134,7 @@ end
 -- Title
 local titleText = frame:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
 titleText:SetPoint("TOPLEFT", 18, -16)
-titleText:SetText("|cff8fe36bVoidcore|r|cffffffffAdvisor|r")
+VCA.OnTheme(function() titleText:SetText(VCA.TitleText()) end)
 
 -- X close button (uses the standard Blizzard close button template)
 local closeBtn = CreateFrame("Button", nil, frame, "UIPanelCloseButton")
@@ -167,7 +203,7 @@ _s.RightColWidth = RightColWidth
 local lootColHeader = contentArea:CreateFontString(nil, "OVERLAY", "GameFontNormal")
 lootColHeader:SetPoint("TOPLEFT", contentArea, "TOPLEFT", PADDING, -6)
 lootColHeader:SetJustifyH("LEFT")
-lootColHeader:SetText("|cff9fe08aLOOT|r")
+VCA.OnTheme(function() lootColHeader:SetText(VCA.Theme.hdr .. "LOOT|r") end)
 
 -- X button to clear all spec selections (near the center divider in loot column header)
 local clearSpecBtn = CreateFrame("Button", nil, contentArea)
@@ -239,8 +275,8 @@ keyLevelMenu:SetBackdrop({
         bottom = 3
     }
 })
-keyLevelMenu:SetBackdropColor(0.063, 0.125, 0.086, 0.97)
-keyLevelMenu:SetBackdropBorderColor(0.30, 0.54, 0.35, 1)
+VCA.OnTheme(function() local t = VCA.Theme.bg; keyLevelMenu:SetBackdropColor(t[1], t[2], t[3], 0.97) end)
+VCA.OnTheme(function() local t = VCA.Theme.border; keyLevelMenu:SetBackdropBorderColor(t[1], t[2], t[3], 1) end)
 keyLevelMenu:Hide()
 
 local keyLevelOptions = {2, 3, 4, 5, 6, 7, 8, 9, 10}
@@ -257,7 +293,7 @@ for i, level in ipairs(keyLevelOptions) do
 
     local highlight = btn:CreateTexture(nil, "HIGHLIGHT")
     highlight:SetAllPoints(btn)
-    highlight:SetColorTexture(0.56, 0.89, 0.42, 0.25)
+    highlight:SetColorTexture(VCA.Theme.accent[1], VCA.Theme.accent[2], VCA.Theme.accent[3], 0.25)
 
     btn:SetScript("OnClick", function(self)
         selectedKeyLevel = self.level
@@ -308,7 +344,7 @@ end)
 
 local specColHeader = contentArea:CreateFontString(nil, "OVERLAY", "GameFontNormal")
 specColHeader:SetJustifyH("LEFT")
-specColHeader:SetText("|cff9fe08a" .. L["COL_SPEC_RANKING"] .. "|r")
+VCA.OnTheme(function() specColHeader:SetText(VCA.Theme.hdr .. "" .. L["COL_SPEC_RANKING"] .. "|r") end)
 
 -- X button to clear all item selections (near the center divider in spec column header)
 local clearItemBtn = CreateFrame("Button", nil, contentArea)
@@ -367,12 +403,14 @@ local function UpdateMarkModeButton()
 end
 markModeBtn:SetScript("OnClick", function()
     Panel.markMode = not Panel.markMode
+    Panel.lastMarkItemID = nil
     UpdateMarkModeButton()
 end)
 markModeBtn:SetScript("OnEnter", function(self)
     GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
     GameTooltip:SetText(L["MARK_MODE_BUTTON"], 1, 1, 1)
     GameTooltip:AddLine(L["MARK_MODE_TIP"], nil, nil, nil, true)
+    GameTooltip:AddLine(L["MARK_MODE_SHIFT_TIP"], 0.9, 0.8, 0.4, true)
     GameTooltip:Show()
 end)
 markModeBtn:SetScript("OnLeave", function()
@@ -830,9 +868,49 @@ local function GetOrCreateItemRow(pool, parent)
         if Panel.markMode then
             local cb = row.checkbox
             local toggle = cb:GetScript("OnClick")
-            if toggle and cb.itemID == id then
-                toggle(cb)
+            if not (toggle and cb.itemID == id) then
+                return
             end
+            local wantObtained = not cb.isObtained
+            local ids = {id}
+            if IsShiftKeyDown() and Panel.lastMarkItemID then
+                -- Shift+click marks every item between the previous click and this one.
+                local from, to
+                for i, r in ipairs(pool) do
+                    if r.frame:IsShown() then
+                        if r.frame.itemID == Panel.lastMarkItemID then
+                            from = i
+                        end
+                        if r == row then
+                            to = i
+                        end
+                    end
+                end
+                if from and to then
+                    ids = {}
+                    for i = math.min(from, to), math.max(from, to) do
+                        if pool[i].frame:IsShown() and pool[i].frame.itemID then
+                            ids[#ids + 1] = pool[i].frame.itemID
+                        end
+                    end
+                end
+            end
+            -- Each toggle refreshes (and may reorder) the rows, so look rows up by item ID.
+            for _, itemID in ipairs(ids) do
+                for _, r in ipairs(pool) do
+                    local rcb = r.checkbox
+                    if r.frame:IsShown() and rcb.itemID == itemID then
+                        if (rcb.isObtained and true or false) ~= wantObtained then
+                            local rtoggle = rcb:GetScript("OnClick")
+                            if rtoggle then
+                                rtoggle(rcb)
+                            end
+                        end
+                        break
+                    end
+                end
+            end
+            Panel.lastMarkItemID = id
             return
         end
         if self.dimmed then
@@ -879,7 +957,7 @@ local function GetOrCreateSpecRow(pool, parent)
     -- Selection highlight (purple tint when spec is selected)
     local selHighlight = rowFrame:CreateTexture(nil, "BACKGROUND")
     selHighlight:SetAllPoints(rowFrame)
-    selHighlight:SetColorTexture(0.56, 0.89, 0.42, 0)
+    selHighlight:SetColorTexture(VCA.Theme.accent[1], VCA.Theme.accent[2], VCA.Theme.accent[3], 0)
     selHighlight:Hide()
 
     local rowLine = rowFrame:CreateTexture(nil, "BORDER")
@@ -941,7 +1019,7 @@ local function GetOrCreateSpecRow(pool, parent)
         for _, r in ipairs(pool) do
             if r.frame:IsShown() and r.frame.specID then
                 if selectedSpecIDs[r.frame.specID] then
-                    r.selHighlight:SetColorTexture(0.56, 0.89, 0.42, 0.14)
+                    r.selHighlight:SetColorTexture(VCA.Theme.accent[1], VCA.Theme.accent[2], VCA.Theme.accent[3], 0.14)
                     r.selHighlight:Show()
                 else
                     r.selHighlight:Hide()
@@ -1135,6 +1213,66 @@ local function DoLayout()
     specScrollChild:SetWidth(rightW - PADDING)
 end
 
+-- ── Move and resize ───────────────────────────────────────────────────────────
+-- Drag the header to move the panel, drag the corner to resize it. The position
+-- and size are remembered; /void resetpanel puts it back next to the journal.
+
+frame:SetMovable(true)
+frame:SetResizable(true)
+if frame.SetResizeBounds then
+    frame:SetResizeBounds(480, 340, 900, 1000)
+end
+
+local dragHandle = CreateFrame("Frame", nil, frame)
+dragHandle:SetPoint("TOPLEFT", frame, "TOPLEFT", 0, 0)
+dragHandle:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -30, 0)
+dragHandle:SetHeight(HEADER_H)
+dragHandle:EnableMouse(true)
+dragHandle:RegisterForDrag("LeftButton")
+dragHandle:SetScript("OnDragStart", function()
+    Freeze()
+    frame:StartMoving()
+end)
+dragHandle:SetScript("OnDragStop", function()
+    frame:StopMovingOrSizing()
+    SavePlacement()
+end)
+
+local grip = CreateFrame("Button", nil, frame)
+grip:SetSize(16, 16)
+grip:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -2, 2)
+grip:SetFrameLevel(frame:GetFrameLevel() + 10)
+grip:SetNormalTexture("Interface\\ChatFrame\\UI-ChatIM-SizeGrabber-Up")
+grip:SetPushedTexture("Interface\\ChatFrame\\UI-ChatIM-SizeGrabber-Down")
+grip:SetHighlightTexture("Interface\\ChatFrame\\UI-ChatIM-SizeGrabber-Highlight")
+grip:SetScript("OnMouseDown", function()
+    if Freeze() then
+        frame:StartSizing("BOTTOMRIGHT")
+    end
+end)
+grip:SetScript("OnMouseUp", function()
+    frame:StopMovingOrSizing()
+    SavePlacement()
+    DoLayout()
+    Panel.Refresh()
+end)
+
+frame:SetScript("OnSizeChanged", function()
+    if frame:IsShown() then
+        DoLayout()
+    end
+end)
+
+function Panel.ResetPlacement()
+    local gdb = _G[VCA.GLOBAL_DB_NAME]
+    if gdb then
+        gdb.panelPlacement = nil
+    end
+    Panel.AnchorToEJ()
+    DoLayout()
+    Panel.Refresh()
+end
+
 -- ── Context update ────────────────────────────────────────────────────────────
 
 -- Persist the current item selection to the char DB.
@@ -1213,8 +1351,8 @@ function Panel.ClearContext()
     lootSpecLabel:SetText("")
     _currentVoidcacheID = nil
     voidcacheIconBtn:Hide()
-    lootColHeader:SetText("|cff9fe08a" .. L["COL_LOOT"] .. "|r")
-    specColHeader:SetText("|cff9fe08a" .. L["COL_SPEC_RANKING"] .. "|r")
+    lootColHeader:SetText(VCA.Theme.hdr .. "" .. L["COL_LOOT"] .. "|r")
+    specColHeader:SetText(VCA.Theme.hdr .. "" .. L["COL_SPEC_RANKING"] .. "|r")
     clearSpecBtn:Hide()
     clearItemBtn:Hide()
     markModeBtn:Hide()
@@ -1294,7 +1432,7 @@ end
 VCA.Detection.SetOnItemDetectedCallback(function(itemID, source)
     -- Chat message
     local itemName = C_Item.GetItemNameByID(itemID) or tostring(itemID)
-    print("|cff9fe08aVoidcoreAdvisor Reborn:|r " .. string.format(L["DETECTED_OBTAINED"], "|cnIQ4:" .. itemName .. "|r"))
+    print(VCA.Theme.hdr .. "VoidcoreAdvisor Reborn:|r " .. string.format(L["DETECTED_OBTAINED"], "|cnIQ4:" .. itemName .. "|r"))
 
     -- Remove from saved selections now that it's obtained.
     VCA.Data.RemoveSelectedItem(source.sourceType, source.sourceID, source.difficultyID, itemID)

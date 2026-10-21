@@ -16,7 +16,7 @@ frame:SetScript("OnEvent", function(self, event, loadedAddon)
     self:UnregisterEvent("ADDON_LOADED")
 
     -- Create a vertical-layout category for the AddOns tab.
-    local category = Settings.RegisterVerticalLayoutCategory("VoidcoreAdvisor")
+    local category = Settings.RegisterVerticalLayoutCategory("VoidcoreAdvisor Reborn")
     local reminderCategory = Settings.RegisterVerticalLayoutSubcategory(category, L["OPTIONS_CAT_REMINDER"])
     local bonusRollCategory = Settings.RegisterVerticalLayoutSubcategory(category, L["OPTIONS_CAT_BONUS_ROLL"])
 
@@ -105,6 +105,28 @@ frame:SetScript("OnEvent", function(self, event, loadedAddon)
             type(default), name, default)
         Settings.CreateCheckbox(bonusRollCategory, setting, L["OPTIONS_BRC_SPEC_LIST_TOOLTIP"])
     end
+
+    -- ── Color theme ───────────────────────────────────────────────────────
+    pcall(function()
+        local variable = "VoidcoreAdvisor_Theme"
+        local variableTbl = _G[VCA.GLOBAL_DB_NAME]
+        local setting = Settings.RegisterAddOnSetting(category, variable, "theme", variableTbl, "string",
+            L["OPTIONS_THEME"], "green")
+        local function GetOptions()
+            local container = Settings.CreateControlTextContainer()
+            for _, key in ipairs(VCA.THEME_ORDER) do
+                container:Add(key, L["THEME_" .. key:upper()])
+            end
+            return container:GetData()
+        end
+        Settings.SetOnValueChangedCallback(variable, function()
+            VCA.ApplyTheme(variableTbl.theme)
+            if VCA.Panel and VCA.Panel.Refresh then
+                VCA.Panel.Refresh()
+            end
+        end)
+        Settings.CreateDropdown(category, setting, GetOptions, L["OPTIONS_THEME_TOOLTIP"])
+    end)
 
     -- ── Ask for confirmation before rolling or passing ───────────────────
     do

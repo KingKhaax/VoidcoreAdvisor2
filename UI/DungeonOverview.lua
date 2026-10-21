@@ -106,8 +106,8 @@ frame:SetBackdrop({
         bottom = 11
     }
 })
-frame:SetBackdropColor(0.063, 0.125, 0.086, 0.95)
-frame:SetBackdropBorderColor(0.30, 0.54, 0.35, 1)
+VCA.OnTheme(function() local t = VCA.Theme.bg; frame:SetBackdropColor(t[1], t[2], t[3], 0.95) end)
+VCA.OnTheme(function() local t = VCA.Theme.border; frame:SetBackdropBorderColor(t[1], t[2], t[3], 1) end)
 
 -- ── Anchor helper ─────────────────────────────────────────────────────────────
 
@@ -125,7 +125,7 @@ end
 
 local titleText = frame:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
 titleText:SetPoint("TOPLEFT", 18, -16)
-titleText:SetText(L["PANEL_TITLE"])
+VCA.OnTheme(function() titleText:SetText(VCA.TitleText()) end)
 
 local closeBtn = CreateFrame("Button", nil, frame, "UIPanelCloseButton")
 closeBtn:SetPoint("TOPRIGHT", -4, -4)
@@ -238,7 +238,7 @@ slotSection:SetHeight(SLOT_SECTION_H)
 
 -- Divider above slot section
 local slotDivider = slotSection:CreateTexture(nil, "ARTWORK")
-slotDivider:SetColorTexture(0.30, 0.54, 0.35, 0.4)
+VCA.OnTheme(function() local t = VCA.Theme.border; slotDivider:SetColorTexture(t[1], t[2], t[3], 0.4) end)
 slotDivider:SetPoint("TOPLEFT", slotSection, "TOPLEFT", 16, 0)
 slotDivider:SetPoint("TOPRIGHT", slotSection, "TOPRIGHT", -16, 0)
 slotDivider:SetHeight(1)
@@ -246,7 +246,7 @@ slotDivider:SetHeight(1)
 -- Title label
 local slotTitle = slotSection:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
 slotTitle:SetPoint("TOPLEFT", slotSection, "TOPLEFT", PADDING, -8)
-slotTitle:SetText("|cff9fe08a" .. L["SLOT_FILTER_TOGGLE"] .. "|r")
+VCA.OnTheme(function() slotTitle:SetText(VCA.Theme.hdr .. "" .. L["SLOT_FILTER_TOGGLE"] .. "|r") end)
 
 -- Clear-all button
 local slotClearBtn = CreateFrame("Button", nil, slotSection)
@@ -511,8 +511,8 @@ pickerPopup:SetBackdrop({
         bottom = 8
     }
 })
-pickerPopup:SetBackdropColor(0.063, 0.125, 0.086, 0.97)
-pickerPopup:SetBackdropBorderColor(0.30, 0.54, 0.35, 1)
+VCA.OnTheme(function() local t = VCA.Theme.bg; pickerPopup:SetBackdropColor(t[1], t[2], t[3], 0.97) end)
+VCA.OnTheme(function() local t = VCA.Theme.border; pickerPopup:SetBackdropBorderColor(t[1], t[2], t[3], 1) end)
 
 local function ClosePicker()
     pickerPopup:Hide()
@@ -533,7 +533,7 @@ pickerTitle:SetJustifyH("LEFT")
 
 -- Divider under the title
 local pickerTitleRule = pickerPopup:CreateTexture(nil, "ARTWORK")
-pickerTitleRule:SetColorTexture(0.30, 0.54, 0.35, 0.4)
+VCA.OnTheme(function() local t = VCA.Theme.border; pickerTitleRule:SetColorTexture(t[1], t[2], t[3], 0.4) end)
 pickerTitleRule:SetHeight(1)
 
 local pickerScrollFrame = CreateFrame("ScrollFrame", nil, pickerPopup)
@@ -563,7 +563,7 @@ local function GetOrCreatePickerItem()
 
     local hl = rf:CreateTexture(nil, "HIGHLIGHT")
     hl:SetAllPoints(rf)
-    hl:SetColorTexture(0.56, 0.89, 0.42, 0.25)
+    hl:SetColorTexture(VCA.Theme.accent[1], VCA.Theme.accent[2], VCA.Theme.accent[3], 0.25)
 
     local check = rf:CreateTexture(nil, "OVERLAY")
     check:SetSize(14, 14)
@@ -678,7 +678,7 @@ local function OpenSlotPicker(slotKey, anchorBtn)
         h:Hide()
     end
 
-    pickerTitle:SetText("|cff9fe08a" .. (L["SLOT_" .. slotKey] or slotKey) .. "|r")
+    pickerTitle:SetText(VCA.Theme.hdr .. "" .. (L["SLOT_" .. slotKey] or slotKey) .. "|r")
 
     local childW = PICKER_W - PICKER_PAD * 2
     pickerScrollChild:SetWidth(childW)
@@ -1020,7 +1020,7 @@ subtitleText:SetPoint("TOPLEFT", 18, -40)
 subtitleText:SetText("|cff888888" .. L["DUNGEON_OVERVIEW_SUBTITLE"] .. "|r")
 
 local divider = frame:CreateTexture(nil, "ARTWORK")
-divider:SetColorTexture(0.30, 0.54, 0.35, 0.4)
+VCA.OnTheme(function() local t = VCA.Theme.border; divider:SetColorTexture(t[1], t[2], t[3], 0.4) end)
 divider:SetPoint("TOPLEFT", frame, "TOPLEFT", 16, -HEADER_H)
 divider:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -16, -HEADER_H)
 divider:SetHeight(1)
@@ -1038,11 +1038,11 @@ contentArea:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", 0, SLOT_SECTION_H + 11
 
 local hdrDungeon = contentArea:CreateFontString(nil, "OVERLAY", "GameFontNormal")
 hdrDungeon:SetPoint("TOPLEFT", contentArea, "TOPLEFT", PADDING + COL_DUNGEON_X, -6)
-hdrDungeon:SetText("|cff9fe08a" .. L["DUNGEON_OVERVIEW_COL_DUNGEON"] .. "|r")
+VCA.OnTheme(function() hdrDungeon:SetText(VCA.Theme.hdr .. "" .. L["DUNGEON_OVERVIEW_COL_DUNGEON"] .. "|r") end)
 
 local hdrSpec = contentArea:CreateFontString(nil, "OVERLAY", "GameFontNormal")
 hdrSpec:SetPoint("TOPLEFT", contentArea, "TOPLEFT", PADDING + COL_SPEC_NAME_X, -6)
-hdrSpec:SetText("|cff9fe08a" .. L["DUNGEON_OVERVIEW_COL_SPEC"] .. "|r")
+VCA.OnTheme(function() hdrSpec:SetText(VCA.Theme.hdr .. "" .. L["DUNGEON_OVERVIEW_COL_SPEC"] .. "|r") end)
 
 -- Right-side headers mirror the row right-anchoring.
 -- Row frame right = scrollFrame right = contentArea right - PADDING.
@@ -1053,14 +1053,14 @@ hdrLooted:SetJustifyH("RIGHT")
 hdrLooted:SetWidth(COL_LOOTED_W)
 hdrLooted:SetWordWrap(false)
 hdrLooted:SetPoint("TOPRIGHT", contentArea, "TOPRIGHT", -PADDING + COL_LOOTED_R, -6)
-hdrLooted:SetText("|cff9fe08a" .. L["DUNGEON_OVERVIEW_COL_LOOTED"] .. "|r")
+VCA.OnTheme(function() hdrLooted:SetText(VCA.Theme.hdr .. "" .. L["DUNGEON_OVERVIEW_COL_LOOTED"] .. "|r") end)
 
 local hdrChance = contentArea:CreateFontString(nil, "OVERLAY", "GameFontNormal")
 hdrChance:SetJustifyH("RIGHT")
 hdrChance:SetWidth(COL_PCT_W)
 hdrChance:SetWordWrap(false)
 hdrChance:SetPoint("TOPRIGHT", contentArea, "TOPRIGHT", -PADDING + COL_PCT_R, -6)
-hdrChance:SetText("|cff9fe08a" .. L["DUNGEON_OVERVIEW_COL_CHANCE"] .. "|r")
+VCA.OnTheme(function() hdrChance:SetText(VCA.Theme.hdr .. "" .. L["DUNGEON_OVERVIEW_COL_CHANCE"] .. "|r") end)
 
 -- Horizontal rule below column headers
 local colHeaderRule = contentArea:CreateTexture(nil, "ARTWORK")
@@ -1121,7 +1121,7 @@ local function GetOrCreateDungeonRow(parent)
     -- Hover highlight texture
     local hoverHighlight = rowFrame:CreateTexture(nil, "HIGHLIGHT")
     hoverHighlight:SetAllPoints(rowFrame)
-    hoverHighlight:SetColorTexture(0.56, 0.89, 0.42, 0.12)
+    hoverHighlight:SetColorTexture(VCA.Theme.accent[1], VCA.Theme.accent[2], VCA.Theme.accent[3], 0.12)
 
     local row = {
         frame = rowFrame,

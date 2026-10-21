@@ -20,6 +20,7 @@ local cachedSpecIcon = nil -- spec icon texture path for |T|t embedding
 local cachedSpecName = nil -- spec name for combined spec row text
 local cachedSource = nil -- source table for spec list tooltip
 local cachedSpecID = nil -- specID used when the window is currently displayed
+local oneItemLeft = false -- true when the active spec has a single item left in the pool
 local previewTimerStart = nil -- GetTime() when ShowPreview was called (nil in live mode)
 local previewTimerDuration = 30 -- seconds; mirrors a typical bonus-roll countdown
 local cachedPromptData = nil -- structured payload from SPELL_CONFIRMATION_PROMPT
@@ -165,8 +166,8 @@ win:SetBackdrop({
         bottom = 3
     }
 })
-win:SetBackdropColor(0.063, 0.125, 0.086, 0.97)
-win:SetBackdropBorderColor(0.30, 0.54, 0.35, 1)
+VCA.OnTheme(function() local t = VCA.Theme.bg; win:SetBackdropColor(t[1], t[2], t[3], 0.97) end)
+VCA.OnTheme(function() local t = VCA.Theme.border; win:SetBackdropBorderColor(t[1], t[2], t[3], 1) end)
 
 -- Thin black line just inside the grey frame, like the stock popup frames.
 local winInnerEdge = CreateFrame("Frame", nil, win, "BackdropTemplate")
@@ -181,7 +182,7 @@ winInnerEdge:SetBackdropBorderColor(0, 0, 0, 1)
 -- Title – hidden in compact layout
 local winTitle = win:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
 winTitle:SetPoint("TOP", win, "TOP", 0, -14)
-winTitle:SetText("|cff9fe08aVoidcoreAdvisor|r")
+VCA.OnTheme(function() winTitle:SetText(VCA.Theme.hdr .. "VoidcoreAdvisor|r") end)
 winTitle:Hide()
 
 -- Subtitle – hidden in compact layout
@@ -192,7 +193,7 @@ winSubtitle:Hide()
 
 -- Header divider – hidden in compact layout
 local winHeaderDiv = win:CreateTexture(nil, "ARTWORK")
-winHeaderDiv:SetColorTexture(0.30, 0.54, 0.35, 0.4)
+VCA.OnTheme(function() local t = VCA.Theme.border; winHeaderDiv:SetColorTexture(t[1], t[2], t[3], 0.4) end)
 winHeaderDiv:SetHeight(1)
 winHeaderDiv:SetPoint("TOPLEFT", win, "TOPLEFT", 16, -62)
 winHeaderDiv:SetPoint("TOPRIGHT", win, "TOPRIGHT", -16, -62)
@@ -260,7 +261,7 @@ timerBar:SetHeight(8)
 timerBar:SetPoint("TOPLEFT", win, "TOPLEFT", 16, -62)
 timerBar:SetPoint("TOPRIGHT", win, "TOPRIGHT", -16, -62)
 timerBar:SetStatusBarTexture("Interface\\TargetingFrame\\UI-StatusBar")
-timerBar:SetStatusBarColor(0.44, 0.78, 0.35, 1)
+VCA.OnTheme(function() local t = VCA.Theme.timer; timerBar:SetStatusBarColor(t[1], t[2], t[3], 1) end)
 local timerBorder = timerBar:CreateTexture(nil, "BACKGROUND", nil, -1)
 timerBorder:SetColorTexture(0, 0, 0, 1)
 timerBorder:SetPoint("TOPLEFT", timerBar, "TOPLEFT", -1, 1)
@@ -269,11 +270,11 @@ timerBar:SetMinMaxValues(0, 1)
 timerBar:SetValue(1)
 local timerBg = timerBar:CreateTexture(nil, "BACKGROUND")
 timerBg:SetAllPoints()
-timerBg:SetColorTexture(0.04, 0.10, 0.06, 0.8)
+VCA.OnTheme(function() local t = VCA.Theme.timerBg; timerBg:SetColorTexture(t[1], t[2], t[3], 0.8) end)
 
 -- Separator between timer and spec row
 local topSep = win:CreateTexture(nil, "ARTWORK")
-topSep:SetColorTexture(0.30, 0.54, 0.35, 0.35)
+VCA.OnTheme(function() local t = VCA.Theme.border; topSep:SetColorTexture(t[1], t[2], t[3], 0.35) end)
 topSep:SetHeight(1)
 topSep:SetPoint("TOPLEFT", win, "TOPLEFT", 16, -78)
 topSep:SetPoint("TOPRIGHT", win, "TOPRIGHT", -16, -78)
@@ -396,7 +397,7 @@ end)
 
 -- Dynamic loot section (only shown when Detection recognises the source)
 local lootSep = win:CreateTexture(nil, "ARTWORK")
-lootSep:SetColorTexture(0.30, 0.54, 0.35, 0.35)
+VCA.OnTheme(function() local t = VCA.Theme.border; lootSep:SetColorTexture(t[1], t[2], t[3], 0.35) end)
 lootSep:SetHeight(1)
 lootSep:Hide()
 
@@ -422,7 +423,7 @@ warnBody:Hide()
 
 -- Per-spec remaining item counts section
 local specListSep = win:CreateTexture(nil, "ARTWORK")
-specListSep:SetColorTexture(0.30, 0.54, 0.35, 0.35)
+VCA.OnTheme(function() local t = VCA.Theme.border; specListSep:SetColorTexture(t[1], t[2], t[3], 0.35) end)
 specListSep:SetHeight(1)
 specListSep:Hide()
 
@@ -598,7 +599,11 @@ local rollBtn = CreateSkinnedButton(0.14, 0.42, 0.16)
 rollBtn:SetText(ROLL_BTN_TEXT)
 rollBtn:SetScript("OnClick", function()
     if IsConfirmEnabled() then
-        StaticPopup_Show("VOIDCORE_BONUS_ROLL", L["BONUS_ROLL_POPUP_ROLL"])
+        local text = L["BONUS_ROLL_POPUP_ROLL"]
+        if oneItemLeft then
+            text = "|cffff6060" .. L["ONE_ITEM_WARN"] .. "|r\n\n" .. text
+        end
+        StaticPopup_Show("VOIDCORE_BONUS_ROLL", text)
     else
         DoRoll()
     end
@@ -907,8 +912,13 @@ local function LayoutDynamicSection(source, specID, dynY)
     end
 
     -- ── Warning (shown last, just above buttons) ──────────────────────────────
+    oneItemLeft = false
     if source and source.sourceType and source.sourceID then
         if probFull and probFull.remainingCount == 1 then
+            oneItemLeft = true
+            if PlaySound and SOUNDKIT and SOUNDKIT.RAID_WARNING then
+                PlaySound(SOUNDKIT.RAID_WARNING)
+            end
             dynY = dynY - 6 -- spacing above warning
             warnHeader:ClearAllPoints()
             warnHeader:SetPoint("TOP", win, "TOP", 0, dynY)
@@ -917,7 +927,7 @@ local function LayoutDynamicSection(source, specID, dynY)
             dynY = dynY - 20 -- header height
             warnBody:ClearAllPoints()
             warnBody:SetPoint("TOP", win, "TOP", 0, dynY)
-            warnBody:SetText(L["BONUS_ROLL_CONFIRM_WARNING_BODY"])
+            warnBody:SetText("|cffff6060" .. L["ONE_ITEM_WARN"] .. "|r")
             warnBody:Show()
             dynY = dynY - 18 - 6 -- body height + spacing below
         else

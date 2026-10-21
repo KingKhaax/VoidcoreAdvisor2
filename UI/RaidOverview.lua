@@ -56,8 +56,8 @@ frame:SetBackdrop({
         bottom = 11
     }
 })
-frame:SetBackdropColor(0.063, 0.125, 0.086, 0.95)
-frame:SetBackdropBorderColor(0.30, 0.54, 0.35, 1)
+VCA.OnTheme(function() local t = VCA.Theme.bg; frame:SetBackdropColor(t[1], t[2], t[3], 0.95) end)
+VCA.OnTheme(function() local t = VCA.Theme.border; frame:SetBackdropBorderColor(t[1], t[2], t[3], 1) end)
 
 function Overview.AnchorToEJ()
     local ej = EncounterJournal
@@ -71,7 +71,7 @@ end
 
 local titleText = frame:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
 titleText:SetPoint("TOPLEFT", 18, -16)
-titleText:SetText(L["PANEL_TITLE"])
+VCA.OnTheme(function() titleText:SetText(VCA.TitleText()) end)
 
 local closeBtn = CreateFrame("Button", nil, frame, "UIPanelCloseButton")
 closeBtn:SetPoint("TOPRIGHT", -4, -4)
@@ -202,7 +202,7 @@ local function SetLoadingState(isLoading, pausedByEJ)
 end
 
 local divider = frame:CreateTexture(nil, "ARTWORK")
-divider:SetColorTexture(0.30, 0.54, 0.35, 0.4)
+VCA.OnTheme(function() local t = VCA.Theme.border; divider:SetColorTexture(t[1], t[2], t[3], 0.4) end)
 divider:SetPoint("TOPLEFT", frame, "TOPLEFT", 16, -HEADER_H)
 divider:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -16, -HEADER_H)
 divider:SetHeight(1)
@@ -213,25 +213,25 @@ contentArea:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", 0, 11)
 
 local hdrBoss = contentArea:CreateFontString(nil, "OVERLAY", "GameFontNormal")
 hdrBoss:SetPoint("TOPLEFT", contentArea, "TOPLEFT", PADDING + COL_BOSS_X, -6)
-hdrBoss:SetText("|cff9fe08a" .. L["RAID_OVERVIEW_COL_BOSS"] .. "|r")
+VCA.OnTheme(function() hdrBoss:SetText(VCA.Theme.hdr .. "" .. L["RAID_OVERVIEW_COL_BOSS"] .. "|r") end)
 
 local hdrSpec = contentArea:CreateFontString(nil, "OVERLAY", "GameFontNormal")
 hdrSpec:SetPoint("TOPLEFT", contentArea, "TOPLEFT", PADDING + COL_SPEC_NAME_X, -6)
-hdrSpec:SetText("|cff9fe08a" .. L["DUNGEON_OVERVIEW_COL_SPEC"] .. "|r")
+VCA.OnTheme(function() hdrSpec:SetText(VCA.Theme.hdr .. "" .. L["DUNGEON_OVERVIEW_COL_SPEC"] .. "|r") end)
 
 local hdrLooted = contentArea:CreateFontString(nil, "OVERLAY", "GameFontNormal")
 hdrLooted:SetJustifyH("RIGHT")
 hdrLooted:SetWidth(COL_LOOTED_W)
 hdrLooted:SetWordWrap(false)
 hdrLooted:SetPoint("TOPRIGHT", contentArea, "TOPRIGHT", -PADDING + COL_LOOTED_R, -6)
-hdrLooted:SetText("|cff9fe08a" .. L["DUNGEON_OVERVIEW_COL_LOOTED"] .. "|r")
+VCA.OnTheme(function() hdrLooted:SetText(VCA.Theme.hdr .. "" .. L["DUNGEON_OVERVIEW_COL_LOOTED"] .. "|r") end)
 
 local hdrChance = contentArea:CreateFontString(nil, "OVERLAY", "GameFontNormal")
 hdrChance:SetJustifyH("RIGHT")
 hdrChance:SetWidth(COL_PCT_W)
 hdrChance:SetWordWrap(false)
 hdrChance:SetPoint("TOPRIGHT", contentArea, "TOPRIGHT", -PADDING + COL_PCT_R, -6)
-hdrChance:SetText("|cff9fe08a" .. L["DUNGEON_OVERVIEW_COL_CHANCE"] .. "|r")
+VCA.OnTheme(function() hdrChance:SetText(VCA.Theme.hdr .. "" .. L["DUNGEON_OVERVIEW_COL_CHANCE"] .. "|r") end)
 
 local colHeaderRule = contentArea:CreateTexture(nil, "ARTWORK")
 colHeaderRule:SetColorTexture(0.4, 0.4, 0.4, 0.3)
@@ -282,9 +282,22 @@ local function GetOrCreateRow(parent)
 
     local hoverHighlight = rowFrame:CreateTexture(nil, "HIGHLIGHT")
     hoverHighlight:SetAllPoints(rowFrame)
-    hoverHighlight:SetColorTexture(0.56, 0.89, 0.42, 0.12)
+    hoverHighlight:SetColorTexture(VCA.Theme.accent[1], VCA.Theme.accent[2], VCA.Theme.accent[3], 0.12)
+
+    -- Thin progress bar along the bottom of the row: items obtained / items wanted.
+    local barTrack = rowFrame:CreateTexture(nil, "BORDER")
+    barTrack:SetHeight(3)
+    barTrack:SetPoint("BOTTOMLEFT", rowFrame, "BOTTOMLEFT", 4, 1)
+    barTrack:SetPoint("BOTTOMRIGHT", rowFrame, "BOTTOMRIGHT", -4, 1)
+    barTrack:SetColorTexture(1, 1, 1, 0.08)
+    local barFill = rowFrame:CreateTexture(nil, "ARTWORK")
+    barFill:SetHeight(3)
+    barFill:SetPoint("BOTTOMLEFT", rowFrame, "BOTTOMLEFT", 4, 1)
+    barFill:Hide()
 
     local row = {
+        barTrack = barTrack,
+        barFill = barFill,
         frame = rowFrame,
         bossLabel = bossLabel,
         specIcon = specIcon,
@@ -474,6 +487,7 @@ local function Populate()
         row.specLabel:SetText("")
         row.lootedLabel:SetText("")
         row.pctLabel:SetText("")
+        row.barFill:Hide()
         scrollChild:SetHeight(ROW_H)
         return
     end
@@ -507,14 +521,23 @@ local function Populate()
                 local obtained = entry.baseCount - entry.remainingCount
                 row.lootedLabel:SetText("|cff888888" .. obtained .. "/" .. entry.baseCount .. "|r")
 
+                local frac = obtained / entry.baseCount
+                local fill = math.max(1, (contentW - 8) * math.min(1, frac))
+                local t = VCA.Theme.accent
+                row.barFill:SetColorTexture(t[1], t[2], t[3], 0.9)
+                row.barFill:SetWidth(fill)
+                row.barFill:SetShown(frac > 0)
+
                 local pct = math.floor((entry.selectedOdds or 0) * 100 + 0.5)
                 local pctColor = pct >= 20 and "|cffffff00" or "|cffdddddd"
                 row.pctLabel:SetText(pctColor .. pct .. "%|r")
             else
                 row.lootedLabel:SetText("|cff888888-|r")
                 row.pctLabel:SetText("|cff888888-|r")
+                row.barFill:Hide()
             end
         else
+            row.barFill:Hide()
             row.specIcon:Hide()
             row.specLabel:SetText("|cff888888-|r")
             row.lootedLabel:SetText("|cff888888-|r")

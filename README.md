@@ -119,3 +119,18 @@ The season loot tables in `Core/SeasonData.lua` are generated in-game with [Void
 ## <img src="docs/icons/inv_misc_horn_02.jpg" width="28" height="28" alt="" align="absmiddle"> Credits
 
 VoidcoreAdvisor was created by [rolferik12](https://github.com/rolferik12) (MIT). This fork is maintained by sr.kitkat with the original author's permission.
+
+## <img src="docs/icons/inv_misc_gear_01.jpg" width="28" height="28" alt="" align="absmiddle"> Commands
+
+- `/void` shows the list of commands.
+- `/void panel [name]` opens the Adventure Guide on a boss or dungeon with the panel showing.
+- `/void missing [14|15|16]` lists every item you still need for your loot spec, best odds first.
+- `/void export` and `/void import` copy your marked items between characters.
+- `/void theme green|purple|blue` changes the window colors.
+- `/void resetpanel` puts the panel back next to the Adventure Guide (drag the header to move it, drag the corner to resize it).
+- `/void liveraid` forces reading a new raid from the Adventure Guide.
+- `/void restore`, `/void replaylog`, `/void version`.
+
+## <img src="docs/icons/inv_scroll_03.jpg" width="28" height="28" alt="" align="absmiddle"> Translations
+
+The addon is available in 11 languages. The newest texts were translated without a native review; if you find a wording that sounds wrong, please open an issue or a pull request with the corrected line from the matching file in `Locales/`.

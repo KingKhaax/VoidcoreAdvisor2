@@ -111,8 +111,8 @@ frame:SetBackdrop({
         bottom = 11
     }
 })
-frame:SetBackdropColor(0.063, 0.125, 0.086, 0.95)
-frame:SetBackdropBorderColor(0.30, 0.54, 0.35, 1)
+VCA.OnTheme(function() local t = VCA.Theme.bg; frame:SetBackdropColor(t[1], t[2], t[3], 0.95) end)
+VCA.OnTheme(function() local t = VCA.Theme.border; frame:SetBackdropBorderColor(t[1], t[2], t[3], 1) end)
 
 -- ESC key closes the popup via the global UISpecialFrames mechanism.
 tinsert(UISpecialFrames, "VoidcoreAdvisorReminder")
@@ -131,7 +131,7 @@ local voidcoreCount = frame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
 voidcoreCount:SetPoint("TOP", subtitle, "BOTTOM", 0, -3)
 
 local divider = frame:CreateTexture(nil, "ARTWORK")
-divider:SetColorTexture(0.30, 0.54, 0.35, 0.4)
+VCA.OnTheme(function() local t = VCA.Theme.border; divider:SetColorTexture(t[1], t[2], t[3], 0.4) end)
 divider:SetPoint("TOPLEFT", frame, "TOPLEFT", 16, -56)
 divider:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -16, -56)
 divider:SetHeight(1)
@@ -187,7 +187,7 @@ dynWarnText:Hide()
 -- ── Spec-list section ────────────────────────────────────────────────────────
 
 local dynSpecDivider = frame:CreateTexture(nil, "ARTWORK")
-dynSpecDivider:SetColorTexture(0.30, 0.54, 0.35, 0.4)
+VCA.OnTheme(function() local t = VCA.Theme.border; dynSpecDivider:SetColorTexture(t[1], t[2], t[3], 0.4) end)
 dynSpecDivider:SetHeight(1)
 dynSpecDivider:Hide()
 
@@ -434,8 +434,8 @@ warnFrame:SetBackdrop({
         bottom = 11
     }
 })
-warnFrame:SetBackdropColor(0.063, 0.125, 0.086, 0.95)
-warnFrame:SetBackdropBorderColor(0.30, 0.54, 0.35, 1)
+VCA.OnTheme(function() local t = VCA.Theme.bg; warnFrame:SetBackdropColor(t[1], t[2], t[3], 0.95) end)
+VCA.OnTheme(function() local t = VCA.Theme.border; warnFrame:SetBackdropBorderColor(t[1], t[2], t[3], 1) end)
 
 tinsert(UISpecialFrames, "VoidcoreAdvisorWarning")
 
@@ -451,7 +451,7 @@ local wf_voidcoreCount = warnFrame:CreateFontString(nil, "OVERLAY", "GameFontNor
 wf_voidcoreCount:SetPoint("TOP", wf_subtitle, "BOTTOM", 0, -3)
 
 local wf_divider1 = warnFrame:CreateTexture(nil, "ARTWORK")
-wf_divider1:SetColorTexture(0.30, 0.54, 0.35, 0.4)
+VCA.OnTheme(function() local t = VCA.Theme.border; wf_divider1:SetColorTexture(t[1], t[2], t[3], 0.4) end)
 wf_divider1:SetPoint("TOPLEFT", warnFrame, "TOPLEFT", 16, -56)
 wf_divider1:SetPoint("TOPRIGHT", warnFrame, "TOPRIGHT", -16, -56)
 wf_divider1:SetHeight(1)
@@ -487,7 +487,7 @@ wf_warnText:SetPoint("TOPLEFT", warnFrame, "TOPLEFT", 46, -148)
 
 -- Spec-list section (dynamic height, positioned by ShowWarning)
 local wf_specListDivider = warnFrame:CreateTexture(nil, "ARTWORK")
-wf_specListDivider:SetColorTexture(0.30, 0.54, 0.35, 0.4)
+VCA.OnTheme(function() local t = VCA.Theme.border; wf_specListDivider:SetColorTexture(t[1], t[2], t[3], 0.4) end)
 wf_specListDivider:SetHeight(1)
 wf_specListDivider:Hide()
 

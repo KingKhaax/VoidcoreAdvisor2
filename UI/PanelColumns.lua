@@ -462,7 +462,7 @@ local function PopulateSpecColumn(sourceType, sourceID, difficultyID, filterItem
 
         -- Selection highlight
         if _s.selectedSpecIDs[entry.specID] then
-            row.selHighlight:SetColorTexture(0.56, 0.89, 0.42, 0.14)
+            row.selHighlight:SetColorTexture(VCA.Theme.accent[1], VCA.Theme.accent[2], VCA.Theme.accent[3], 0.14)
             row.selHighlight:Show()
         else
             row.selHighlight:Hide()
@@ -542,9 +542,9 @@ function Panel.RefreshItemColumn()
     end
     if count > 0 then
         local label = count == 1 and L["COL_LOOT_FILTERED"] or string.format(L["COL_LOOT_FILTERED_N"], count)
-        _s.lootColHeader:SetText("|cff9fe08a" .. label .. "|r")
+        _s.lootColHeader:SetText(VCA.Theme.hdr .. "" .. label .. "|r")
     else
-        _s.lootColHeader:SetText("|cff9fe08a" .. L["COL_LOOT"] .. "|r")
+        _s.lootColHeader:SetText(VCA.Theme.hdr .. "" .. L["COL_LOOT"] .. "|r")
     end
     UpdateClearFilterButton()
 end
@@ -562,10 +562,10 @@ function Panel.RefreshSpecColumn()
     if #selectedList > 0 then
         local count = #selectedList
         local label = count == 1 and L["COL_SPEC_FIT"] or (L["COL_SPEC_FIT"] .. "  |cff888888(" .. count .. ")|r")
-        _s.specColHeader:SetText("|cff9fe08a" .. label .. "|r")
+        _s.specColHeader:SetText(VCA.Theme.hdr .. "" .. label .. "|r")
         PopulateSpecColumn(Panel.sourceType, Panel.sourceID, Panel.difficultyID, selectedList)
     else
-        _s.specColHeader:SetText("|cff9fe08a" .. L["COL_SPEC_RANKING"] .. "|r")
+        _s.specColHeader:SetText(VCA.Theme.hdr .. "" .. L["COL_SPEC_RANKING"] .. "|r")
         PopulateSpecColumn(Panel.sourceType, Panel.sourceID, Panel.difficultyID)
     end
     UpdateClearFilterButton()

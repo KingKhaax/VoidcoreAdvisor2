@@ -25,6 +25,7 @@ local function GetGlobalDefaults()
         bonusRollConfirmEnabled = true,
         brcSpecListEnabled = true,
         brcConfirmEnabled = true,
+        theme = "green",
         brcDefaultOnV2 = true
     }
 end
@@ -57,6 +58,9 @@ local function InitDB()
         -- to saves created while it was off by default.
         if gdb.brcConfirmEnabled == nil then
             gdb.brcConfirmEnabled = true
+        end
+        if not VCA.Themes[gdb.theme or ""] then
+            gdb.theme = "green"
         end
         if not gdb.brcDefaultOnV2 then
             gdb.brcDefaultOnV2 = true
@@ -133,9 +137,10 @@ initFrame:SetScript("OnEvent", function(self, event, ...)
             return
         end
         InitDB()
+        VCA.ApplyTheme(_G[VCA.GLOBAL_DB_NAME] and _G[VCA.GLOBAL_DB_NAME].theme)
         self:UnregisterEvent("ADDON_LOADED")
         if C_AddOns and C_AddOns.IsAddOnLoaded and C_AddOns.IsAddOnLoaded("VoidcoreAdvisor") then
-            print("|cff8fe36bVoidcoreAdvisor Reborn:|r |cffff4444" .. L["ORIGINAL_ADDON_LOADED"] .. "|r")
+            print(VCA.Theme.title .. "VoidcoreAdvisor Reborn:|r |cffff4444" .. L["ORIGINAL_ADDON_LOADED"] .. "|r")
         end
 
     elseif event == "PLAYER_ENTERING_WORLD" then
@@ -158,7 +163,7 @@ initFrame:SetScript("OnEvent", function(self, event, ...)
                 db.obtained = {}
                 db.selectedItems = {}
                 db.seasonFingerprint = newFingerprint
-                print("|cff8fe36bVoidcoreAdvisor Reborn:|r " .. L["NEW_SEASON_RESET"])
+                print(VCA.Theme.title .. "VoidcoreAdvisor Reborn:|r " .. L["NEW_SEASON_RESET"])
             end
         end
 
@@ -190,36 +195,36 @@ SlashCmdList["VOIDCOREADVISOR"] = function(msg)
 
     if cmd == "reset" then
         VCA.ResetObtainedData()
-        print("|cff8fe36bVoidcoreAdvisor Reborn:|r " .. L["RESET_CONFIRM"])
+        print(VCA.Theme.title .. "VoidcoreAdvisor Reborn:|r " .. L["RESET_CONFIRM"])
 
     elseif cmd == "count" then
         local count = VCA.Data.GetTotalObtainedCount()
-        print("|cff8fe36bVoidcoreAdvisor Reborn:|r " .. string.format(L["COUNT_FORMAT"], count))
+        print(VCA.Theme.title .. "VoidcoreAdvisor Reborn:|r " .. string.format(L["COUNT_FORMAT"], count))
 
     elseif cmd == "spec" then
         -- Debug: print which spec will be used for loot.
         local specID = VCA.SpecInfo.GetEffectiveLootSpecID()
         local rawID = VCA.SpecInfo.GetRawLootSpecID()
         local suffix = rawID == 0 and L["FOLLOWS_ACTIVE_SPEC"] or ""
-        print("|cff8fe36bVoidcoreAdvisor Reborn:|r " .. string.format(L["SPEC_FORMAT"], specID or "unknown", suffix))
+        print(VCA.Theme.title .. "VoidcoreAdvisor Reborn:|r " .. string.format(L["SPEC_FORMAT"], specID or "unknown", suffix))
 
     elseif cmd == "source" then
         -- Debug: print the currently active detection source.
         local src = VCA.Detection.GetActiveSource()
         if src then
-            print("|cff8fe36bVoidcoreAdvisor Reborn:|r " ..
+            print(VCA.Theme.title .. "VoidcoreAdvisor Reborn:|r " ..
                       string.format(L["SOURCE_FORMAT"], src.sourceType, src.sourceID, src.difficultyID))
         else
-            print("|cff8fe36bVoidcoreAdvisor Reborn:|r " .. L["NO_ACTIVE_SOURCE"])
+            print(VCA.Theme.title .. "VoidcoreAdvisor Reborn:|r " .. L["NO_ACTIVE_SOURCE"])
         end
 
     elseif cmd == "rolls" then
         -- Print raw bonus roll event log for manual verification.
         local log = VCA.Data.GetBonusRollLog()
         if #log == 0 then
-            print("|cff8fe36bVoidcoreAdvisor Reborn:|r No bonus roll events recorded.")
+            print(VCA.Theme.title .. "VoidcoreAdvisor Reborn:|r No bonus roll events recorded.")
         else
-            print("|cff8fe36bVoidcoreAdvisor Reborn:|r Bonus roll log (" .. #log .. " entries, oldest first):")
+            print(VCA.Theme.title .. "VoidcoreAdvisor Reborn:|r Bonus roll log (" .. #log .. " entries, oldest first):")
             for i, entry in ipairs(log) do
                 local ts = date("%Y-%m-%d %H:%M:%S", entry.timestamp)
                 local src = "unknown source"
@@ -239,7 +244,7 @@ SlashCmdList["VOIDCOREADVISOR"] = function(msg)
         end
 
     elseif cmd == "version" then
-        print("|cff8fe36bVoidcoreAdvisor Reborn:|r " .. string.format(L["VERSION_FORMAT"], VCA.VERSION))
+        print(VCA.Theme.title .. "VoidcoreAdvisor Reborn:|r " .. string.format(L["VERSION_FORMAT"], VCA.VERSION))
 
     elseif cmd == "replaylog" then
         VCA.Detection.ReplayBonusRollLog(true)
@@ -251,11 +256,11 @@ SlashCmdList["VOIDCOREADVISOR"] = function(msg)
     elseif cmd == "restore" then
         local mpTime, raidTime = VCA.VoidcacheScan.GetBackupInfo()
         if not mpTime and not raidTime then
-            print("|cff8fe36bVoidcoreAdvisor Reborn:|r " .. L["RESTORE_NO_BACKUP"])
+            print(VCA.Theme.title .. "VoidcoreAdvisor Reborn:|r " .. L["RESTORE_NO_BACKUP"])
         else
             local ok, result = VCA.VoidcacheScan.RestoreBackup()
             if ok then
-                print("|cff8fe36bVoidcoreAdvisor Reborn:|r " .. string.format(L["RESTORE_COMPLETE"], result))
+                print(VCA.Theme.title .. "VoidcoreAdvisor Reborn:|r " .. string.format(L["RESTORE_COMPLETE"], result))
                 if VCA.DungeonOverview and VCA.DungeonOverview.Refresh then
                     VCA.DungeonOverview.Refresh()
                 end
@@ -266,7 +271,7 @@ SlashCmdList["VOIDCOREADVISOR"] = function(msg)
                     VCA.Panel.Refresh()
                 end
             else
-                print("|cff8fe36bVoidcoreAdvisor Reborn:|r " .. L["RESTORE_FAILED"])
+                print(VCA.Theme.title .. "VoidcoreAdvisor Reborn:|r " .. L["RESTORE_FAILED"])
             end
         end
 
@@ -277,8 +282,39 @@ SlashCmdList["VOIDCOREADVISOR"] = function(msg)
     elseif cmd == "liveraid" then
         VCA.LiveRaid.Run(true)
 
+    elseif cmd == "panel" then
+        VCA.OpenPanel(msg:match("^%s*%S+%s+(.-)%s*$"))
+
+    elseif cmd == "missing" then
+        VCA.Missing.Show(msg:match("^%s*%S+%s+(%d+)"))
+
+    elseif cmd == "export" then
+        VCA.Transfer.Export()
+
+    elseif cmd == "import" then
+        VCA.Transfer.Import()
+
+    elseif cmd == "resetpanel" then
+        if VCA.Panel and VCA.Panel.ResetPlacement then
+            VCA.Panel.ResetPlacement()
+        end
+
+    elseif cmd == "theme" then
+        local arg = (msg:match("^%s*%S+%s+(%S+)") or ""):lower()
+        local gdb = _G[VCA.GLOBAL_DB_NAME]
+        if VCA.Themes[arg] and gdb then
+            gdb.theme = arg
+            VCA.ApplyTheme(arg)
+            if VCA.Panel and VCA.Panel.Refresh then
+                VCA.Panel.Refresh()
+            end
+            print(VCA.Theme.title .. "VoidcoreAdvisor Reborn:|r " .. L["THEME_" .. arg:upper()])
+        else
+            print(VCA.Theme.title .. "VoidcoreAdvisor Reborn:|r " .. L["HELP_THEME"])
+        end
+
     else
-        print("|cff8fe36bVoidcoreAdvisor Reborn:|r " .. L["HELP_HEADER"])
+        print(VCA.Theme.title .. "VoidcoreAdvisor Reborn:|r " .. L["HELP_HEADER"])
         print(L["HELP_RESET"])
         print(L["HELP_COUNT"])
         print(L["HELP_SPEC"])
@@ -286,5 +322,11 @@ SlashCmdList["VOIDCOREADVISOR"] = function(msg)
         print(L["HELP_VERSION"])
         print(L["HELP_REPLAYLOG"])
         print(L["HELP_RESTORE"])
+        print(L["HELP_PANEL"])
+        print(L["HELP_MISSING"])
+        print(L["HELP_EXPORT"])
+        print(L["HELP_IMPORT"])
+        print(L["HELP_THEME"])
+        print(L["HELP_RESETPANEL"])
     end
 end

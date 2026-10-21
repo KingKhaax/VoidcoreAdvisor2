@@ -4,6 +4,7 @@
 -- The result is stored in VoidcoreAdvisorDB.liveRaids and injected into
 -- VCA.SeasonData.raids, so it survives relogs without rescanning.
 local addonName, VCA = ...
+local L = VCA.L
 
 local LiveRaid = {}
 VCA.LiveRaid = LiveRaid
@@ -185,7 +186,7 @@ end
 
 local function Say(verbose, text)
     if verbose then
-        print("|cff8fe36bVoidcoreAdvisor Reborn:|r " .. text)
+        print(VCA.Theme.title .. "VoidcoreAdvisor Reborn:|r " .. text)
     end
 end
 
@@ -224,7 +225,7 @@ local function TryScan(attempt, verbose)
         store[instanceID] = entry
         Inject(entry)
         Refresh()
-        print("|cff8fe36bVoidcoreAdvisor Reborn:|r " .. (VCA.L["LIVE_RAID_ADDED"] or "New raid loot loaded from the Encounter Journal."))
+        print(VCA.Theme.title .. "VoidcoreAdvisor Reborn:|r " .. (VCA.L["LIVE_RAID_ADDED"] or "New raid loot loaded from the Encounter Journal."))
     elseif attempt < MAX_ATTEMPTS then
         Say(verbose, "Item data is still loading, retrying...")
         C_Timer.After(4, function()
@@ -232,6 +233,37 @@ local function TryScan(attempt, verbose)
         end)
     else
         Say(verbose, "Could not read the raid loot (item data did not load).")
+    end
+end
+
+-- Warns once per session about raids of the newest tier that the loot data does
+-- not know, so the player understands why the panel is missing there.
+local warnedOutdated = false
+local function CheckOutdated()
+    if warnedOutdated or InCombatLockdown() or IsInInstance() or not EJ_GetNumTiers then
+        return
+    end
+    local savedTier = EJ_GetCurrentTier()
+    local unknown = {}
+    EJ_SelectTier(EJ_GetNumTiers())
+    local idx = 1
+    while true do
+        local instanceID, name = EJ_GetInstanceByIndex(idx, true)
+        if not instanceID then
+            break
+        end
+        if not VCA.LootPool.IsCurrentSeasonRaid(instanceID) then
+            unknown[#unknown + 1] = name or tostring(instanceID)
+        end
+        idx = idx + 1
+    end
+    if savedTier and savedTier > 0 then
+        EJ_SelectTier(savedTier)
+    end
+    if #unknown > 0 then
+        warnedOutdated = true
+        print(VCA.Theme.title .. "VoidcoreAdvisor Reborn:|r " ..
+                  string.format(L["DATA_OUTDATED"], table.concat(unknown, ", ")))
     end
 end
 
@@ -262,5 +294,6 @@ frame:SetScript("OnEvent", function(self, event, name)
         C_Timer.After(8, function()
             TryScan(1)
         end)
+        C_Timer.After(25, CheckOutdated)
     end
 end)

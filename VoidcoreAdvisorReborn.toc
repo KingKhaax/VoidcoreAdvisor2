@@ -1,7 +1,7 @@
 ## Interface: 120100, 120105
 ## Title: VoidcoreAdvisor Reborn
 ## Notes: Attaches a panel to the Encounter Journal showing which loot specialization gives you the best chance of getting the items you want when spending Nebulous Voidcores.
-## Version: 2.0.2
+## Version: 2.1.0
 ## Author: sr.kitkat (fork); original by rolferik12
 ## IconTexture: Interface\AddOns\VoidcoreAdvisorReborn\icon.tga
 ## SavedVariables: VoidcoreAdvisorDB
@@ -20,6 +20,7 @@ Locales\zhCN.lua
 Locales\zhTW.lua
 
 Core\Constants.lua
+Core\Theme.lua
 Core\Data.lua
 Core\SpecInfo.lua
 Core\SeasonData.lua
@@ -40,3 +41,6 @@ UI\Options.lua
 UI\BonusRollConfirm.lua
 UI\EJHook.lua
 UI\EJHookView.lua
+UI\Shortcuts.lua
+UI\Missing.lua
+UI\Transfer.lua

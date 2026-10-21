@@ -90,7 +90,7 @@ hooksecurefunc("EJ_SelectEncounter", function(encounterID)
         if not VCA.LootPool.IsCurrentSeasonRaid(journalInstanceID) then
             if not _warnedRaidIDs[journalInstanceID] and EJ_GetNumTiers and EJ_GetCurrentTier() == EJ_GetNumTiers() then
                 _warnedRaidIDs[journalInstanceID] = true
-                print("|cff8fe36bVoidcoreAdvisor Reborn:|r " .. VCA.L["RAID_NOT_IN_DATA"])
+                print(VCA.Theme.title .. "VoidcoreAdvisor Reborn:|r " .. VCA.L["RAID_NOT_IN_DATA"])
             end
             VCA.Panel.Hide()
             EJHook.UpdateToggleVisibility()
@@ -359,7 +359,10 @@ syncFrame:SetScript("OnEvent", function(self, event)
     toggleIcon:SetAllPoints()
     toggleIcon:SetAtlas("azeritereforger-glow")
     toggleIcon:SetDesaturated(true)
-    toggleIcon:SetVertexColor(0.56, 0.89, 0.42, 1)
+    VCA.OnTheme(function()
+        local t = VCA.Theme.accent
+        toggleIcon:SetVertexColor(t[1], t[2], t[3], 1)
+    end)
 
     local toggleHighlight = toggleBtn:CreateTexture(nil, "HIGHLIGHT")
     toggleHighlight:SetSize(32, 32)
@@ -405,7 +408,10 @@ syncFrame:SetScript("OnEvent", function(self, event)
     overviewIcon:SetAllPoints()
     overviewIcon:SetAtlas("azeritereforger-glow")
     overviewIcon:SetDesaturated(true)
-    overviewIcon:SetVertexColor(0.56, 0.89, 0.42, 1)
+    VCA.OnTheme(function()
+        local t = VCA.Theme.accent
+        overviewIcon:SetVertexColor(t[1], t[2], t[3], 1)
+    end)
 
     local overviewHighlight = overviewToggleBtn:CreateTexture(nil, "HIGHLIGHT")
     overviewHighlight:SetSize(32, 32)

@@ -1,4 +1,4 @@
-# VoidcoreAdvisor Reborn
+# <img src="docs/icons/inv_enchant_voidsphere.jpg" width="36" height="36" alt="" align="absmiddle"> VoidcoreAdvisor Reborn
 
 > **Fork of [VoidcoreAdvisor](https://github.com/rolferik12/VoidcoreAdvisor) by rolferik12**, continued with the author's explicit permission (MIT license). All original credit goes to rolferik12. Season data is generated with the author's [VoidcoreAdvisorGen](https://github.com/rolferik12/VoidcoreAdvisorGen).
 >
@@ -15,30 +15,30 @@ The addon tracks which items you have already obtained, either through manual ch
 
 When you zone into a current-season Mythic or Mythic+ dungeon, VoidcoreAdvisor checks whether your active loot specialization is the best match for the items you have selected from that dungeon. If a different spec would give you better odds and you have at least one Nebulous Voidcore to spend, a dialog popup appears showing your current spec, the recommended spec with its probability stats, and offers to switch your loot specialization with a single click. The reminder only triggers once per dungeon and can be disabled in the addon settings.
 
-## Key Features
+## <img src="docs/icons/achievement_dungeon_gloryoftheraider.jpg" width="28" height="28" alt="" align="absmiddle"> Key Features
 
-- Side panel anchored to the Encounter Journal with loot and spec ranking columns.
-- Per-spec probability calculation based on remaining loot pool size.
-- Item selection to compare which spec gives the best odds for specific pieces.
-- Automatic detection of items received via Nebulous Voidcores after encounters.
-- Loot spec reminder popup when entering a Mythic+ dungeon on a suboptimal spec for your selected items.
-- Bonus roll confirmation overlay that replaces the default Voidcore prompt with a two-click Roll button, preventing accidental spends.
-- Support for both raid bosses (Normal, Heroic, Mythic) and Mythic+ dungeons.
-- Adjustable key level selector for M+ that updates tooltip item levels to match the Voidcore reward track.
-- Spec and item filtering with cross-column highlighting.
-- Voidcache loot spec scanner that reads each specialization's Nebulous Voidcache tooltip and automatically marks items unavailable to each spec as obtained.
-- Persistent per-character tracking of obtained items and selections.
-- Localized in 11 languages: English, German, Spanish (EU/MX), French, Italian, Korean, Portuguese (BR), Russian, and Chinese (Simplified/Traditional).
+- <img src="docs/icons/inv_misc_book_09.jpg" width="20" height="20" alt="" align="absmiddle"> Side panel anchored to the Encounter Journal with loot and spec ranking columns.
+- <img src="docs/icons/inv_misc_dice_02.jpg" width="20" height="20" alt="" align="absmiddle"> Per-spec probability calculation based on remaining loot pool size.
+- <img src="docs/icons/inv_helmet_03.jpg" width="20" height="20" alt="" align="absmiddle"> Item selection to compare which spec gives the best odds for specific pieces.
+- <img src="docs/icons/inv_misc_map_01.jpg" width="20" height="20" alt="" align="absmiddle"> Automatic detection of items received via Nebulous Voidcores after encounters.
+- <img src="docs/icons/inv_misc_bell_01.jpg" width="20" height="20" alt="" align="absmiddle"> Loot spec reminder popup when entering a Mythic+ dungeon on a suboptimal spec for your selected items.
+- <img src="docs/icons/inv_misc_coin_01.jpg" width="20" height="20" alt="" align="absmiddle"> Bonus roll confirmation overlay that replaces the default Voidcore prompt with a two-click Roll button, preventing accidental spends.
+- <img src="docs/icons/inv_misc_head_dragon_01.jpg" width="20" height="20" alt="" align="absmiddle"> Support for both raid bosses (Normal, Heroic, Mythic) and Mythic+ dungeons.
+- <img src="docs/icons/inv_misc_key_14.jpg" width="20" height="20" alt="" align="absmiddle"> Adjustable key level selector for M+ that updates tooltip item levels to match the Voidcore reward track.
+- <img src="docs/icons/inv_misc_net_01.jpg" width="20" height="20" alt="" align="absmiddle"> Spec and item filtering with cross-column highlighting.
+- <img src="docs/icons/inv_misc_spyglass_02.jpg" width="20" height="20" alt="" align="absmiddle"> Voidcache loot spec scanner that reads each specialization's Nebulous Voidcache tooltip and automatically marks items unavailable to each spec as obtained.
+- <img src="docs/icons/inv_misc_bag_07.jpg" width="20" height="20" alt="" align="absmiddle"> Persistent per-character tracking of obtained items and selections.
+- <img src="docs/icons/inv_scroll_03.jpg" width="20" height="20" alt="" align="absmiddle"> Localized in 11 languages: English, German, Spanish (EU/MX), French, Italian, Korean, Portuguese (BR), Russian, and Chinese (Simplified/Traditional).
 
-### Dungeon Overview
+### <img src="docs/icons/inv_misc_key_14.jpg" width="24" height="24" alt="" align="absmiddle"> Dungeon Overview
 
 When the Encounter Journal is open on the instance list, a separate overview panel appears listing all current-season Mythic+ dungeons sorted by the highest single-item chance across your specializations. Each row shows the best-matching spec icon and name, the number of items remaining for that spec, and the percentage chance per Voidcore roll. A two-row grid of equipment slot buttons (head, neck, shoulders, back, chest, wrists, hands, waist, legs, feet, finger, trinket, weapon, off-hand) lets you narrow the ranking to only the slot types you are targeting.
 
-### Raid Overview
+### <img src="docs/icons/inv_misc_head_dragon_01.jpg" width="24" height="24" alt="" align="absmiddle"> Raid Overview
 
 When the Encounter Journal is open on a raid's main page without a specific boss selected, a raid overview panel lists every boss in Encounter Journal order. Each row shows the best spec for that boss, items remaining, and the probability percentage — giving you a quick picture of which bosses are still worth rolling on and which spec to use for each.
 
-### Voidcache Loot Spec Scan
+### <img src="docs/icons/inv_misc_spyglass_02.jpg" width="24" height="24" alt="" align="absmiddle"> Voidcache Loot Spec Scan
 
 VoidcoreAdvisor can scan the Nebulous Voidcache tooltip for every one of your loot specializations to determine exactly which items each spec is eligible to receive. Items that a given spec cannot receive are automatically marked as obtained, which removes them from that spec's remaining pool and keeps probability numbers accurate without any manual work.
 
@@ -50,7 +50,7 @@ The scan iterates over every spec and dungeon (or raid boss) in a sequence desig
 
 Before the scan writes its results, a snapshot of all existing obtained data for that content type is saved to `SavedVariables`. If the results look wrong, run `/void restore` to roll back to the pre-scan state. M+ and raid backups are stored independently so running one scan never overwrites the other's backup.
 
-### Bonus Roll Confirmation
+### <img src="docs/icons/inv_misc_dice_02.jpg" width="24" height="24" alt="" align="absmiddle"> Bonus Roll Confirmation
 
 When a Nebulous Voidcore prompt appears, VoidcoreAdvisor replaces the default `BonusRollFrame` with a custom overlay window. The overlay sits at a higher frame level than the original so accidental mouse clicks on the underlying Roll and Pass buttons are blocked.
 
@@ -60,7 +60,7 @@ The window displays the item icon (hoverable for a full tooltip), the item name,
 
 The overlay can be enabled or disabled on the Options page. The per-spec item count list can also be toggled independently.
 
-### Loot Pool Accuracy
+### <img src="docs/icons/inv_misc_gem_amethyst_02.jpg" width="24" height="24" alt="" align="absmiddle"> Loot Pool Accuracy
 
 - Loot pool reads are now performed exclusively under a verified `WithEJState` filter. Results are only cached when the filter application succeeds, preventing inflated or unfiltered pools from being stored.
 - The display item list in the panel is always intersected with the trusted per-spec pool. An empty trusted pool renders "no items" rather than falling back to raw Encounter Journal data.
@@ -69,7 +69,7 @@ The overlay can be enabled or disabled on the Options page. The per-spec item co
 - Added a class-level eligibility fallback for items whose spec-set data has no overlap with the player's class specs, fixing "No items for this spec" on raid bosses for some classes.
 - Persisted cache entries from prior sessions are version-gated and automatically discarded when the format changes, so stale or poisoned pools from earlier runs do not carry over.
 
-### Cache Warm
+### <img src="docs/icons/inv_relics_hourglass.jpg" width="24" height="24" alt="" align="absmiddle"> Cache Warm
 
 - Cache warmup is now split into two phases: a fast item metadata primer (populates the client item cache so spec info is available promptly) followed by the class/spec filter cache build.
 - The warm ticker no longer has a fixed iteration limit, so EJ availability pauses no longer exhaust the budget and cancel the process prematurely.
@@ -77,17 +77,17 @@ The overlay can be enabled or disabled on the Options page. The per-spec item co
 - Warmup is deferred until the player is outside an instance. If the season filter cannot be built at login (EJ data not yet ready), the process retries automatically.
 - The loot pool cache is persisted to `SavedVariables` between sessions so subsequent logins complete warmup much faster.
 
-### Detection
+### <img src="docs/icons/inv_misc_map_01.jpg" width="24" height="24" alt="" align="absmiddle"> Detection
 
 - The Mythic+ key level is now captured at `CHALLENGE_MODE_START` and `CHALLENGE_MODE_COMPLETED` and persisted to `SavedVariables`, so the correct level is retained across `/reload` inside or immediately after a run.
 - Dungeon identification now uses locale-independent instance IDs as the primary lookup, with a localized name lookup as fallback. This prevents misidentification for players using non-English clients.
 - Detection and panel source state is cleared on zone transitions to prevent stale dungeon data from persisting after leaving an instance.
 
-### UI
+### <img src="docs/icons/inv_misc_gear_01.jpg" width="24" height="24" alt="" align="absmiddle"> UI
 
 - The chance column in both the Dungeon Overview and Raid Overview is wider (64 px) and word-wrap is disabled on all column headers and row labels, fixing a layout shift that caused the header to appear truncated and shifted downward on some characters.
 - The Options page now includes a Preview button next to the reminder toggle so you can inspect the popup appearance without entering a dungeon.
 
-## VoidcoreAdvisorGen (developer tool)
+## <img src="docs/icons/inv_scroll_03.jpg" width="28" height="28" alt="" align="absmiddle"> VoidcoreAdvisorGen (developer tool)
 
 The season loot tables in `Core/SeasonData.lua` are generated in-game with [VoidcoreAdvisorGen](https://github.com/rolferik12/VoidcoreAdvisorGen) by rolferik12 (MIT). A copy adapted for 12.1.5 and for this fork lives in `tools/VoidcoreAdvisorGen`. It is not needed to play and is not part of the CurseForge download.

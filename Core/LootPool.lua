@@ -46,6 +46,9 @@ local _seasonRaidIDs = {} -- set: { [ejInstanceID] = true }
 local _seasonRaidByMapID = {} -- { [WoW mapID] = ejInstanceID }  (populated from SeasonData.raidInstanceIDs[id].mapID)
 local _seasonRaidByName = {} -- { [localizedName] = ejInstanceID }  (fallback for old SeasonData without mapID)
 local _seasonFilterBuilt = false
+-- Raids discovered at runtime from the Encounter Journal (see Core/LiveRaid.lua).
+-- Kept out of the season fingerprint so adding one never wipes obtained data.
+local _liveRaids = {} -- { [ejInstanceID] = mapID or false }
 
 GetSeasonFingerprint = function()
     if not _seasonFilterBuilt then
@@ -59,7 +62,9 @@ GetSeasonFingerprint = function()
 
     local raidIDs = {}
     for instanceID in pairs(_seasonRaidIDs) do
-        raidIDs[#raidIDs + 1] = instanceID
+        if _liveRaids[instanceID] == nil then
+            raidIDs[#raidIDs + 1] = instanceID
+        end
     end
     table.sort(raidIDs)
     for _, instanceID in ipairs(raidIDs) do
@@ -101,6 +106,13 @@ function LootPool.BuildSeasonFilter()
         _seasonRaidIDs[instanceID] = true
         -- raidEntry may be true (legacy) or { mapID=N } (new gen format).
         local mapID = type(raidEntry) == "table" and raidEntry.mapID or nil
+        if mapID then
+            _seasonRaidByMapID[mapID] = instanceID
+        end
+    end
+
+    for instanceID, mapID in pairs(_liveRaids) do
+        _seasonRaidIDs[instanceID] = true
         if mapID then
             _seasonRaidByMapID[mapID] = instanceID
         end
@@ -199,6 +211,15 @@ function LootPool.GetSeasonDungeonByName(name)
     return _seasonDungeonByName[name]
 end
 
+-- Registers a raid read from the EJ at runtime. Survives BuildSeasonFilter().
+function LootPool.AddLiveRaid(instanceID, mapID)
+    _liveRaids[instanceID] = mapID or false
+    _seasonRaidIDs[instanceID] = true
+    if mapID then
+        _seasonRaidByMapID[mapID] = instanceID
+    end
+end
+
 function LootPool.IsCurrentSeasonRaid(instanceID)
     EnsureSeasonFilter()
     return _seasonRaidIDs[instanceID] == true
@@ -232,7 +253,7 @@ end
 -- name/link/icon may be empty strings/0 until item data is loaded from the
 -- server (warmup primes this with GetItemInfo calls).
 local function EnrichItemID(itemID)
-    local name, link, _, _, _, _, subType, _, equipLoc, icon = GetItemInfo(itemID)
+    local name, link, _, _, _, _, subType, _, equipLoc, icon = C_Item.GetItemInfo(itemID)
     return {
         itemID = itemID,
         name = name or "",

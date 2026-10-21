@@ -1,0 +1,246 @@
+-- VoidcoreAdvisor: LiveRaid
+-- Builds the loot pool of raids that are not in the generated SeasonData by
+-- reading the Encounter Journal in-game, the same way VoidcoreAdvisorGen does.
+-- The result is stored in VoidcoreAdvisorDB.liveRaids and injected into
+-- VCA.SeasonData.raids, so it survives relogs without rescanning.
+local addonName, VCA = ...
+
+local LiveRaid = {}
+VCA.LiveRaid = LiveRaid
+
+-- Encounter IDs whose raid must be scanned when SeasonData lacks them.
+-- 3513 = Kith'ix (The Unbinding of Kith'ix).
+local WANTED_ENCOUNTERS = {3513}
+local DIFFICULTIES = {14, 15, 16}
+local MAX_CLASS_ID = 13
+local MAX_ATTEMPTS = 6
+
+local function GetDB()
+    local db = _G[VCA.GLOBAL_DB_NAME]
+    if type(db) ~= "table" then
+        return nil
+    end
+    db.liveRaids = db.liveRaids or {}
+    return db.liveRaids
+end
+
+local function Inject(entry)
+    VCA.SeasonData = VCA.SeasonData or {}
+    VCA.SeasonData.raids = VCA.SeasonData.raids or {}
+    for encounterID, data in pairs(entry.raids) do
+        if not VCA.SeasonData.raids[encounterID] then
+            VCA.SeasonData.raids[encounterID] = data
+        end
+    end
+    VCA.LootPool.AddLiveRaid(entry.instanceID, entry.mapID)
+end
+
+local function ItemQuality(itemID, link)
+    local q = link and link:match("|cnIQ(%d):")
+    if q then
+        return tonumber(q)
+    end
+    if C_Item.GetItemQualityByID then
+        return C_Item.GetItemQualityByID(itemID)
+    end
+end
+
+-- Collects the epic item IDs of the currently selected EJ encounter for one
+-- loot filter. Returns the sorted list, a sample link, and false when item
+-- data was not loaded yet.
+local function ReadLoot(classID, specID)
+    EJ_SetLootFilter(classID, specID)
+    local ids, seen, sample = {}, {}, nil
+    for i = 1, EJ_GetNumLoot() do
+        local info = C_EncounterJournal.GetLootInfoByIndex(i)
+        local itemID = info and info.itemID
+        if itemID and itemID > 0 and not seen[itemID] then
+            local quality = ItemQuality(itemID, info.link)
+            if quality == nil then
+                return nil, nil, false
+            end
+            if quality >= 4 then
+                seen[itemID] = true
+                ids[#ids + 1] = itemID
+                sample = sample or info.link
+            end
+        end
+    end
+    table.sort(ids)
+    return ids, sample, true
+end
+
+local function FindRaid()
+    for _, wanted in ipairs(WANTED_ENCOUNTERS) do
+        if not (VCA.SeasonData and VCA.SeasonData.raids and VCA.SeasonData.raids[wanted]) then
+            local numTiers = EJ_GetNumTiers()
+            for tier = numTiers, math.max(1, numTiers - 1), -1 do
+                EJ_SelectTier(tier)
+                local idx = 1
+                while true do
+                    local instanceID = EJ_GetInstanceByIndex(idx, true)
+                    if not instanceID then
+                        break
+                    end
+                    local e = 1
+                    while true do
+                        local _, _, encounterID = EJ_GetEncounterInfoByIndex(e, instanceID)
+                        if not encounterID then
+                            break
+                        end
+                        if encounterID == wanted then
+                            return instanceID
+                        end
+                        e = e + 1
+                    end
+                    idx = idx + 1
+                end
+            end
+        end
+    end
+end
+
+-- Returns the entry on success, nil when item data is still loading.
+local function ScanInstance(instanceID)
+    local savedTier = EJ_GetCurrentTier()
+    local savedDiff = EJ_GetDifficulty()
+
+    LiveRaid._scanning = true
+    VCA.LootPool._reentryGuard = true
+    local ok, entry = pcall(function()
+        EJ_SelectInstance(instanceID)
+        local mapID = select(10, EJ_GetInstanceInfo(instanceID))
+        local result = {instanceID = instanceID, mapID = mapID, raids = {}}
+
+        local encounters = {}
+        local e = 1
+        while true do
+            local _, _, encounterID = EJ_GetEncounterInfoByIndex(e, instanceID)
+            if not encounterID then
+                break
+            end
+            encounters[#encounters + 1] = encounterID
+            e = e + 1
+        end
+
+        for _, encounterID in ipairs(encounters) do
+            local data = {instanceID = instanceID, byClass = {}, bySpec = {}, bonusByDiff = {}}
+            for _, diff in ipairs(DIFFICULTIES) do
+                if EJ_IsValidInstanceDifficulty(diff) then
+                    EJ_SetDifficulty(diff)
+                    EJ_SelectEncounter(encounterID)
+
+                    local all, sample, complete = ReadLoot(0, 0)
+                    if not complete then
+                        return nil
+                    end
+                    data[diff] = all
+                    data.bonusByDiff[diff] = sample
+
+                    data.byClass[diff] = {}
+                    data.bySpec[diff] = {}
+                    for classID = 1, MAX_CLASS_ID do
+                        local classIDs, _, classComplete = ReadLoot(classID, 0)
+                        if not classComplete then
+                            return nil
+                        end
+                        data.byClass[diff][classID] = classIDs
+                        for s = 1, GetNumSpecializationsForClassID(classID) do
+                            local specID = GetSpecializationInfoForClassID(classID, s)
+                            local specIDs, _, specComplete = ReadLoot(classID, specID)
+                            if not specComplete then
+                                return nil
+                            end
+                            data.bySpec[diff][specID] = specIDs
+                        end
+                    end
+                end
+            end
+            result.raids[encounterID] = data
+        end
+        return result
+    end)
+    VCA.LootPool._reentryGuard = false
+    LiveRaid._scanning = false
+
+    pcall(function()
+        EJ_SelectTier(savedTier)
+        EJ_SetDifficulty(savedDiff)
+        EJ_SetLootFilter(VCA.SpecInfo.GetPlayerClassID() or 0, VCA.SpecInfo.GetEffectiveLootSpecID() or 0)
+    end)
+
+    if ok then
+        return entry
+    end
+end
+
+local function Refresh()
+    VCA.LootPool.InvalidateCache()
+    VCA.LootPool.BuildSeasonFilter()
+    if VCA.Panel and VCA.Panel.Refresh then
+        pcall(VCA.Panel.Refresh)
+    end
+end
+
+local function TryScan(attempt)
+    local store = GetDB()
+    if not store then
+        return
+    end
+    if InCombatLockdown() or IsInInstance() then
+        C_Timer.After(10, function()
+            TryScan(attempt)
+        end)
+        return
+    end
+
+    if C_AddOns and C_AddOns.LoadAddOn then
+        C_AddOns.LoadAddOn("Blizzard_EncounterJournal")
+    end
+    if not EJ_GetNumTiers then
+        return
+    end
+
+    local instanceID = FindRaid()
+    if not instanceID then
+        return
+    end
+
+    local entry = ScanInstance(instanceID)
+    if entry then
+        entry.build = select(2, GetBuildInfo())
+        store[instanceID] = entry
+        Inject(entry)
+        Refresh()
+        print("|cff9370DBVoidcoreAdvisor:|r " .. (VCA.L["LIVE_RAID_ADDED"] or "New raid loot loaded from the Encounter Journal."))
+    elseif attempt < MAX_ATTEMPTS then
+        C_Timer.After(4, function()
+            TryScan(attempt + 1)
+        end)
+    end
+end
+
+local frame = CreateFrame("Frame")
+frame:RegisterEvent("ADDON_LOADED")
+frame:RegisterEvent("PLAYER_ENTERING_WORLD")
+frame:SetScript("OnEvent", function(self, event, name)
+    if event == "ADDON_LOADED" then
+        if name ~= addonName then
+            return
+        end
+        self:UnregisterEvent("ADDON_LOADED")
+        local store = GetDB()
+        if store then
+            for _, entry in pairs(store) do
+                if type(entry) == "table" and entry.raids then
+                    Inject(entry)
+                end
+            end
+        end
+    else
+        self:UnregisterEvent("PLAYER_ENTERING_WORLD")
+        C_Timer.After(8, function()
+            TryScan(1)
+        end)
+    end
+end)

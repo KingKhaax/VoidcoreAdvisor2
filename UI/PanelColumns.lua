@@ -156,7 +156,7 @@ local function PopulateItemColumn(sourceType, sourceID, difficultyID, isHighTier
     -- This keeps the loot column usable without weakening the trust gate.
     if #displayItems == 0 and next(trustedItemSet) then
         for itemID in pairs(trustedItemSet) do
-            local itemName, itemLink, _, _, _, _, _, _, equipLoc, itemIcon = GetItemInfo(itemID)
+            local itemName, itemLink, _, _, _, _, _, _, equipLoc, itemIcon = C_Item.GetItemInfo(itemID)
             if (not itemIcon or itemIcon == 0 or itemIcon == "") and C_Item and C_Item.GetItemInfoInstant then
                 local _, _, _, instantEquipLoc, instantIcon = C_Item.GetItemInfoInstant(itemID)
                 equipLoc = equipLoc or instantEquipLoc
@@ -233,7 +233,7 @@ local function PopulateItemColumn(sourceType, sourceID, difficultyID, isHighTier
         end
 
         -- Name with quality color and slot.
-        local itemName, _, quality = GetItemInfo(item.itemID)
+        local itemName, _, quality = C_Item.GetItemInfo(item.itemID)
         local ejName = (item.name ~= "" and item.name) or nil
         itemName = itemName or ejName or ("Item " .. item.itemID)
         quality = quality or 1

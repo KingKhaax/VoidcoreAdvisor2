@@ -326,7 +326,7 @@ local function BuildSlotTooltip(slotKey)
             for _, itemID in ipairs(VCA.LootPool.GetInstanceItemsForSlot(instanceID, lootKey)) do
                 if selected[itemID] and classItems[itemID] then
                     local bonusedLink = BuildMyth1ItemLink(itemID)
-                    local itemName, _, itemQuality, _, _, _, _, _, _, itemTexture = GetItemInfo(bonusedLink or itemID)
+                    local itemName, _, itemQuality, _, _, _, _, _, _, itemTexture = C_Item.GetItemInfo(bonusedLink or itemID)
                     if itemName then
                         rows[#rows + 1] = {
                             name = itemName,
@@ -397,7 +397,7 @@ local function BuildDungeonTooltip(instanceID)
     for itemID in pairs(selected) do
         if classItems[itemID] then
             local bonusedLink = BuildMyth1ItemLink(itemID)
-            local itemName, _, itemQuality, _, _, _, _, _, equipLoc, itemTexture = GetItemInfo(bonusedLink or itemID)
+            local itemName, _, itemQuality, _, _, _, _, _, equipLoc, itemTexture = C_Item.GetItemInfo(bonusedLink or itemID)
             if itemName then
                 rows[#rows + 1] = {
                     itemName = itemName,
@@ -443,7 +443,7 @@ local PICKER_ICON_SZ = 16
 -- Builds an item link with Myth 1/6 bonus IDs injected so tooltips show the
 -- correct item level for the Nebulous Voidcore reward track.
 BuildMyth1ItemLink = function(itemID)
-    local _, itemLink = GetItemInfo(itemID)
+    local _, itemLink = C_Item.GetItemInfo(itemID)
     if not itemLink then
         return nil
     end
@@ -761,7 +761,7 @@ local function OpenSlotPicker(slotKey, anchorBtn)
         row.frame:SetPoint("TOPLEFT", pickerScrollChild, "TOPLEFT", 0, -y)
 
         local bonusedLink = BuildMyth1ItemLink(itemID)
-        local itemName, _, itemQuality, _, _, _, _, _, _, itemTexture = GetItemInfo(bonusedLink or itemID)
+        local itemName, _, itemQuality, _, _, _, _, _, _, itemTexture = C_Item.GetItemInfo(bonusedLink or itemID)
         if itemTexture then
             row.icon:SetTexture(itemTexture)
             row.icon:Show()
@@ -825,7 +825,7 @@ local function OpenSlotPicker(slotKey, anchorBtn)
         row.frame:SetScript("OnEnter", function(self)
             -- Refresh label color/icon lazily (GetItemInfo may have been empty at open time)
             local bLink = BuildMyth1ItemLink(capturedItem)
-            local iName, _, iQuality, _, _, _, _, _, _, iTexture = GetItemInfo(bLink or capturedItem)
+            local iName, _, iQuality, _, _, _, _, _, _, iTexture = C_Item.GetItemInfo(bLink or capturedItem)
             if iName then
                 row.label:SetText("|cnIQ" .. (iQuality or 1) .. ":" .. iName .. "|r")
                 if iTexture and not row.icon:IsShown() then

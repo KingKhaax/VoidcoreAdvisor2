@@ -222,7 +222,7 @@ function LootPool.WarmCache()
                     phase = 2
                     break
                 end
-                GetItemInfo(allItemIDs[phase1Idx])
+                C_Item.GetItemInfo(allItemIDs[phase1Idx])
             end
 
         elseif phase == 2 then

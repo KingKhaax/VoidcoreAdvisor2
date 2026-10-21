@@ -1,4 +1,4 @@
-﻿-- VoidcoreAdvisor: BonusRollConfirm
+-- VoidcoreAdvisor: BonusRollConfirm
 -- Replaces BonusRollFrame with a custom VCA window positioned at the same
 -- screen location (+small offset so the original is still visible behind it).
 --
@@ -329,7 +329,7 @@ local function ShowChanceTooltip(owner)
         if specItemSet[itemID] and
             not VCA.Data
                 .IsObtainedForKeyTier(source.sourceType, source.sourceID, source.difficultyID, specID, itemID, nil) then
-            local itemName, _, _, _, _, _, _, _, equipLoc, itemTexture = GetItemInfo(itemID)
+            local itemName, _, _, _, _, _, _, _, equipLoc, itemTexture = C_Item.GetItemInfo(itemID)
             if itemName then
                 rows[#rows + 1] = {
                     itemName = itemName,
@@ -691,7 +691,7 @@ local function ShowSpecList(source, dynY)
                         not VCA.Data
                             .IsObtainedForKeyTier(source.sourceType, source.sourceID, source.difficultyID,
                             capturedSpecID, itemID, nil) then
-                        local itemName, _, _, _, _, _, _, _, equipLoc, itemTexture = GetItemInfo(itemID)
+                        local itemName, _, _, _, _, _, _, _, equipLoc, itemTexture = C_Item.GetItemInfo(itemID)
                         if itemName then
                             wantedItems[#wantedItems + 1] = {
                                 itemName = itemName,
@@ -907,10 +907,10 @@ function BRC.Show()
     -- SPELL_CONFIRMATION_PROMPT provides displayItemID authoritatively; EJ button is fallback.
     cachedDisplayItemID = (cachedPromptData and cachedPromptData.displayItemID) or (ejBtn and ejBtn.displayItemID)
     if cachedDisplayItemID then
-        cachedItemLink = select(2, GetItemInfo(cachedDisplayItemID))
+        cachedItemLink = select(2, C_Item.GetItemInfo(cachedDisplayItemID))
     end
 
-    local iName, _, iQuality, _, _, _, _, _, _, iTexture = GetItemInfo(cachedDisplayItemID or 0)
+    local iName, _, iQuality, _, _, _, _, _, _, iTexture = C_Item.GetItemInfo(cachedDisplayItemID or 0)
     -- If GetItemInfo hasn't cached the item yet (common for delve voidcaches), fall back to
     -- the texture Blizzard already placed on the EncounterJournalLinkButton's NormalTexture.
     if not iTexture and ejBtn then
@@ -924,7 +924,7 @@ function BRC.Show()
         winItemIcon:Hide()
     end
     if iName then
-        local _, _, _, hex = GetItemQualityColor(iQuality or 1)
+        local _, _, _, hex = C_Item.GetItemQualityColor(iQuality or 1)
         local shortName = (iName:match("^([^:]+)") or iName):gsub("%s+$", "")
         winItemName:SetText("|c" .. hex .. shortName .. "|r")
     elseif pf.Name and pf.Name:GetText() and pf.Name:GetText() ~= "" then
@@ -1090,14 +1090,14 @@ function BRC.ShowPreview()
     cachedDisplayItemID = cachedPromptData.displayItemID
     cachedItemLink = nil
 
-    local iName, _, iQuality, _, _, _, _, _, _, iTexture = GetItemInfo(cachedDisplayItemID)
+    local iName, _, iQuality, _, _, _, _, _, _, iTexture = C_Item.GetItemInfo(cachedDisplayItemID)
     if iTexture then
         winItemIcon:SetTexture(iTexture)
         winItemIcon:Show()
     else
         winItemIcon:Hide()
     end
-    local iHex = iQuality and select(4, GetItemQualityColor(iQuality)) or "ffa335ee"
+    local iHex = iQuality and select(4, C_Item.GetItemQualityColor(iQuality)) or "ffa335ee"
     local previewName = iName and ((iName:match("^([^:]+)") or iName):gsub("%s+$", "")) or "Nebulous Voidcore Roll"
     winItemName:SetText("|c" .. iHex .. previewName .. "|r")
 
@@ -1251,16 +1251,16 @@ eventFrame:SetScript("OnEvent", function(self, event, ...)
         -- item data has arrived from the server.
         local itemID = ...
         if win:IsShown() and itemID == cachedDisplayItemID and not winItemIcon:IsShown() then
-            local _, _, iQuality, _, _, _, _, _, _, iTexture = GetItemInfo(itemID)
+            local _, _, iQuality, _, _, _, _, _, _, iTexture = C_Item.GetItemInfo(itemID)
             if iTexture then
                 winItemIcon:SetTexture(iTexture)
                 winItemIcon:Show()
                 if not iQuality then
                     return
                 end
-                local _, _, _, hex = GetItemQualityColor(iQuality)
+                local _, _, _, hex = C_Item.GetItemQualityColor(iQuality)
                 if hex then
-                    local iName = GetItemInfo(itemID)
+                    local iName = C_Item.GetItemInfo(itemID)
                     if iName then
                         winItemName:SetText("|c" .. hex .. iName .. "|r")
                     end

@@ -114,7 +114,7 @@ local function BuildDungeonNameCache(instanceID, specID)
     local nameCache = {}
     local missing = 0
     for _, itemID in ipairs(itemIDs) do
-        local name = GetItemInfo(itemID)
+        local name = C_Item.GetItemInfo(itemID)
         if name and name ~= "" then
             nameCache[name] = itemID
         else
@@ -458,7 +458,7 @@ local function BuildEncounterNameCache(encounterID, specID, diffID)
     local specItems = raidData.bySpec and raidData.bySpec[diffID] and raidData.bySpec[diffID][specID] or {}
     local nameCache = {}
     for _, itemID in ipairs(specItems) do
-        local name = GetItemInfo(itemID)
+        local name = C_Item.GetItemInfo(itemID)
         if name and name ~= "" then
             nameCache[name] = itemID
         end

@@ -1,4 +1,11 @@
-# VoidcoreAdvisor
+# VoidcoreAdvisor 2.0
+
+> **Fork of [VoidcoreAdvisor](https://github.com/rolferik12/VoidcoreAdvisor) by rolferik12**, continued with the author's explicit permission (MIT license). All original credit goes to rolferik12. Season data is generated with the author's [VoidcoreAdvisorGen](https://github.com/rolferik12/VoidcoreAdvisorGen).
+>
+> Changes in 2.0: patch 12.1.5 API fixes (`C_Item.GetItemInfo` / `C_Item.GetItemQualityColor`) and automatic loot-table reading for new raids (The Unbinding of Kith'ix) straight from the Encounter Journal.
+>
+> This is a separate addon (folder `VoidcoreAdvisor2`). Disable or remove the original VoidcoreAdvisor before using it, since both use the same saved variables.
+
 
 VoidcoreAdvisor is a World of Warcraft addon for Retail (Patch 12.0.0+) that helps you make informed decisions when spending Nebulous Voidcores. It attaches a side panel to the Encounter Journal that displays the full loot pool for each raid boss or Mythic+ dungeon, broken down by specialization, alongside probability rankings that show which loot spec gives you the best odds of receiving the items you are after.
 

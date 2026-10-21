@@ -1168,7 +1168,7 @@ function Panel.Refresh()
     end
     _currentVoidcacheID = newVoidcacheID
     if newVoidcacheID then
-        local texture = select(10, GetItemInfo(newVoidcacheID))
+        local texture = select(10, C_Item.GetItemInfo(newVoidcacheID))
         if texture then
             voidcacheIconTex:SetTexture(texture)
             voidcacheIconBtn:Show()
@@ -1308,7 +1308,7 @@ specChangeFrame:SetScript("OnEvent", function(self, event, ...)
         -- Retry showing the icon if item data arrived after the initial Refresh.
         local itemID = ...
         if itemID == _currentVoidcacheID and frame:IsShown() and not voidcacheIconBtn:IsShown() then
-            local texture = select(10, GetItemInfo(itemID))
+            local texture = select(10, C_Item.GetItemInfo(itemID))
             if texture then
                 voidcacheIconTex:SetTexture(texture)
                 voidcacheIconBtn:Show()

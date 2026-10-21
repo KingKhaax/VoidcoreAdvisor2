@@ -73,8 +73,18 @@ end
 
 -- Real raids support the Normal/Heroic/Mythic difficulties; world boss entries such
 -- as the expansion's own "Midnight" entry do not. The instance must be selected.
-local function IsRaidInstance()
-    return EJ_IsValidInstanceDifficulty(14) or EJ_IsValidInstanceDifficulty(15) or EJ_IsValidInstanceDifficulty(16)
+-- The entry named after the expansion (the world bosses) is skipped too, and so is
+-- anything without a map.
+local function IsRaidInstance(instanceID, instanceName, tier)
+    if not (EJ_IsValidInstanceDifficulty(14) or EJ_IsValidInstanceDifficulty(15) or EJ_IsValidInstanceDifficulty(16)) then
+        return false
+    end
+    local mapID = instanceID and select(10, EJ_GetInstanceInfo(instanceID))
+    if not (mapID and mapID > 0) then
+        return false
+    end
+    local tierName = EJ_GetTierInfo and tier and EJ_GetTierInfo(tier)
+    return not (tierName and instanceName == tierName)
 end
 
 local function Say(verbose, text)
@@ -116,7 +126,7 @@ local function FindRaid(verbose)
                 end
                 e = e + 1
             end
-            if not known and tier == numTiers and IsRaidInstance() then
+            if not known and tier == numTiers and IsRaidInstance(instanceID, instanceName, tier) then
                 fallback = fallback or instanceID
             end
             idx = idx + 1
@@ -277,7 +287,7 @@ local function CheckOutdated()
         end
         if not VCA.LootPool.IsCurrentSeasonRaid(instanceID) then
             EJ_SelectInstance(instanceID)
-            if IsRaidInstance() then
+            if IsRaidInstance(instanceID, name, EJ_GetNumTiers()) then
                 unknown[#unknown + 1] = name or tostring(instanceID)
             end
         end
@@ -292,6 +302,8 @@ local function CheckOutdated()
                   string.format(L["DATA_OUTDATED"], table.concat(unknown, ", ")))
     end
 end
+
+LiveRaid.CheckOutdated = CheckOutdated
 
 -- /void liveraid: force a scan and report what happened.
 function LiveRaid.Run(verbose)

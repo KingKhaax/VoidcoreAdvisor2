@@ -1,5 +1,8 @@
 # Changelog
 
+## 2.2.2
+- The "new raid not in the loot data" message no longer names the expansion's world boss entry ("Midnight"): entries named like the expansion or without a map are ignored.
+
 ## 2.2.1
 - New /void scan [raid 14|15|16] command: reads the Voidcache of every spec to mark the items you already got from the Voidcores you spent (the same scan as the Scan Loot Specs buttons).
 - A one-time hint about /void scan for characters that have nothing marked yet.

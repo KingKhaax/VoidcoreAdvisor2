@@ -258,8 +258,8 @@ winVoidcoreInfo:SetPoint("TOPLEFT", winItemName, "BOTTOMLEFT", 0, -4)
 -- Timer bar  (value mirrored from BonusRollFrame.PromptFrame.Timer.Bar via OnUpdate)
 local timerBar = CreateFrame("StatusBar", nil, win)
 timerBar:SetHeight(8)
-timerBar:SetPoint("TOPLEFT", win, "TOPLEFT", 16, -62)
-timerBar:SetPoint("TOPRIGHT", win, "TOPRIGHT", -16, -62)
+timerBar:SetPoint("TOPLEFT", win, "TOPLEFT", 16, -72)
+timerBar:SetPoint("TOPRIGHT", win, "TOPRIGHT", -16, -72)
 timerBar:SetStatusBarTexture("Interface\\TargetingFrame\\UI-StatusBar")
 VCA.OnTheme(function() local t = VCA.Theme.timer; timerBar:SetStatusBarColor(t[1], t[2], t[3], 1) end)
 local timerBorder = timerBar:CreateTexture(nil, "BACKGROUND", nil, -1)
@@ -276,8 +276,8 @@ VCA.OnTheme(function() local t = VCA.Theme.timerBg; timerBg:SetColorTexture(t[1]
 local topSep = win:CreateTexture(nil, "ARTWORK")
 VCA.OnTheme(function() local t = VCA.Theme.border; topSep:SetColorTexture(t[1], t[2], t[3], 0.35) end)
 topSep:SetHeight(1)
-topSep:SetPoint("TOPLEFT", win, "TOPLEFT", 16, -78)
-topSep:SetPoint("TOPRIGHT", win, "TOPRIGHT", -16, -78)
+topSep:SetPoint("TOPLEFT", win, "TOPLEFT", 16, -88)
+topSep:SetPoint("TOPRIGHT", win, "TOPRIGHT", -16, -88)
 
 -- Spec row (centered: |T...|t icon + name + " - " + chance in one FontString)
 local specLabel = win:CreateFontString(nil, "OVERLAY", "GameFontNormal") -- retained as upvalue, hidden
@@ -287,7 +287,7 @@ local specIcon = win:CreateTexture(nil, "ARTWORK") -- retained as upvalue, hidde
 specIcon:SetSize(16, 16)
 
 local specName = win:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
-specName:SetPoint("TOP", win, "TOP", 0, -90)
+specName:SetPoint("TOP", win, "TOP", 0, -100)
 specName:SetJustifyH("CENTER")
 specName:SetWidth(340)
 
@@ -945,7 +945,7 @@ local function LayoutDynamicSection(source, specID, dynY)
             -- Source unknown: collapse the separator + spec-row region entirely
             topSep:Hide()
             specName:Hide()
-            dynY = -78
+            dynY = -88
         else
             dynY = initialDynY + 12
         end
@@ -1044,7 +1044,7 @@ function BRC.Show()
                      VCA.VoidcoreCost.MYTHIC_PLUS
     winVoidcoreInfo:SetText(string.format(L["BONUS_ROLL_CONFIRM_COST"], cost, owned))
 
-    local dynY = LayoutDynamicSection(source, specID, -112)
+    local dynY = LayoutDynamicSection(source, specID, -122)
     local btnW, btnH = 140, 28
     local winH = math.abs(dynY) + 8 + btnH + 16
     win:SetSize(360, winH)
@@ -1215,7 +1215,7 @@ function BRC.ShowPreview()
                      VCA.VoidcoreCost.MYTHIC_PLUS
     winVoidcoreInfo:SetText(string.format(L["BONUS_ROLL_CONFIRM_COST"], cost, owned))
 
-    local dynY = LayoutDynamicSection(source, specID, -112)
+    local dynY = LayoutDynamicSection(source, specID, -122)
     local btnW, btnH = 140, 28
     local winH = math.abs(dynY) + 8 + btnH + 16
     win:SetSize(360, winH)

@@ -1191,6 +1191,8 @@ local function DoLayout()
     -- Loot spec label (right-aligned, to the left of the voidcache icon)
     lootSpecLabel:ClearAllPoints()
     lootSpecLabel:SetPoint("RIGHT", voidcacheIconBtn, "LEFT", -4, 0)
+    lootSpecLabel:SetPoint("LEFT", specColHeader, "RIGHT", 8, 0)
+    lootSpecLabel:SetWordWrap(false)
 
     -- Item scroll frame
     itemScrollFrame:ClearAllPoints()

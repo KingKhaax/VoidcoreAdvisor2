@@ -71,19 +71,32 @@ local function ReadLoot(classID, specID)
     return ids, sample, true
 end
 
--- Looks for the raid that contains one of the wanted boss IDs in the newest EJ
--- tiers. EJ_GetEncounterInfoByIndex returns the journal encounter ID (3rd) and
--- the dungeon encounter ID (7th, the one BigWigs and ENCOUNTER_END use).
-local function FindRaid()
+local function Say(verbose, text)
+    if verbose then
+        print(VCA.Theme.title .. "VoidcoreAdvisor Reborn:|r " .. text)
+    end
+end
+
+-- Looks for the raid to read in the newest Encounter Journal tiers: the one that
+-- contains one of the wanted boss IDs (the dungeon encounter ID is the 7th value
+-- of EJ_GetEncounterInfoByIndex, the one BigWigs uses) or, failing that, a raid of
+-- the newest tier that the loot data does not know yet.
+local function FindRaid(verbose)
     local numTiers = EJ_GetNumTiers()
+    local savedTier = EJ_GetCurrentTier()
+    local found, fallback
     for tier = numTiers, math.max(1, numTiers - 1), -1 do
         EJ_SelectTier(tier)
         local idx = 1
-        while true do
-            local instanceID = EJ_GetInstanceByIndex(idx, true)
+        while not found do
+            local instanceID, instanceName = EJ_GetInstanceByIndex(idx, true)
             if not instanceID then
                 break
             end
+            EJ_SelectInstance(instanceID)
+            local known = VCA.LootPool.IsCurrentSeasonRaid(instanceID)
+            Say(verbose, string.format("tier %d: %s (%d)%s", tier, tostring(instanceName), instanceID,
+                known and " [in the loot data]" or ""))
             local e = 1
             while true do
                 local _, _, journalID, _, _, _, dungeonID = EJ_GetEncounterInfoByIndex(e, instanceID)
@@ -92,14 +105,24 @@ local function FindRaid()
                 end
                 for _, wanted in ipairs(WANTED_ENCOUNTERS) do
                     if dungeonID == wanted or journalID == wanted then
-                        return instanceID
+                        found = instanceID
                     end
                 end
                 e = e + 1
             end
+            if not known and tier == numTiers then
+                fallback = fallback or instanceID
+            end
             idx = idx + 1
         end
+        if found then
+            break
+        end
     end
+    if savedTier and savedTier > 0 then
+        EJ_SelectTier(savedTier)
+    end
+    return found or fallback
 end
 
 -- Returns the entry on success, nil when item data is still loading.
@@ -184,12 +207,6 @@ local function Refresh()
     end
 end
 
-local function Say(verbose, text)
-    if verbose then
-        print(VCA.Theme.title .. "VoidcoreAdvisor Reborn:|r " .. text)
-    end
-end
-
 local function TryScan(attempt, verbose)
     local store = GetDB()
     if not store then
@@ -210,7 +227,7 @@ local function TryScan(attempt, verbose)
         return
     end
 
-    local instanceID = FindRaid()
+    local instanceID = FindRaid(verbose)
     if not instanceID then
         Say(verbose, "The new raid was not found in the Encounter Journal.")
         return

@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.1.1
+- Bonus roll window: the timer bar no longer covers the cost line when the item name takes two lines.
+- Panel: the loot spec label no longer overlaps the spec column title (it is shortened instead).
+- /void liveraid now lists the raids it finds in the Adventure Guide, selects each raid before reading its bosses and falls back to any raid of the newest tier that is not in the loot data.
+
 ## 2.1.0
 - Color themes: venom green (default), void purple and arcane blue, from the options or with /void theme.
 - /void panel [name] opens the Adventure Guide on a boss or dungeon with the panel showing.

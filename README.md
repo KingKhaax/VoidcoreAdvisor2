@@ -1,4 +1,15 @@
-# <img src="docs/icons/inv_enchant_voidsphere.jpg" width="36" height="36" alt="" align="absmiddle"> VoidcoreAdvisor Reborn
+<p align="center"><img src="assets/logo.png" width="128" height="128" alt="VoidcoreAdvisor Reborn"></p>
+
+<h1 align="center"><img src="docs/icons/inv_enchant_voidsphere.jpg" width="36" height="36" alt="" align="absmiddle"> VoidcoreAdvisor Reborn</h1>
+
+<p align="center"><b>Know which loot spec gives you the best odds before you spend a Nebulous Voidcore.</b></p>
+
+<p align="center">
+<a href="LICENSE"><img src="https://img.shields.io/github/license/KingKhaax/VoidcoreAdvisorReborn?label=license" alt="License: MIT"></a>
+<img src="https://img.shields.io/badge/WoW-Retail%2012.1.5-8b5cf6" alt="WoW Retail 12.1.5">
+<img src="https://img.shields.io/badge/languages-11-3fcf6a" alt="11 languages">
+</p>
+
 
 > **Fork of [VoidcoreAdvisor](https://github.com/rolferik12/VoidcoreAdvisor) by rolferik12**, continued with the author's explicit permission (MIT license). All original credit goes to rolferik12. Season data is generated with the author's [VoidcoreAdvisorGen](https://github.com/rolferik12/VoidcoreAdvisorGen).
 >
@@ -14,6 +25,12 @@ When you open the Encounter Journal and browse a boss or dungeon, VoidcoreAdviso
 The addon tracks which items you have already obtained, either through manual checkboxes, through automatic detection after boss kills and Mythic+ completions, or by scanning your loot specializations against the Nebulous Voidcache to determine which items each spec can receive. Obtained items are excluded from the remaining pool calculations, so your probability numbers stay accurate as you gear up over the course of a season. Item selections and obtained status are saved per character.
 
 When you zone into a current-season Mythic or Mythic+ dungeon, VoidcoreAdvisor checks whether your active loot specialization is the best match for the items you have selected from that dungeon. If a different spec would give you better odds and you have at least one Nebulous Voidcore to spend, a dialog popup appears showing your current spec, the recommended spec with its probability stats, and offers to switch your loot specialization with a single click. The reminder only triggers once per dungeon and can be disabled in the addon settings.
+
+## <img src="docs/icons/inv_misc_book_09.jpg" width="28" height="28" alt="" align="absmiddle"> At a glance
+
+| <img src="docs/icons/inv_misc_dice_02.jpg" width="32" height="32" alt="" align="absmiddle"><br>**Per-spec odds** | <img src="docs/icons/inv_misc_bell_01.jpg" width="32" height="32" alt="" align="absmiddle"><br>**Loot spec reminder** | <img src="docs/icons/inv_misc_coin_01.jpg" width="32" height="32" alt="" align="absmiddle"><br>**Safe bonus roll** | <img src="docs/icons/inv_misc_spyglass_02.jpg" width="32" height="32" alt="" align="absmiddle"><br>**Voidcache scan** |
+| :---: | :---: | :---: | :---: |
+| Probability of landing the items you chase, for every specialization. | A popup when you enter a dungeon on a worse spec for your selected items. | Two-click Roll button so you never spend a Voidcore by accident. | Reads each spec's Voidcache and marks what it can never receive. |
 
 ## <img src="docs/icons/achievement_dungeon_gloryoftheraider.jpg" width="28" height="28" alt="" align="absmiddle"> Key Features
 
@@ -88,6 +105,17 @@ The overlay can be enabled or disabled on the Options page. The per-spec item co
 - The chance column in both the Dungeon Overview and Raid Overview is wider (64 px) and word-wrap is disabled on all column headers and row labels, fixing a layout shift that caused the header to appear truncated and shifted downward on some characters.
 - The Options page now includes a Preview button next to the reminder toggle so you can inspect the popup appearance without entering a dungeon.
 
+## <img src="docs/icons/inv_misc_gift_05.jpg" width="28" height="28" alt="" align="absmiddle"> Installation
+
+1. Download this repository as a ZIP and extract it so the folder is named `VoidcoreAdvisorReborn`.
+2. Move that folder to `World of Warcraft/_retail_/Interface/AddOns/`.
+3. Disable or remove the original VoidcoreAdvisor, since both use the same saved variables.
+4. Start the game (or type `/reload`) and open the Encounter Journal.
+
 ## <img src="docs/icons/inv_scroll_03.jpg" width="28" height="28" alt="" align="absmiddle"> VoidcoreAdvisorGen (developer tool)
 
 The season loot tables in `Core/SeasonData.lua` are generated in-game with [VoidcoreAdvisorGen](https://github.com/rolferik12/VoidcoreAdvisorGen) by rolferik12 (MIT). A copy adapted for 12.1.5 and for this fork lives in `tools/VoidcoreAdvisorGen`. It is not needed to play and is not part of the CurseForge download.
+
+## <img src="docs/icons/inv_misc_horn_02.jpg" width="28" height="28" alt="" align="absmiddle"> Credits
+
+VoidcoreAdvisor was created by [rolferik12](https://github.com/rolferik12) (MIT). This fork is maintained by sr.kitkat with the original author's permission.

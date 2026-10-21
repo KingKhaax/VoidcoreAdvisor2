@@ -3,7 +3,7 @@
 ## Notes: Attaches a panel to the Encounter Journal showing which loot specialization gives you the best chance of getting the items you want when spending Nebulous Voidcores.
 ## Version: 2.0.2
 ## Author: sr.kitkat (fork); original by rolferik12
-## IconTexture: Interface\AddOns\VoidcoreAdvisor\icon.tga
+## IconTexture: Interface\AddOns\VoidcoreAdvisorReborn\icon.tga
 ## SavedVariables: VoidcoreAdvisorDB
 ## SavedVariablesPerCharacter: VoidcoreAdvisorCharDB
 

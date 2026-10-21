@@ -59,7 +59,7 @@ local function InitDB()
         if gdb.brcConfirmEnabled == nil then
             gdb.brcConfirmEnabled = true
         end
-        if not VCA.Themes[gdb.theme or ""] then
+        if not VCA.IsTheme(gdb.theme) then
             gdb.theme = "green"
         end
         if not gdb.brcDefaultOnV2 then
@@ -302,15 +302,16 @@ SlashCmdList["VOIDCOREADVISOR"] = function(msg)
     elseif cmd == "theme" then
         local arg = (msg:match("^%s*%S+%s+(%S+)") or ""):lower()
         local gdb = _G[VCA.GLOBAL_DB_NAME]
-        if VCA.Themes[arg] and gdb then
+        if VCA.IsTheme(arg) and gdb then
             gdb.theme = arg
             VCA.ApplyTheme(arg)
             if VCA.Panel and VCA.Panel.Refresh then
                 VCA.Panel.Refresh()
             end
-            print(VCA.Theme.title .. "VoidcoreAdvisor Reborn:|r " .. L["THEME_" .. arg:upper()])
+            print(VCA.Theme.title .. "VoidcoreAdvisor Reborn:|r " .. VCA.ThemeLabel(arg))
         else
             print(VCA.Theme.title .. "VoidcoreAdvisor Reborn:|r " .. L["HELP_THEME"])
+            print("  " .. table.concat(VCA.THEME_ORDER, ", "))
         end
 
     else
@@ -327,6 +328,7 @@ SlashCmdList["VOIDCOREADVISOR"] = function(msg)
         print(L["HELP_EXPORT"])
         print(L["HELP_IMPORT"])
         print(L["HELP_THEME"])
+        print("    " .. table.concat(VCA.THEME_ORDER, ", "))
         print(L["HELP_RESETPANEL"])
     end
 end

@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.2.0
+- 22 color themes: venom green (default), void purple, arcane blue, light, fire, frost, red and one for each of the 13 classes, using the class colors.
+- Two themes that follow you: "Style of my class" and "Style of my specialization". They change by themselves when you switch character or specialization.
+- /void theme <name> accepts every theme key; /void theme lists them.
+
 ## 2.1.2
 - The loot of The Unbinding of Kith'ix (Normal, Heroic and Mythic, every class and spec) now ships with the addon in Core/SeasonDataExtra.lua, so nobody needs to scan it. It stays outside the season fingerprint, so obtained items are never reset.
 - The "new raid not in the loot data" message ignores world boss entries such as the expansion's own "Midnight" entry.

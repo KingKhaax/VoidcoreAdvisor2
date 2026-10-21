@@ -2,7 +2,38 @@
 -- One palette per color theme. Windows register a small function with
 -- VCA.OnTheme() that paints them; ApplyTheme() runs all of them again, so
 -- switching theme recolors every open window without reloading the UI.
+--
+-- Themes: three hand-made palettes (green, purple, blue), four elemental ones
+-- (light, fire, frost, red), one per class (class colors) and "class", which
+-- follows the class of the character you are playing.
 local _, VCA = ...
+
+local function Hex(r, g, b)
+    return string.format("|cff%02x%02x%02x", math.floor(r * 255 + 0.5), math.floor(g * 255 + 0.5),
+        math.floor(b * 255 + 0.5))
+end
+
+local function Mix(c, to, t)
+    return c + (to - c) * t
+end
+
+-- Builds a full palette from one base color.
+local function FromColor(r, g, b)
+    local function lighter(t)
+        return Mix(r, 1, t), Mix(g, 1, t), Mix(b, 1, t)
+    end
+    local ar, ag, ab = lighter(0.35)
+    local tr, tg, tb = lighter(0.2)
+    return {
+        bg = {r * 0.10 + 0.02, g * 0.10 + 0.02, b * 0.10 + 0.02},
+        border = {r * 0.60, g * 0.60, b * 0.60},
+        accent = {ar, ag, ab},
+        timer = {r * 0.90, g * 0.90, b * 0.90},
+        timerBg = {r * 0.06 + 0.02, g * 0.06 + 0.02, b * 0.06 + 0.02},
+        hdr = Hex(lighter(0.45)),
+        title = Hex(tr, tg, tb)
+    }
+end
 
 VCA.Themes = {
     green = {
@@ -31,11 +62,101 @@ VCA.Themes = {
         timerBg = {0.04, 0.08, 0.18},
         hdr = "|cff8cc4ff",
         title = "|cff6fb0ff"
-    }
+    },
+    light = FromColor(1.0, 0.86, 0.45),
+    fire = FromColor(1.0, 0.45, 0.10),
+    frost = FromColor(0.45, 0.80, 1.0),
+    red = FromColor(0.85, 0.15, 0.15)
 }
 
-VCA.THEME_ORDER = {"green", "purple", "blue"}
+-- Class colors (the same ones the game uses for class names).
+VCA.CLASS_THEMES = {
+    {"deathknight", "DEATHKNIGHT", 0.77, 0.12, 0.23},
+    {"demonhunter", "DEMONHUNTER", 0.64, 0.19, 0.79},
+    {"druid", "DRUID", 1.00, 0.49, 0.04},
+    {"evoker", "EVOKER", 0.20, 0.58, 0.50},
+    {"hunter", "HUNTER", 0.67, 0.83, 0.45},
+    {"mage", "MAGE", 0.25, 0.78, 0.92},
+    {"monk", "MONK", 0.00, 1.00, 0.60},
+    {"paladin", "PALADIN", 0.96, 0.55, 0.73},
+    {"priest", "PRIEST", 1.00, 1.00, 1.00},
+    {"rogue", "ROGUE", 1.00, 0.96, 0.41},
+    {"shaman", "SHAMAN", 0.00, 0.44, 0.87},
+    {"warlock", "WARLOCK", 0.53, 0.53, 0.93},
+    {"warrior", "WARRIOR", 0.78, 0.61, 0.43}
+}
+
+VCA.THEME_ORDER = {"class", "spec", "green", "purple", "blue", "light", "fire", "frost", "red"}
+VCA.THEME_CLASSFILE = {}
+
+-- "spec" picks a look that fits the specialization you are playing: elemental
+-- palettes where the spec has an obvious one, the class color for the rest.
+VCA.SPEC_THEMES = {
+    [62] = "purple", -- Arcane mage
+    [63] = "fire", -- Fire mage
+    [64] = "frost", -- Frost mage
+    [65] = "light", -- Holy paladin
+    [70] = "light", -- Retribution paladin
+    [71] = "red", -- Arms warrior
+    [72] = "fire", -- Fury warrior
+    [250] = "red", -- Blood death knight
+    [251] = "frost", -- Frost death knight
+    [252] = "green", -- Unholy death knight
+    [256] = "light", -- Discipline priest
+    [257] = "light", -- Holy priest
+    [258] = "purple", -- Shadow priest
+    [262] = "blue", -- Elemental shaman
+    [263] = "blue", -- Enhancement shaman
+    [264] = "blue", -- Restoration shaman
+    [265] = "green", -- Affliction warlock
+    [266] = "purple", -- Demonology warlock
+    [267] = "fire", -- Destruction warlock
+    [577] = "purple", -- Havoc demon hunter
+    [581] = "red" -- Vengeance demon hunter
+}
+for _, c in ipairs(VCA.CLASS_THEMES) do
+    VCA.Themes[c[1]] = FromColor(c[3], c[4], c[5])
+    VCA.THEME_CLASSFILE[c[1]] = c[2]
+    VCA.THEME_ORDER[#VCA.THEME_ORDER + 1] = c[1]
+end
+
 VCA.Theme = VCA.Themes.green
+
+-- "class" and "spec" follow the character; everything else is a key of VCA.Themes.
+function VCA.IsTheme(name)
+    return name == "class" or name == "spec" or (name ~= nil and VCA.Themes[name] ~= nil)
+end
+
+local function ClassThemeKey()
+    local _, classFile = UnitClass("player")
+    for key, file in pairs(VCA.THEME_CLASSFILE) do
+        if file == classFile then
+            return key
+        end
+    end
+    return "green"
+end
+
+local function Resolve(name)
+    if name == "class" then
+        return ClassThemeKey()
+    elseif name == "spec" then
+        local index = GetSpecialization and GetSpecialization()
+        local specID = index and GetSpecializationInfo and GetSpecializationInfo(index)
+        return (specID and VCA.SPEC_THEMES[specID]) or ClassThemeKey()
+    end
+    return name
+end
+
+-- Name shown in the options for a theme key.
+function VCA.ThemeLabel(key)
+    local file = VCA.THEME_CLASSFILE[key]
+    if file then
+        local names = LOCALIZED_CLASS_NAMES_MALE
+        return (names and names[file]) or key
+    end
+    return VCA.L["THEME_" .. key:upper()] or key
+end
 
 local painters = {}
 
@@ -46,8 +167,9 @@ function VCA.OnTheme(fn)
 end
 
 function VCA.ApplyTheme(name)
-    if name and VCA.Themes[name] then
-        VCA.Theme = VCA.Themes[name]
+    local key = Resolve(name)
+    if key and VCA.Themes[key] then
+        VCA.Theme = VCA.Themes[key]
     end
     for _, fn in ipairs(painters) do
         pcall(fn)
@@ -59,3 +181,22 @@ function VCA.TitleText()
     local s = VCA.L and VCA.L["PANEL_TITLE"] or "VoidcoreAdvisor"
     return (s:gsub("|cff8fe36b", VCA.Theme.title))
 end
+
+-- "class" and "spec" themes follow the character, so repaint when the player logs
+-- in (the spec is not known earlier) and when the specialization changes.
+local follower = CreateFrame("Frame")
+follower:RegisterEvent("PLAYER_LOGIN")
+follower:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED")
+follower:SetScript("OnEvent", function(_, event, unit)
+    if event == "PLAYER_SPECIALIZATION_CHANGED" and unit and unit ~= "player" then
+        return
+    end
+    local gdb = _G[VCA.GLOBAL_DB_NAME]
+    local name = gdb and gdb.theme
+    if name == "class" or name == "spec" then
+        VCA.ApplyTheme(name)
+        if VCA.Panel and VCA.Panel.Refresh then
+            VCA.Panel.Refresh()
+        end
+    end
+end)

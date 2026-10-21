@@ -115,7 +115,7 @@ frame:SetScript("OnEvent", function(self, event, loadedAddon)
         local function GetOptions()
             local container = Settings.CreateControlTextContainer()
             for _, key in ipairs(VCA.THEME_ORDER) do
-                container:Add(key, L["THEME_" .. key:upper()])
+                container:Add(key, VCA.ThemeLabel(key))
             end
             return container:GetData()
         end

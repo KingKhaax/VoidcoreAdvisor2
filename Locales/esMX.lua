@@ -206,7 +206,7 @@ L["OPTIONS_BRC_SPEC_LIST_TOOLTIP"] =
     "Muestra una lista de objetos restantes para cada una de tus especializaciones en la ventana de tirada extra."
 L["BRC_SWITCH_SPEC_TIP"] = "Switch specialization to %s"
 
--- ── VoidcoreAdvisor 2.0 additions ─────────────────────────────────────────────
+-- ── VoidcoreAdvisor Reborn additions ─────────────────────────────────────────────
 L["BRC_SWITCH_SPEC_TIP"] = "Cambiar especialización a %s"
 L["SPEC_LIST_TOOLTIP"] = "Botín restante de cada especialización de botín"
 L["BONUS_ROLL_WANTED_TOOLTIP_TITLE"] = "Objetos deseados"
@@ -216,7 +216,7 @@ L["DIFFICULTY_MYTHIC"] = "Mítico"
 L["MARK_MODE_BUTTON"] = "Marcar objeto obtenido"
 L["MARK_MODE_ACTIVE"] = "Haz clic en un objeto para marcarlo (clic aquí para terminar)"
 L["MARK_MODE_TIP"] = "Úsalo para objetos que conseguiste con una tirada de Núcleo del Vacío y que el addon no registró. Mientras esté activo, haz clic en un objeto para marcarlo como obtenido en todas las especializaciones, o de nuevo para desmarcarlo."
-L["RAID_NOT_IN_DATA"] = "Esta banda todavía no está en los datos de botín del addon. Se carga sola cuando es posible; si no, actualiza VoidcoreAdvisor 2.0."
+L["RAID_NOT_IN_DATA"] = "Esta banda todavía no está en los datos de botín del addon. Se carga sola cuando es posible; si no, actualiza VoidcoreAdvisor Reborn."
 L["ORIGINAL_ADDON_LOADED"] = "El VoidcoreAdvisor original también está activado. Desactívalo: no pueden funcionar al mismo tiempo."
 L["BONUS_ROLL_POPUP_ROLL"] = "¿Estás seguro de que quieres gastar tu Núcleo del Vacío nebuloso en una tirada extra?"
 L["BONUS_ROLL_POPUP_PASS"] = "¿Estás seguro de que quieres pasar esta tirada extra?"

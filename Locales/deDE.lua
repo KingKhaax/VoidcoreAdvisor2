@@ -205,7 +205,7 @@ L["OPTIONS_BRC_SPEC_LIST_TOOLTIP"] =
     "Zeigt eine Liste verbleibender Gegenstände für jede deiner Spezialisierungen im Bonuswurffenster an."
 L["BRC_SWITCH_SPEC_TIP"] = "Switch specialization to %s"
 
--- ── VoidcoreAdvisor 2.0 additions ─────────────────────────────────────────────
+-- ── VoidcoreAdvisor Reborn additions ─────────────────────────────────────────────
 L["BRC_SWITCH_SPEC_TIP"] = "Zu Spezialisierung %s wechseln"
 L["SPEC_LIST_TOOLTIP"] = "Verbleibende Beute für jede Beutespezialisierung"
 L["BONUS_ROLL_WANTED_TOOLTIP_TITLE"] = "Gewünschte Gegenstände"
@@ -215,7 +215,7 @@ L["DIFFICULTY_MYTHIC"] = "Mythisch"
 L["MARK_MODE_BUTTON"] = "Erhaltenen Gegenstand markieren"
 L["MARK_MODE_ACTIVE"] = "Gegenstand anklicken, um ihn zu markieren (hier klicken zum Beenden)"
 L["MARK_MODE_TIP"] = "Für Gegenstände aus einem Leerenkern-Wurf, die das Addon nicht erfasst hat. Solange aktiv, markiert ein Klick den Gegenstand für alle Spezialisierungen als erhalten; erneut klicken hebt die Markierung auf."
-L["RAID_NOT_IN_DATA"] = "Dieser Schlachtzug ist noch nicht in den Beutedaten des Addons. Er wird nach Möglichkeit automatisch geladen; andernfalls aktualisiere VoidcoreAdvisor 2.0."
+L["RAID_NOT_IN_DATA"] = "Dieser Schlachtzug ist noch nicht in den Beutedaten des Addons. Er wird nach Möglichkeit automatisch geladen; andernfalls aktualisiere VoidcoreAdvisor Reborn."
 L["ORIGINAL_ADDON_LOADED"] = "Das originale VoidcoreAdvisor ist ebenfalls aktiv. Deaktiviere es: beide Versionen können nicht zusammen laufen."
 L["BONUS_ROLL_POPUP_ROLL"] = "Bist du sicher, dass du deinen Nebulösen Leerenkern für einen Bonuswurf ausgeben möchtest?"
 L["BONUS_ROLL_POPUP_PASS"] = "Bist du sicher, dass du diesen Bonuswurf auslassen möchtest?"

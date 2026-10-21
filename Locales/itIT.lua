@@ -205,7 +205,7 @@ L["OPTIONS_BRC_SPEC_LIST_TOOLTIP"] =
     "Mostra un elenco di oggetti rimanenti per ciascuna delle tue specializzazioni nella finestra di tiro bonus."
 L["BRC_SWITCH_SPEC_TIP"] = "Switch specialization to %s"
 
--- ── VoidcoreAdvisor 2.0 additions ─────────────────────────────────────────────
+-- ── VoidcoreAdvisor Reborn additions ─────────────────────────────────────────────
 L["BRC_SWITCH_SPEC_TIP"] = "Passa alla specializzazione %s"
 L["SPEC_LIST_TOOLTIP"] = "Bottino rimanente per ogni specializzazione del bottino"
 L["BONUS_ROLL_WANTED_TOOLTIP_TITLE"] = "Oggetti desiderati"
@@ -215,7 +215,7 @@ L["DIFFICULTY_MYTHIC"] = "Mitico"
 L["MARK_MODE_BUTTON"] = "Segna oggetto ottenuto"
 L["MARK_MODE_ACTIVE"] = "Clicca su un oggetto per segnarlo (clicca qui per terminare)"
 L["MARK_MODE_TIP"] = "Usalo per gli oggetti ottenuti con un tiro Nucleo del Vuoto che l'addon non ha registrato. Finché è attivo, clicca su un oggetto per segnarlo come ottenuto per tutte le specializzazioni, o clicca di nuovo per rimuovere il segno."
-L["RAID_NOT_IN_DATA"] = "Questa incursione non è ancora nei dati di bottino dell'addon. Si carica automaticamente quando possibile; altrimenti aggiorna VoidcoreAdvisor 2.0."
+L["RAID_NOT_IN_DATA"] = "Questa incursione non è ancora nei dati di bottino dell'addon. Si carica automaticamente quando possibile; altrimenti aggiorna VoidcoreAdvisor Reborn."
 L["ORIGINAL_ADDON_LOADED"] = "Anche il VoidcoreAdvisor originale è attivo. Disattivalo: le due versioni non possono funzionare insieme."
 L["BONUS_ROLL_POPUP_ROLL"] = "Sei sicuro di voler spendere il tuo Nucleo del Vuoto nebuloso per un tiro bonus?"
 L["BONUS_ROLL_POPUP_PASS"] = "Sei sicuro di voler passare questo tiro bonus?"

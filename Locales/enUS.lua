@@ -200,11 +200,11 @@ L["OBTAINED_UNKNOWN_SPEC"] = "Obtained (spec unknown)"
 L["UNKNOWN_KEYLEVEL"] = "unknown keylevel"
 L["MANUAL_ENTRY"] = "manual entry"
 
--- ── VoidcoreAdvisor 2.0 additions ─────────────────────────────────────────────
+-- ── VoidcoreAdvisor Reborn additions ─────────────────────────────────────────────
 L["MARK_MODE_BUTTON"] = "Mark rolled item"
 L["MARK_MODE_ACTIVE"] = "Click an item to mark it (click here to stop)"
 L["MARK_MODE_TIP"] = "Use this for items you got from a Voidcore roll that the addon did not track. While active, click an item to mark it as obtained for all specs, or click it again to unmark it."
-L["RAID_NOT_IN_DATA"] = "This raid is not in the addon loot data yet. It loads automatically when possible; otherwise update VoidcoreAdvisor 2.0."
+L["RAID_NOT_IN_DATA"] = "This raid is not in the addon loot data yet. It loads automatically when possible; otherwise update VoidcoreAdvisor Reborn."
 L["ORIGINAL_ADDON_LOADED"] = "The original VoidcoreAdvisor is also enabled. Disable it: both versions cannot run together."
 L["BONUS_ROLL_POPUP_ROLL"] = "Are you sure you want to spend your Nebulous Voidcore on a bonus roll?"
 L["BONUS_ROLL_POPUP_PASS"] = "Are you sure you want to pass on this bonus roll?"

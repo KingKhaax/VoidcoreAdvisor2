@@ -271,7 +271,7 @@ local function WarnMissingSeasonData()
         return
     end
     _warnedMissingSeasonData = true
-    print("|cff66ccffVoidcoreAdvisor 2.0:|r |cffff4444Loot data is missing.|r  " ..
+    print("|cff66ccffVoidcoreAdvisor Reborn:|r |cffff4444Loot data is missing.|r  " ..
               "Please update the addon to the latest version.")
 end
 

@@ -1251,7 +1251,7 @@ end
 VCA.Detection.SetOnItemDetectedCallback(function(itemID, source)
     -- Chat message
     local itemName = C_Item.GetItemNameByID(itemID) or tostring(itemID)
-    print("|cffb048f8VoidcoreAdvisor 2.0:|r " .. string.format(L["DETECTED_OBTAINED"], "|cnIQ4:" .. itemName .. "|r"))
+    print("|cffb048f8VoidcoreAdvisor Reborn:|r " .. string.format(L["DETECTED_OBTAINED"], "|cnIQ4:" .. itemName .. "|r"))
 
     -- Remove from saved selections now that it's obtained.
     VCA.Data.RemoveSelectedItem(source.sourceType, source.sourceID, source.difficultyID, itemID)

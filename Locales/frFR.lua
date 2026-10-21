@@ -205,7 +205,7 @@ L["OPTIONS_BRC_SPEC_LIST_TOOLTIP"] =
     "Affiche une liste des objets restants pour chacune de vos spécialisations dans la fenêtre de jet bonus."
 L["BRC_SWITCH_SPEC_TIP"] = "Switch specialization to %s"
 
--- ── VoidcoreAdvisor 2.0 additions ─────────────────────────────────────────────
+-- ── VoidcoreAdvisor Reborn additions ─────────────────────────────────────────────
 L["BRC_SWITCH_SPEC_TIP"] = "Passer à la spécialisation %s"
 L["SPEC_LIST_TOOLTIP"] = "Butin restant pour chaque spécialisation de butin"
 L["BONUS_ROLL_WANTED_TOOLTIP_TITLE"] = "Objets souhaités"
@@ -215,7 +215,7 @@ L["DIFFICULTY_MYTHIC"] = "Mythique"
 L["MARK_MODE_BUTTON"] = "Marquer un objet obtenu"
 L["MARK_MODE_ACTIVE"] = "Cliquez sur un objet pour le marquer (cliquez ici pour arrêter)"
 L["MARK_MODE_TIP"] = "À utiliser pour les objets obtenus avec un jet de Noyau du Vide que l'addon n'a pas suivis. Tant que le mode est actif, cliquez sur un objet pour le marquer comme obtenu pour toutes les spécialisations, ou cliquez de nouveau pour le démarquer."
-L["RAID_NOT_IN_DATA"] = "Ce raid n'est pas encore dans les données de butin de l'addon. Il se charge automatiquement quand c'est possible ; sinon, mettez à jour VoidcoreAdvisor 2.0."
+L["RAID_NOT_IN_DATA"] = "Ce raid n'est pas encore dans les données de butin de l'addon. Il se charge automatiquement quand c'est possible ; sinon, mettez à jour VoidcoreAdvisor Reborn."
 L["ORIGINAL_ADDON_LOADED"] = "Le VoidcoreAdvisor d'origine est aussi activé. Désactivez-le : les deux versions ne peuvent pas fonctionner ensemble."
 L["BONUS_ROLL_POPUP_ROLL"] = "Voulez-vous vraiment dépenser votre Noyau du Vide nébuleux pour un jet bonus ?"
 L["BONUS_ROLL_POPUP_PASS"] = "Voulez-vous vraiment passer ce jet bonus ?"

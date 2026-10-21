@@ -202,7 +202,7 @@ L["OPTIONS_BRC_SPEC_LIST"] = "显示每个专精的剩余物品"
 L["OPTIONS_BRC_SPEC_LIST_TOOLTIP"] = "在额外掷骰窗口中显示每个专精的剩余物品列表。"
 L["BRC_SWITCH_SPEC_TIP"] = "Switch specialization to %s"
 
--- ── VoidcoreAdvisor 2.0 additions ─────────────────────────────────────────────
+-- ── VoidcoreAdvisor Reborn additions ─────────────────────────────────────────────
 L["BRC_SWITCH_SPEC_TIP"] = "切换到%s专精"
 L["SPEC_LIST_TOOLTIP"] = "各拾取专精的剩余战利品"
 L["BONUS_ROLL_WANTED_TOOLTIP_TITLE"] = "想要的物品"
@@ -212,7 +212,7 @@ L["DIFFICULTY_MYTHIC"] = "史诗"
 L["MARK_MODE_BUTTON"] = "标记已获得物品"
 L["MARK_MODE_ACTIVE"] = "点击物品进行标记（点击此处结束）"
 L["MARK_MODE_TIP"] = "用于通过虚空之核骰点获得、但插件未记录的物品。开启后，点击物品即可将其标记为所有专精已获得，再次点击则取消标记。"
-L["RAID_NOT_IN_DATA"] = "该团队副本尚未包含在插件的战利品数据中。条件允许时会自动加载；否则请更新 VoidcoreAdvisor 2.0。"
+L["RAID_NOT_IN_DATA"] = "该团队副本尚未包含在插件的战利品数据中。条件允许时会自动加载；否则请更新 VoidcoreAdvisor Reborn。"
 L["ORIGINAL_ADDON_LOADED"] = "原版 VoidcoreAdvisor 也已启用。请禁用它：两个版本不能同时运行。"
 L["BONUS_ROLL_POPUP_ROLL"] = "确定要消耗虚空之核进行额外骰点吗？"
 L["BONUS_ROLL_POPUP_PASS"] = "确定要放弃这次额外骰点吗？"

@@ -3,7 +3,7 @@
 ## Notes: Developer tool — generates Core/SeasonData.lua for VoidcoreAdvisor.  Load this addon, use /vcagen run, reload, then copy the output from SavedVariables.
 ## Version: 1.0.0
 ## Author:
-## Dependencies: VoidcoreAdvisor2
+## Dependencies: VoidcoreAdvisorReborn
 ## SavedVariables: VoidcoreAdvisorGenDB
 
 Generator.lua

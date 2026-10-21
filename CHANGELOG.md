@@ -1,5 +1,8 @@
 # Changelog
 
+## 2.2.4
+- Login item-cache warmup is gentler (about 80 items per second instead of 600) to avoid frame rate dips right after logging in.
+
 ## 2.2.3
 - The bonus roll window showed a cost of 2 for raid bosses; it now shows the real cost reported by the roll prompt (and 1 when the prompt gives none). The cost in the panel header follows the same fallback.
 

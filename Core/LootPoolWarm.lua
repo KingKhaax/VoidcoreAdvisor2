@@ -7,7 +7,7 @@
 --   Phase 1 — Item metadata primer
 --     Calls GetItemInfo on every season itemID so the client item cache is
 --     populated and C_Item.GetItemSpecInfo returns valid data promptly.
---     Up to PHASE1_BATCH items are primed per tick (0.05 s interval).
+--     Up to PHASE1_BATCH items are primed per tick (0.1 s interval).
 --
 --   Phase 2 — Class/spec filter cache build
 --     Calls the public LootPool.Get*ItemsForClass/Spec functions which write
@@ -157,8 +157,10 @@ function LootPool.WarmCache()
         end
     end
 
-    local PHASE1_BATCH = 30 -- items per tick
-    local PHASE2_BATCH = 5 -- work entries per tick
+    -- Gentle on purpose: asking the server for hundreds of items per second at login
+    -- made the frame rate dip. ~80 items per second finishes in a few seconds.
+    local PHASE1_BATCH = 8 -- items per tick
+    local PHASE2_BATCH = 2 -- work entries per tick
     local MAX_RETRIES = 3
     local warmRetries = 0
     local phase = 1
@@ -213,7 +215,7 @@ function LootPool.WarmCache()
         end
     end
 
-    _warmTicker = C_Timer.NewTicker(0.05, function()
+    _warmTicker = C_Timer.NewTicker(0.1, function()
         if phase == 1 then
             -- Prime item metadata in batches.
             for _ = 1, PHASE1_BATCH do

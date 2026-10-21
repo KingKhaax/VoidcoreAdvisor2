@@ -87,3 +87,7 @@ The overlay can be enabled or disabled on the Options page. The per-spec item co
 
 - The chance column in both the Dungeon Overview and Raid Overview is wider (64 px) and word-wrap is disabled on all column headers and row labels, fixing a layout shift that caused the header to appear truncated and shifted downward on some characters.
 - The Options page now includes a Preview button next to the reminder toggle so you can inspect the popup appearance without entering a dungeon.
+
+## VoidcoreAdvisorGen (developer tool)
+
+The season loot tables in `Core/SeasonData.lua` are generated in-game with [VoidcoreAdvisorGen](https://github.com/rolferik12/VoidcoreAdvisorGen) by rolferik12 (MIT). A copy adapted for 12.1.5 and for this fork lives in `tools/VoidcoreAdvisorGen`. It is not needed to play and is not part of the CurseForge download.

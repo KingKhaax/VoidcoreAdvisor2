@@ -1,0 +1,9 @@
+## Interface: 120005, 120007, 120100, 120105
+## Title: VoidcoreAdvisorGen
+## Notes: Developer tool — generates Core/SeasonData.lua for VoidcoreAdvisor.  Load this addon, use /vcagen run, reload, then copy the output from SavedVariables.
+## Version: 1.0.0
+## Author:
+## Dependencies: VoidcoreAdvisor2
+## SavedVariables: VoidcoreAdvisorGenDB
+
+Generator.lua

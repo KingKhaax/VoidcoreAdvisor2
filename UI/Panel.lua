@@ -132,7 +132,7 @@ end
 -- ── Header widgets ────────────────────────────────────────────────────────────
 
 -- Title
-local titleText = frame:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
+local titleText = frame:CreateFontString(nil, "OVERLAY", "VCAFontNormalLarge")
 titleText:SetPoint("TOPLEFT", 18, -16)
 VCA.OnTheme(function() titleText:SetText(VCA.TitleText()) end)
 
@@ -151,7 +151,7 @@ frame:SetScript("OnHide", function()
 end)
 
 -- Source name (boss or dungeon)
-local sourceLabel = frame:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
+local sourceLabel = frame:CreateFontString(nil, "OVERLAY", "VCAFontHighlight")
 sourceLabel:SetPoint("TOPLEFT", 18, -42)
 sourceLabel:SetPoint("TOPRIGHT", -40, -42)
 sourceLabel:SetJustifyH("LEFT")
@@ -160,7 +160,7 @@ sourceLabel:SetText("")
 Panel.sourceLabel = sourceLabel
 
 -- Content type + Voidcore cost
-local infoLabel = frame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+local infoLabel = frame:CreateFontString(nil, "OVERLAY", "VCAFontNormal")
 infoLabel:SetPoint("TOPLEFT", 18, -60)
 infoLabel:SetJustifyH("LEFT")
 infoLabel:SetText("")
@@ -201,7 +201,7 @@ _s.RightColWidth = RightColWidth
 
 -- ── Column header labels ──────────────────────────────────────────────────────
 
-local lootColHeader = contentArea:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+local lootColHeader = contentArea:CreateFontString(nil, "OVERLAY", "VCAFontNormal")
 lootColHeader:SetPoint("TOPLEFT", contentArea, "TOPLEFT", PADDING, -6)
 lootColHeader:SetJustifyH("LEFT")
 VCA.OnTheme(function() lootColHeader:SetText(VCA.Theme.hdr .. "LOOT|r") end)
@@ -209,7 +209,7 @@ VCA.OnTheme(function() lootColHeader:SetText(VCA.Theme.hdr .. "LOOT|r") end)
 -- X button to clear all spec selections (near the center divider in loot column header)
 local clearSpecBtn = CreateFrame("Button", nil, contentArea)
 clearSpecBtn:SetSize(14, 14)
-clearSpecBtn:SetNormalFontObject("GameFontNormal")
+clearSpecBtn:SetNormalFontObject("VCAFontNormal")
 clearSpecBtn:SetText("|cffff4444x|r")
 clearSpecBtn:SetScript("OnClick", function()
     wipe(selectedSpecIDs)
@@ -236,7 +236,7 @@ keyLevelButton:SetSize(50, 16)
 keyLevelButton:SetPoint("LEFT", lootColHeader, "RIGHT", 6, 0)
 keyLevelButton:Hide()
 
-local keyLevelText = keyLevelButton:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+local keyLevelText = keyLevelButton:CreateFontString(nil, "OVERLAY", "VCAFontNormalSmall")
 keyLevelText:SetAllPoints(keyLevelButton)
 keyLevelText:SetJustifyH("LEFT")
 
@@ -286,7 +286,7 @@ for i, level in ipairs(keyLevelOptions) do
     local btn = CreateFrame("Button", nil, keyLevelMenu)
     btn:SetSize(70, 16)
     btn:SetPoint("TOPLEFT", keyLevelMenu, "TOPLEFT", 4, -(4 + (i - 1) * 16))
-    local label = btn:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+    local label = btn:CreateFontString(nil, "OVERLAY", "VCAFontNormalSmall")
     label:SetAllPoints(btn)
     label:SetJustifyH("LEFT")
     btn.label = label
@@ -343,14 +343,14 @@ keyLevelMenu:SetScript("OnKeyDown", function(self, key)
     end
 end)
 
-local specColHeader = contentArea:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+local specColHeader = contentArea:CreateFontString(nil, "OVERLAY", "VCAFontNormal")
 specColHeader:SetJustifyH("LEFT")
 VCA.OnTheme(function() specColHeader:SetText(VCA.Theme.hdr .. "" .. L["COL_SPEC_RANKING"] .. "|r") end)
 
 -- X button to clear all item selections (near the center divider in spec column header)
 local clearItemBtn = CreateFrame("Button", nil, contentArea)
 clearItemBtn:SetSize(14, 14)
-clearItemBtn:SetNormalFontObject("GameFontNormal")
+clearItemBtn:SetNormalFontObject("VCAFontNormal")
 clearItemBtn:SetText("|cffff4444x|r")
 clearItemBtn:SetScript("OnClick", function()
     wipe(selectedItemIDs)
@@ -371,7 +371,7 @@ clearItemBtn:Hide()
 -- "+" button: choose everything your loot spec can still get from this source.
 local selectAllBtn = CreateFrame("Button", nil, contentArea)
 selectAllBtn:SetSize(14, 14)
-selectAllBtn:SetNormalFontObject("GameFontNormal")
+selectAllBtn:SetNormalFontObject("VCAFontNormal")
 selectAllBtn:SetText("|cff66ff66+|r")
 selectAllBtn:SetScript("OnClick", function()
     Panel.SelectAllUseful()
@@ -387,7 +387,7 @@ selectAllBtn:SetScript("OnLeave", function()
 end)
 
 -- Cumulative odds line at the bottom of the spec column (filled by PanelColumns).
-local cumLabel = contentArea:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+local cumLabel = contentArea:CreateFontString(nil, "OVERLAY", "VCAFontHighlightSmall")
 cumLabel:SetJustifyH("LEFT")
 cumLabel:SetJustifyV("BOTTOM")
 cumLabel:SetWordWrap(true)
@@ -408,7 +408,7 @@ markModeBtn:SetBackdrop({
     edgeSize = 1
 })
 markModeBtn:SetBackdropBorderColor(0, 0, 0, 1)
-local markModeText = markModeBtn:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
+local markModeText = markModeBtn:CreateFontString(nil, "OVERLAY", "VCAFontHighlight")
 markModeText:SetPoint("LEFT", markModeBtn, "LEFT", 6, 0)
 markModeText:SetPoint("RIGHT", markModeBtn, "RIGHT", -6, 0)
 markModeText:SetJustifyH("CENTER")
@@ -535,7 +535,7 @@ end)
 markModeBtn:Hide()
 UpdateMarkModeButton()
 
-local lootSpecLabel = contentArea:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+local lootSpecLabel = contentArea:CreateFontString(nil, "OVERLAY", "VCAFontNormal")
 lootSpecLabel:SetJustifyH("LEFT")
 lootSpecLabel:SetText("")
 
@@ -882,7 +882,7 @@ local function GetOrCreateItemRow(pool, parent)
     iconBorder:SetAllPoints(iconButton)
     iconBorder:Hide()
 
-    local nameLabel = rowFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+    local nameLabel = rowFrame:CreateFontString(nil, "OVERLAY", "VCAFontNormal")
     nameLabel:SetJustifyH("LEFT")
     nameLabel:SetPoint("LEFT", iconButton, "RIGHT", 4, 0)
     nameLabel:SetPoint("RIGHT", rowFrame, "RIGHT", -20, 0)
@@ -1075,7 +1075,7 @@ end
 _s.GetOrCreateItemRow = GetOrCreateItemRow
 
 -- Spec ranking row: rank, icon, name and the odds on top, a progress bar underneath.
-local SPEC_ROW_H = 42
+local SPEC_ROW_H = 46
 local SPEC_ICON = 28
 _s.SPEC_ROW_H = SPEC_ROW_H
 
@@ -1112,9 +1112,10 @@ local function GetOrCreateSpecRow(pool, parent)
     rowLine:SetPoint("BOTTOMLEFT", rowFrame, "BOTTOMLEFT", 0, 0)
     rowLine:SetPoint("BOTTOMRIGHT", rowFrame, "BOTTOMRIGHT", 0, 0)
 
-    local rankLabel = rowFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+    local rankLabel = rowFrame:CreateFontString(nil, "OVERLAY", "VCAFontNormal")
     rankLabel:SetJustifyH("RIGHT")
-    rankLabel:SetWidth(24)
+    rankLabel:SetWidth(30)
+    rankLabel:SetWordWrap(false)
     rankLabel:SetPoint("LEFT", rowFrame, "LEFT", 2, 0)
 
     local icon = rowFrame:CreateTexture(nil, "ARTWORK")
@@ -1122,7 +1123,7 @@ local function GetOrCreateSpecRow(pool, parent)
     icon:SetPoint("LEFT", rankLabel, "RIGHT", 5, 0)
     icon:SetTexCoord(0.08, 0.92, 0.08, 0.92)
 
-    local nameLabel = rowFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+    local nameLabel = rowFrame:CreateFontString(nil, "OVERLAY", "VCAFontNormal")
     nameLabel:SetJustifyH("LEFT")
     nameLabel:SetPoint("TOPLEFT", icon, "TOPRIGHT", 8, 0)
     nameLabel:SetPoint("RIGHT", rowFrame, "RIGHT", -70, 0)
@@ -1133,7 +1134,8 @@ local function GetOrCreateSpecRow(pool, parent)
     barTrack:SetColorTexture(0.02, 0.06, 0.04, 1)
     barTrack:SetHeight(5)
     barTrack:SetPoint("BOTTOMLEFT", icon, "BOTTOMRIGHT", 8, 1)
-    barTrack:SetPoint("RIGHT", rowFrame, "RIGHT", -6, 0)
+    -- the bar stops before the column on the right, so it never covers the figures
+    barTrack:SetPoint("RIGHT", rowFrame, "RIGHT", -78, 0)
     local barFill = rowFrame:CreateTexture(nil, "ARTWORK")
     barFill:SetHeight(5)
     barFill:SetPoint("BOTTOMLEFT", barTrack, "BOTTOMLEFT", 0, 0)
@@ -1157,10 +1159,10 @@ local function GetOrCreateSpecRow(pool, parent)
     warnHitArea:Hide()
 
     -- Main figure on the right (chance, or obtained/total when nothing is chosen) and a small line under it
-    local statsLabel = rowFrame:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
+    local statsLabel = rowFrame:CreateFontString(nil, "OVERLAY", "VCAFontNormalLarge")
     statsLabel:SetJustifyH("RIGHT")
     statsLabel:SetPoint("TOPRIGHT", rowFrame, "TOPRIGHT", -6, -3)
-    local countLabel = rowFrame:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+    local countLabel = rowFrame:CreateFontString(nil, "OVERLAY", "VCAFontNormalSmall")
     countLabel:SetJustifyH("RIGHT")
     countLabel:SetPoint("TOPRIGHT", statsLabel, "BOTTOMRIGHT", 0, -1)
 
@@ -1367,7 +1369,7 @@ local function DoLayout()
     -- Loot spec label (right-aligned, to the left of the voidcache icon)
     -- Loot spec (icon + name) on its own line right under the ranking header
     lootSpecLabel:ClearAllPoints()
-    lootSpecLabel:SetPoint("TOPLEFT", specColHeader, "BOTTOMLEFT", 0, -6)
+    lootSpecLabel:SetPoint("TOPLEFT", specColHeader, "BOTTOMLEFT", 0, -9)
     lootSpecLabel:SetPoint("RIGHT", contentArea, "RIGHT", -PADDING, 0)
     lootSpecLabel:SetWordWrap(false)
 
@@ -1385,7 +1387,7 @@ local function DoLayout()
 
     -- Spec scroll frame
     specScrollFrame:ClearAllPoints()
-    specScrollFrame:SetPoint("TOPLEFT", contentArea, "TOPLEFT", splitX + PADDING, -(COL_HEADER_H + 30))
+    specScrollFrame:SetPoint("TOPLEFT", contentArea, "TOPLEFT", splitX + PADDING, -(COL_HEADER_H + 40))
     specScrollFrame:SetPoint("BOTTOMRIGHT", contentArea, "BOTTOMRIGHT", -PADDING, 38)
     specScrollFrame:SetWidth(rightW - PADDING)
 
@@ -1602,9 +1604,7 @@ function Panel.Refresh()
     if lootSpecID and lootSpecID > 0 then
         local _, name, _, icon = GetSpecializationInfoByID(lootSpecID)
         if name then
-            local iconMarkup = icon and ("|T" .. icon .. ":16:16:0:0:64:64:5:59:5:59|t ") or ""
-            lootSpecLabel:SetText("|cff888888" .. L["LOOT_SPEC_LABEL"] .. "|r " .. iconMarkup .. "|cffeeeeee" .. name ..
-                                      "|r")
+            lootSpecLabel:SetText("|cff888888" .. L["LOOT_SPEC_LABEL"] .. "|r |cffeeeeee" .. name .. "|r")
         else
             lootSpecLabel:SetText("")
         end

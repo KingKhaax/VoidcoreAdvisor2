@@ -1,3 +1,23 @@
+Version: 2.6.0
+2026/10/22 Released
+
+🔮 New
+- [Bonus Roll] New layout for the bonus roll window: the item, its cost and your loot spec on top; a panel with your chance of one of the chosen items (big figure) next to the icons of those items; a row with your specializations; the timer bar; and the Roll and Pass buttons.
+- [Bonus Roll] Click the icon of any other specialization in that row to switch your loot specialization to it. The active one is outlined in the color of your theme and clicking it does nothing.
+- [Fonts] New "Font" option in the settings (General tab) that changes the font of the addon and all its windows at once. The list shows the fonts of the game, Source Sans 3 (included with the addon) and every font that other addons register with LibSharedMedia, so if you have an addon that adds 200 fonts, you can pick any of them. Each name is written in its own font, and "Game font (default)" puts everything back.
+
+💪 Improvement
+- [Settings] The theme selectors have a drop-down: click the name to open the list of all the themes, each with a swatch of its color (the arrows still step through them). The names "Style of my class" and "Same as my theme" are shorter ("My class" and "My theme") and the Preview button is wider, so nothing runs out of its box.
+- [Settings] The Version page is laid out from the height of each block, so the credits no longer run into the address, and the CurseForge address has its own full-width box.
+- [Settings] Shorter names on two Tools buttons so they are not cut.
+- [Settings] Every page of the settings window scrolls, with a slim bar in the color of your theme and the mouse wheel, so long pages (the General tab with the new Font option) no longer run past the bottom of the window.
+- [Panel] In the spec ranking the bar no longer covers the "0/3" count (it stops before the column of figures), the rows have more room, the rank numbers (#2, #3) are no longer cut to "...", the loot spec line has more space around it and shows only the name of the specialization, without its icon.
+- [Support] `/void perf` showed the memory in megabytes but labeled it as kilobytes (2 MB appeared as "2 KB"). It now shows MB with one decimal.
+- [Bonus Roll] The number of remaining items per specialization no longer shows an empty "(-)" when you chose nothing for it; only the chosen items still missing are shown in brackets.
+- [Languages] The new texts are translated into all 11 languages.
+
+---
+
 Version: 2.4.0
 2026/10/22 Released
 

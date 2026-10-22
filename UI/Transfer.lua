@@ -39,10 +39,10 @@ end)
 frame:Hide()
 tinsert(UISpecialFrames, "VCATransferFrame")
 
-local title = frame:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
+local title = frame:CreateFontString(nil, "OVERLAY", "VCAFontNormalLarge")
 title:SetPoint("TOPLEFT", 16, -14)
 
-local hint = frame:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+local hint = frame:CreateFontString(nil, "OVERLAY", "VCAFontHighlightSmall")
 hint:SetPoint("TOPLEFT", title, "BOTTOMLEFT", 0, -6)
 hint:SetPoint("RIGHT", frame, "RIGHT", -16, 0)
 hint:SetJustifyH("LEFT")

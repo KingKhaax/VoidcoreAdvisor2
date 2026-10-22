@@ -61,6 +61,8 @@ function UnitClass() return "Priest", "PRIEST", 5 end
 function GetBuildInfo() return "12.1.5", "99999", "", 120105 end
 function GetSpecializationInfoByID() return 62, "Arcane", "", 1 end
 UIParent = NewDummy()
+CreateFont = function() return NewDummy() end
+LibStub = nil
 DEFAULT_CHAT_FRAME = NewDummy()
 function GetNumSpecializations() return 3 end
 function GetSpecializationInfo(i) return 256 + i end
@@ -395,5 +397,25 @@ end
 
 check("Settings window has the version tab", function()
     VCA.SettingsWindow.Open(5)
+    VCA.SettingsWindow.Hide()
+end)
+
+check("Bonus roll window preview lays out", function()
+    VCA.BonusRollConfirm.ShowPreview()
+    VCARollWindow:Hide()
+end)
+
+check("Fonts: list, choose and restore", function()
+    local list = VCA.Fonts.List()
+    assert(#list >= 5 and list[1] == "Source Sans 3")
+    assert(VCA.Fonts.Resolve("Source Sans 3"))
+    assert(VCA.Fonts.Resolve("nope") == nil)
+    VCA.Fonts.Choose("Arial Narrow")
+    assert(VCA.Fonts.Current() == "Arial Narrow")
+    VCA.Fonts.Choose("default")
+    assert(VCA.Fonts.Current() == nil)
+end)
+check("Settings window font list opens", function()
+    VCA.SettingsWindow.Open(1)
     VCA.SettingsWindow.Hide()
 end)

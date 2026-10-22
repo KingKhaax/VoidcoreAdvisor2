@@ -591,13 +591,13 @@ local function PopulateSpecColumn(sourceType, sourceID, difficultyID, filterItem
             row.countLabel:SetText("")
             frac = (entry.baseCount or 0) > 0 and (obtainedCount / entry.baseCount) or 0
         end
-        -- row width minus rank (2+24), gap, icon (28), gap and the right margin
-        local trackW = math.max(40, colW - PADDING - 2 - 24 - 5 - 28 - 8 - 6)
+        -- row width minus rank (2+30), gap, icon (28), gap and the column of figures on the right
+        local trackW = math.max(40, colW - PADDING - 2 - 30 - 5 - 28 - 8 - 78)
         row.barFill:SetColorTexture(accent[1], accent[2], accent[3], isBest and 1 or 0.85)
         row.barFill:SetWidth(math.max(1, trackW * math.min(1, math.max(0, frac))))
         row.barFill:SetShown(frac > 0)
 
-        rowTop = rowTop + _s.SPEC_ROW_H + 4
+        rowTop = rowTop + _s.SPEC_ROW_H + 6
     end
 
     _s.specScrollChild:SetHeight(math.max(rowTop, 1))

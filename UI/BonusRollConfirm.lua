@@ -186,13 +186,13 @@ winInnerEdge:SetBackdrop({
 winInnerEdge:SetBackdropBorderColor(0, 0, 0, 1)
 
 -- Title – hidden in compact layout
-local winTitle = win:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
+local winTitle = win:CreateFontString(nil, "OVERLAY", "VCAFontNormalLarge")
 winTitle:SetPoint("TOP", win, "TOP", 0, -14)
 VCA.OnTheme(function() winTitle:SetText(RollPalette().hdr .. "VoidcoreAdvisor|r") end)
 winTitle:Hide()
 
 -- Subtitle – hidden in compact layout
-local winSubtitle = win:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+local winSubtitle = win:CreateFontString(nil, "OVERLAY", "VCAFontHighlightSmall")
 winSubtitle:SetPoint("TOP", winTitle, "BOTTOM", 0, -2)
 winSubtitle:SetText("|cff888888" .. L["BONUS_ROLL_CONFIRM_SUBTITLE"] .. "|r")
 winSubtitle:Hide()
@@ -251,14 +251,14 @@ winIconBtn:SetScript("OnLeave", function()
 end)
 
 -- Item name label
-local winItemName = win:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
+local winItemName = win:CreateFontString(nil, "OVERLAY", "VCAFontHighlight")
 winItemName:SetPoint("TOPLEFT", winItemIcon, "TOPRIGHT", 8, -2)
 winItemName:SetWidth(238)
 winItemName:SetJustifyH("LEFT")
 winItemName:SetWordWrap(true)
 
 -- Voidcore count + cost line (shown below item name text)
-local winVoidcoreInfo = win:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+local winVoidcoreInfo = win:CreateFontString(nil, "OVERLAY", "VCAFontNormal")
 winVoidcoreInfo:SetPoint("TOPLEFT", winItemName, "BOTTOMLEFT", 0, -4)
 
 -- Timer bar  (value mirrored from BonusRollFrame.PromptFrame.Timer.Bar via OnUpdate)
@@ -276,7 +276,7 @@ timerBar:SetMinMaxValues(0, 1)
 timerBar:SetValue(1)
 
 -- Remaining time, centered on the bar.
-local timerText = timerBar:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+local timerText = timerBar:CreateFontString(nil, "OVERLAY", "VCAFontHighlightSmall")
 timerText:SetPoint("CENTER", timerBar, "CENTER", 0, 0)
 timerText:SetShadowColor(0, 0, 0, 1)
 timerText:SetShadowOffset(1, -1)
@@ -292,25 +292,58 @@ topSep:SetPoint("TOPLEFT", win, "TOPLEFT", 16, -88)
 topSep:SetPoint("TOPRIGHT", win, "TOPRIGHT", -16, -88)
 
 -- Spec row (centered: |T...|t icon + name + " - " + chance in one FontString)
-local specLabel = win:CreateFontString(nil, "OVERLAY", "GameFontNormal") -- retained as upvalue, hidden
+local specLabel = win:CreateFontString(nil, "OVERLAY", "VCAFontNormal") -- retained as upvalue, hidden
 specLabel:Hide()
 
 local specIcon = win:CreateTexture(nil, "ARTWORK") -- retained as upvalue, hidden (icon embedded via |T|t)
 specIcon:SetSize(16, 16)
 
-local specName = win:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
+local specName = win:CreateFontString(nil, "OVERLAY", "VCAFontHighlight")
 specName:SetPoint("TOP", win, "TOP", 0, -100)
 specName:SetJustifyH("CENTER")
 specName:SetWidth(340)
 
 -- chanceText retained as upvalue, permanently hidden (merged into specName text)
-local chanceText = win:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+local chanceText = win:CreateFontString(nil, "OVERLAY", "VCAFontNormal")
 chanceText:Hide()
 
--- Transparent hit-testing frame covering the chance text for the wanted-items tooltip.
+-- Odds panel: the chance of one of your chosen items on the left, the chosen items on the right.
+local oddsPanel = CreateFrame("Frame", nil, win, "BackdropTemplate")
+oddsPanel:SetBackdrop({
+    bgFile = "Interface\\Buttons\\WHITE8X8",
+    edgeFile = "Interface\\Buttons\\WHITE8X8",
+    edgeSize = 1
+})
+VCA.OnTheme(function()
+    local e = RollPalette().border
+    oddsPanel:SetBackdropColor(1, 1, 1, 0.05)
+    oddsPanel:SetBackdropBorderColor(e[1], e[2], e[3], 0.55)
+end)
+oddsPanel:Hide()
+local oddsPct = oddsPanel:CreateFontString(nil, "OVERLAY", "VCAFontNormalHuge")
+oddsPct:SetPoint("TOPLEFT", oddsPanel, "TOPLEFT", 12, -9)
+local oddsCaption = oddsPanel:CreateFontString(nil, "OVERLAY", "VCAFontHighlightSmall")
+oddsCaption:SetPoint("TOPLEFT", oddsPct, "BOTTOMLEFT", 0, -3)
+local oddsMessage = oddsPanel:CreateFontString(nil, "OVERLAY", "VCAFontHighlight")
+oddsMessage:SetPoint("LEFT", oddsPanel, "LEFT", 12, 0)
+oddsMessage:SetPoint("RIGHT", oddsPanel, "RIGHT", -12, 0)
+oddsMessage:SetJustifyH("CENTER")
+local chosenIcons = {}
+for i = 1, 5 do
+    local t = oddsPanel:CreateTexture(nil, "ARTWORK")
+    t:SetSize(24, 24)
+    t:SetTexCoord(0.08, 0.92, 0.08, 0.92)
+    t:SetPoint("TOPLEFT", oddsPanel, "TOPLEFT", 150 + (i - 1) * 28, -9)
+    t:Hide()
+    chosenIcons[i] = t
+end
+local chosenText = oddsPanel:CreateFontString(nil, "OVERLAY", "VCAFontHighlightSmall")
+chosenText:SetPoint("TOPLEFT", oddsPanel, "TOPLEFT", 150, -39)
+chosenText:SetJustifyH("LEFT")
+
+-- Transparent hit-testing frame over the odds panel for the wanted-items tooltip.
 local chanceHitFrame = CreateFrame("Frame", nil, win)
-chanceHitFrame:SetPoint("TOP", win, "TOP", 0, -90)
-chanceHitFrame:SetSize(340, 22)
+chanceHitFrame:SetAllPoints(oddsPanel)
 chanceHitFrame:EnableMouse(true)
 chanceHitFrame:Hide()
 
@@ -413,22 +446,22 @@ VCA.OnTheme(function() local t = RollPalette().border; lootSep:SetColorTexture(t
 lootSep:SetHeight(1)
 lootSep:Hide()
 
-local lootLine = win:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+local lootLine = win:CreateFontString(nil, "OVERLAY", "VCAFontNormal")
 lootLine:SetWidth(320)
 lootLine:SetJustifyH("CENTER")
 lootLine:Hide()
 
-local lootCountLine = win:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+local lootCountLine = win:CreateFontString(nil, "OVERLAY", "VCAFontNormal")
 lootCountLine:SetWidth(320)
 lootCountLine:SetJustifyH("CENTER")
 lootCountLine:Hide()
 
-local warnHeader = win:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
+local warnHeader = win:CreateFontString(nil, "OVERLAY", "VCAFontHighlight")
 warnHeader:SetWidth(320)
 warnHeader:SetJustifyH("CENTER")
 warnHeader:Hide()
 
-local warnBody = win:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+local warnBody = win:CreateFontString(nil, "OVERLAY", "VCAFontHighlightSmall")
 warnBody:SetWidth(320)
 warnBody:SetJustifyH("CENTER")
 warnBody:Hide()
@@ -439,7 +472,7 @@ VCA.OnTheme(function() local t = RollPalette().border; specListSep:SetColorTextu
 specListSep:SetHeight(1)
 specListSep:Hide()
 
-local specListHeader = win:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+local specListHeader = win:CreateFontString(nil, "OVERLAY", "VCAFontNormal")
 specListHeader:SetText("|cff888888" .. L["REMINDER_SPEC_LIST_HEADER"] .. "|r")
 specListHeader:Hide()
 
@@ -449,7 +482,10 @@ for i = 1, 4 do
     -- Clickable button; spec icon fills the button face
     row.btn = CreateFrame("Button", nil, win)
     row.btn:SetSize(22, 22)
-    -- Soft glow shown when this spec is the active loot spec
+    -- Edge around the icon: bright for the active loot spec, dim for the others
+    row.edge = row.btn:CreateTexture(nil, "BACKGROUND")
+    row.edge:SetPoint("TOPLEFT", row.btn, "TOPLEFT", -2, 2)
+    row.edge:SetPoint("BOTTOMRIGHT", row.btn, "BOTTOMRIGHT", 2, -2)
     row.glow = row.btn:CreateTexture(nil, "OVERLAY")
     row.glow:SetPoint("CENTER", row.btn, "CENTER", 0, 0)
     row.glow:SetSize(50, 50)
@@ -461,7 +497,7 @@ for i = 1, 4 do
     local hl = row.btn:CreateTexture(nil, "HIGHLIGHT")
     hl:SetAllPoints(row.btn)
     hl:SetColorTexture(1, 1, 1, 0.2)
-    row.label = win:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+    row.label = win:CreateFontString(nil, "OVERLAY", "VCAFontHighlightSmall")
     row.btn:Hide()
     row.label:Hide()
     specListRows[i] = row
@@ -555,7 +591,7 @@ local ROLL_BTN_TEXT = CreateAtlasMarkup("lootroll-icon-need", 14, 14) .. " " .. 
 local PASS_BTN_TEXT = CreateAtlasMarkup("lootroll-icon-pass", 14, 14) .. " " .. L["BONUS_ROLL_CONFIRM_PASS"]
 
 -- Confirmation question above buttons
-local winRollPrompt = win:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
+local winRollPrompt = win:CreateFontString(nil, "OVERLAY", "VCAFontHighlight")
 winRollPrompt:SetText(L["BONUS_ROLL_CONFIRM_QUESTION"])
 winRollPrompt:Hide()
 
@@ -570,8 +606,8 @@ local function CreateSkinnedButton(r, g, b)
     })
     btn:SetBackdropColor(r, g, b, 1)
     btn:SetBackdropBorderColor(0, 0, 0, 1)
-    btn:SetNormalFontObject("GameFontNormal")
-    btn:SetHighlightFontObject("GameFontHighlight")
+    btn:SetNormalFontObject("VCAFontNormal")
+    btn:SetHighlightFontObject("VCAFontHighlight")
     local shine = btn:CreateTexture(nil, "ARTWORK")
     shine:SetPoint("TOPLEFT", btn, "TOPLEFT", 1, -1)
     shine:SetPoint("TOPRIGHT", btn, "TOPRIGHT", -1, -1)
@@ -694,12 +730,8 @@ local function ShowSpecList(source, dynY)
     specListHeader:Hide()
     specListHitFrame:Hide()
 
-    dynY = dynY - 8
-    specListSep:ClearAllPoints()
-    specListSep:SetPoint("TOPLEFT", win, "TOPLEFT", 16, dynY)
-    specListSep:SetPoint("TOPRIGHT", win, "TOPRIGHT", -16, dynY)
-    specListSep:Show()
-    dynY = dynY - 10
+    specListSep:Hide()
+    dynY = dynY - 12
 
     -- Horizontal layout: [icon] N (W)  [icon] N (W)  …
     -- Cell = 22px icon + 4px gap + ~42px text ("12 (3)") + 10px between = 63px
@@ -707,8 +739,7 @@ local function ShowSpecList(source, dynY)
     local WIN_W = 360
     local specCount = math.min(#specs, 4)
     -- Total row width: (N-1) gaps + last cell (icon 22 + gap 4 + text ~42)
-    local rowW = (specCount - 1) * CELL_W + 68
-    local startX = math.floor((WIN_W - rowW) / 2)
+    local startX = 18
 
     local activeSpecID = VCA.SpecInfo.GetEffectiveLootSpecID()
     local selectedSet = VCA.Data.GetSelectedItems(source.sourceType, source.sourceID, source.difficultyID)
@@ -747,17 +778,19 @@ local function ShowSpecList(source, dynY)
         row.btn:ClearAllPoints()
         row.btn:SetPoint("TOPLEFT", win, "TOPLEFT", startX + (i - 1) * CELL_W, dynY)
         row.icon:SetTexture(spec.icon or 134400)
+        row.glow:Hide()
+        local a = RollPalette().accent
         if spec.specID == activeSpecID then
-            row.glow:Show()
+            row.edge:SetColorTexture(a[1], a[2], a[3], 1)
         else
-            row.glow:Hide()
+            row.edge:SetColorTexture(0.2, 0.28, 0.24, 1)
         end
 
         row.label:ClearAllPoints()
         row.label:SetPoint("LEFT", row.btn, "RIGHT", 4, 0)
         local remColor = remaining > 0 and "|cffffffff" or "|cff666666"
-        local wantedStr = wanted > 0 and ("|cffffff00(" .. wanted .. ")|r") or "|cff666666(-)|r"
-        row.label:SetText(remColor .. remaining .. "|r " .. wantedStr)
+        local wantedStr = wanted > 0 and (" |cffffff00(" .. wanted .. ")|r") or ""
+        row.label:SetText(remColor .. remaining .. "|r" .. wantedStr)
 
         -- Capture loop locals for closures
         local capturedSpecID = spec.specID
@@ -820,6 +853,10 @@ local function ShowSpecList(source, dynY)
             GameTooltip:Hide()
         end)
         row.btn:SetScript("OnClick", function()
+            -- Only another spec changes anything: the active one is already your loot spec.
+            if capturedSpecID == VCA.SpecInfo.GetEffectiveLootSpecID() then
+                return
+            end
             isSpecChangePending = true
             SetLootSpecialization(capturedSpecID)
         end)
@@ -834,145 +871,130 @@ local function ShowSpecList(source, dynY)
         specListRows[i].label:Hide()
     end
 
-    dynY = dynY - 26 -- single row height
+    dynY = dynY - 30 -- single row height
     return dynY
 end
 
--- Renders the loot-odds row, per-spec list, and the roll-prompt label onto the
--- window, advancing `dynY` for each section shown.  Returns the final dynY.
--- `source` must carry { sourceType, sourceID, difficultyID } or be nil.
-local function LayoutDynamicSection(source, specID, dynY)
-    local initialDynY = dynY
-    topSep:Show()
-    specName:Show()
+-- Lays out, from y downwards: the odds panel, the per-spec chips, the timer and the
+-- one-item warning. Returns the y below the last of them. `source` must carry
+-- { sourceType, sourceID, difficultyID } or be nil.
+local function LayoutDynamicSection(source, specID, y)
+    topSep:Hide()
+    specName:Hide()
     specName:SetText("")
     chanceHitFrame:Hide()
-    local selectedSet = (source and source.sourceType and source.sourceID) and
-                            VCA.Data.GetSelectedItems(source.sourceType, source.sourceID, source.difficultyID) or nil
-    local hasSelection = selectedSet and next(selectedSet)
+    lootSep:Hide()
+    lootLine:Hide()
+    lootCountLine:Hide()
+    chanceText:Hide()
+    warnHeader:Hide()
+    warnBody:Hide()
+    oddsPct:SetText("")
+    oddsCaption:SetText("")
+    oddsMessage:SetText("")
+    chosenText:SetText("")
+    for i = 1, 5 do
+        chosenIcons[i]:Hide()
+    end
+    oneItemLeft = false
 
-    local probFull = (source and source.sourceType and source.sourceID) and
-                         VCA.Probability.CalculateForSpec(source.sourceType, source.sourceID, source.difficultyID,
-            VCA.SpecInfo.GetPlayerClassID(), specID, nil) or nil
+    local hasSource = source and source.sourceType and source.sourceID
+    local accent = RollPalette().accent
 
-    if source and source.sourceType and source.sourceID then
+    if hasSource then
+        local selectedSet = VCA.Data.GetSelectedItems(source.sourceType, source.sourceID, source.difficultyID)
+        local hasSelection = selectedSet and next(selectedSet)
+        local probFull = VCA.Probability.CalculateForSpec(source.sourceType, source.sourceID, source.difficultyID,
+            VCA.SpecInfo.GetPlayerClassID(), specID, nil)
 
-        lootSep:Hide()
-
-        -- ── Loot probability (filtered by selection) ──────────────────────────
+        local panelH = 36
+        local message
         if not hasSelection then
-            specName:SetText("|cff888888" .. L["BONUS_ROLL_CONFIRM_NO_SELECTED"] .. "|r")
-            lootLine:Hide()
-            lootCountLine:Hide()
+            message = "|cff888888" .. L["BONUS_ROLL_CONFIRM_NO_SELECTED"] .. "|r"
         else
             local prob = VCA.Probability.CalculateForSpec(source.sourceType, source.sourceID, source.difficultyID,
                 VCA.SpecInfo.GetPlayerClassID(), specID, nil, selectedSet)
             if prob.noItems then
-                -- Check if any other spec has wanted items in the selection
-                local otherSpecHasItems = false
-                local specs = VCA.SpecInfo.GetPlayerSpecs()
-                if specs then
-                    for _, spec in ipairs(specs) do
-                        if spec.specID ~= specID then
-                            local op = VCA.Probability.CalculateForSpec(source.sourceType, source.sourceID,
-                                source.difficultyID, spec.classID, spec.specID, nil, selectedSet)
-                            if not op.noItems then
-                                otherSpecHasItems = true
-                                break
-                            end
-                        end
+                message = "|cff888888" .. L["BONUS_ROLL_CONFIRM_NO_ITEMS"] .. "|r"
+            elseif prob.allObtained then
+                message = "|cff00ff00" .. L["BONUS_ROLL_CONFIRM_ALL_OBTAINED"] .. "|r"
+            else
+                panelH = 62
+                local pct = math.floor((prob.remainingOdds or 0) * 100 + 0.5)
+                oddsPct:SetText(string.format("|cff%02x%02x%02x%d%%|r", accent[1] * 255, accent[2] * 255,
+                    accent[3] * 255, pct))
+                oddsCaption:SetText("|cff93a79a" .. L["BRC_ODDS_CAPTION"] .. "|r")
+                -- The chosen items this spec can still give
+                local specSet = {}
+                for _, itemID in ipairs(VCA.LootPool.GetItemsForSpec(source.sourceType, source.sourceID,
+                    source.difficultyID, VCA.SpecInfo.GetPlayerClassID(), specID)) do
+                    specSet[itemID] = true
+                end
+                local wantedIDs = {}
+                for itemID in pairs(selectedSet) do
+                    if specSet[itemID] and
+                        not VCA.Data.IsObtainedForKeyTier(source.sourceType, source.sourceID, source.difficultyID,
+                            specID, itemID, nil) then
+                        wantedIDs[#wantedIDs + 1] = itemID
                     end
                 end
-                chanceText:Hide()
-                specName:SetText("|cff888888" .. L["BONUS_ROLL_CONFIRM_NO_ITEMS"] .. "|r")
-                if otherSpecHasItems then
-                    lootLine:ClearAllPoints()
-                    lootLine:SetPoint("TOP", specName, "BOTTOM", 0, -4)
-                    lootLine:SetText("|cffffff00" .. L["BONUS_ROLL_CONFIRM_NO_ITEMS_OTHER_SPECS"] .. "|r")
-                    lootLine:Show()
-                    dynY = dynY - 18
-                else
-                    lootLine:Hide()
+                table.sort(wantedIDs)
+                for i = 1, math.min(5, #wantedIDs) do
+                    chosenIcons[i]:SetTexture(C_Item.GetItemIconByID(wantedIDs[i]) or 134400)
+                    chosenIcons[i]:Show()
                 end
-                lootCountLine:Hide()
-            elseif prob.allObtained then
-                dynY = dynY - 10
-                lootLine:ClearAllPoints()
-                lootLine:SetPoint("TOP", win, "TOP", 0, dynY)
-                chanceText:Hide()
-                lootLine:SetText("|cff00ff00" .. L["BONUS_ROLL_CONFIRM_ALL_OBTAINED"] .. "|r")
-                lootLine:Show()
-                lootCountLine:Hide()
-                dynY = dynY - 20
-            else
-                local pct = math.floor((prob.remainingOdds or 0) * 100 + 0.5)
-                local fmtKey = prob.remainingCount == 1 and "BONUS_ROLL_CONFIRM_CHANCE_ONE" or
-                                   "BONUS_ROLL_CONFIRM_CHANCE"
-                local chanceStr = string.format(L[fmtKey], pct, prob.remainingCount)
-                specName:SetText("|cffffff00" .. chanceStr .. "|r")
-                lootLine:Hide()
-                lootCountLine:Hide()
+                chosenText:SetText("|cff93a79a" .. string.format(L["BRC_CHOSEN_COUNT"], #wantedIDs) .. "|r")
                 chanceHitFrame:Show()
             end
         end
-    else
-        lootSep:Hide()
-        lootLine:Hide()
-        lootCountLine:Hide()
-        chanceText:Hide()
-        warnHeader:Hide()
-        warnBody:Hide()
-        specName:SetText("")
-    end
+        oddsMessage:SetText(message or "")
+        oddsPanel:ClearAllPoints()
+        oddsPanel:SetPoint("TOPLEFT", win, "TOPLEFT", 16, y)
+        oddsPanel:SetPoint("TOPRIGHT", win, "TOPRIGHT", -16, y)
+        oddsPanel:SetHeight(panelH)
+        oddsPanel:Show()
+        y = y - panelH - 2
 
-    -- Per-spec remaining counts (shown when option is enabled)
-    if IsSpecListEnabled() then
-        dynY = ShowSpecList(source, dynY)
+        -- Per-spec chips (clicking one switches your loot specialization)
+        if IsSpecListEnabled() then
+            y = ShowSpecList(source, y)
+        else
+            HideSpecList()
+        end
+
+        if probFull and probFull.remainingCount == 1 then
+            oneItemLeft = true
+        end
     else
+        oddsPanel:Hide()
         HideSpecList()
     end
 
-    -- ── Warning (shown last, just above buttons) ──────────────────────────────
-    oneItemLeft = false
-    if source and source.sourceType and source.sourceID then
-        if probFull and probFull.remainingCount == 1 then
-            oneItemLeft = true
-            if PlaySound and SOUNDKIT and SOUNDKIT.RAID_WARNING then
-                PlaySound(SOUNDKIT.RAID_WARNING)
-            end
-            dynY = dynY - 6 -- spacing above warning
-            warnHeader:ClearAllPoints()
-            warnHeader:SetPoint("TOP", win, "TOP", 0, dynY)
-            warnHeader:SetText(L["BONUS_ROLL_CONFIRM_WARNING_HEADER"])
-            warnHeader:Show()
-            dynY = dynY - 20 -- header height
-            warnBody:ClearAllPoints()
-            warnBody:SetPoint("TOP", win, "TOP", 0, dynY)
-            warnBody:SetText("|cffff6060" .. L["ONE_ITEM_WARN"] .. "|r")
-            warnBody:Show()
-            dynY = dynY - 18 - 6 -- body height + spacing below
-        else
-            warnHeader:Hide()
-            warnBody:Hide()
-        end
-    else
-        warnHeader:Hide()
-        warnBody:Hide()
-    end
+    -- Timer bar
+    y = y - 8
+    timerBar:ClearAllPoints()
+    timerBar:SetPoint("TOPLEFT", win, "TOPLEFT", 16, y)
+    timerBar:SetPoint("TOPRIGHT", win, "TOPRIGHT", -16, y)
+    y = y - 14
 
-    -- Compact: nothing was rendered below the spec row; snap to remove the gap
-    if dynY == initialDynY then
-        if not (source and source.sourceType and source.sourceID) then
-            -- Source unknown: collapse the separator + spec-row region entirely
-            topSep:Hide()
-            specName:Hide()
-            dynY = -88
-        else
-            dynY = initialDynY + 12
+    -- One-item warning, just above the buttons
+    if oneItemLeft then
+        if PlaySound and SOUNDKIT and SOUNDKIT.RAID_WARNING then
+            PlaySound(SOUNDKIT.RAID_WARNING)
         end
+        y = y - 10
+        warnHeader:ClearAllPoints()
+        warnHeader:SetPoint("TOP", win, "TOP", 0, y)
+        warnHeader:SetText(L["BONUS_ROLL_CONFIRM_WARNING_HEADER"])
+        warnHeader:Show()
+        y = y - 20
+        warnBody:ClearAllPoints()
+        warnBody:SetPoint("TOP", win, "TOP", 0, y)
+        warnBody:SetText("|cffff6060" .. L["ONE_ITEM_WARN"] .. "|r")
+        warnBody:Show()
+        y = y - 18 - 4
     end
-
-    return dynY
+    return y
 end
 
 -- â”€â”€ BRC.Show â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
@@ -1066,7 +1088,7 @@ function BRC.Show()
                          VCA.VoidcoreCost.MYTHIC_PLUS)
     winVoidcoreInfo:SetText(string.format(L["BONUS_ROLL_CONFIRM_COST"], cost, owned))
 
-    local dynY = LayoutDynamicSection(source, specID, -122)
+    local dynY = LayoutDynamicSection(source, specID, -66)
     local btnW, btnH = 140, 28
     local winH = math.abs(dynY) + 8 + btnH + 16
     win:SetSize(360, winH)
@@ -1238,7 +1260,7 @@ function BRC.ShowPreview()
                          VCA.VoidcoreCost.MYTHIC_PLUS)
     winVoidcoreInfo:SetText(string.format(L["BONUS_ROLL_CONFIRM_COST"], cost, owned))
 
-    local dynY = LayoutDynamicSection(source, specID, -122)
+    local dynY = LayoutDynamicSection(source, specID, -66)
     local btnW, btnH = 140, 28
     local winH = math.abs(dynY) + 8 + btnH + 16
     win:SetSize(360, winH)

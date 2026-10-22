@@ -123,7 +123,7 @@ end
 
 -- ── Header ────────────────────────────────────────────────────────────────────
 
-local titleText = frame:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
+local titleText = frame:CreateFontString(nil, "OVERLAY", "VCAFontNormalLarge")
 titleText:SetPoint("TOPLEFT", 18, -16)
 VCA.OnTheme(function() titleText:SetText(VCA.TitleText()) end)
 
@@ -244,14 +244,14 @@ slotDivider:SetPoint("TOPRIGHT", slotSection, "TOPRIGHT", -16, 0)
 slotDivider:SetHeight(1)
 
 -- Title label
-local slotTitle = slotSection:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+local slotTitle = slotSection:CreateFontString(nil, "OVERLAY", "VCAFontNormalSmall")
 slotTitle:SetPoint("TOPLEFT", slotSection, "TOPLEFT", PADDING, -8)
 VCA.OnTheme(function() slotTitle:SetText(VCA.Theme.hdr .. "" .. L["SLOT_FILTER_TOGGLE"] .. "|r") end)
 
 -- Clear-all button
 local slotClearBtn = CreateFrame("Button", nil, slotSection)
 slotClearBtn:SetSize(14, 14)
-slotClearBtn:SetNormalFontObject("GameFontNormal")
+slotClearBtn:SetNormalFontObject("VCAFontNormal")
 slotClearBtn:SetText("|cffff4444x|r")
 slotClearBtn:SetPoint("TOPRIGHT", slotSection, "TOPRIGHT", -PADDING, -8)
 
@@ -526,7 +526,7 @@ pickerCloseBtn:SetSize(20, 20)
 pickerCloseBtn:SetPoint("TOPRIGHT", -2, -2)
 pickerCloseBtn:SetScript("OnClick", ClosePicker)
 
-local pickerTitle = pickerPopup:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+local pickerTitle = pickerPopup:CreateFontString(nil, "OVERLAY", "VCAFontNormal")
 pickerTitle:SetPoint("TOPLEFT", PICKER_PAD, -PICKER_PAD)
 pickerTitle:SetPoint("TOPRIGHT", -(PICKER_PAD + 22), -PICKER_PAD)
 pickerTitle:SetJustifyH("LEFT")
@@ -578,7 +578,7 @@ local function GetOrCreatePickerItem()
     iconTex:SetAllPoints(iconBtn)
     iconTex:SetTexCoord(0.08, 0.92, 0.08, 0.92)
 
-    local lbl = rf:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+    local lbl = rf:CreateFontString(nil, "OVERLAY", "VCAFontNormalSmall")
     lbl:SetPoint("LEFT", iconBtn, "RIGHT", 4, 0)
     lbl:SetPoint("RIGHT", rf, "RIGHT", 0, 0)
     lbl:SetJustifyH("LEFT")
@@ -603,7 +603,7 @@ local function GetOrCreatePickerHeader()
     end
     local f = CreateFrame("Frame", nil, pickerScrollChild)
     f:SetHeight(PICKER_HDR_H)
-    local lbl = f:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+    local lbl = f:CreateFontString(nil, "OVERLAY", "VCAFontNormalSmall")
     lbl:SetAllPoints(f)
     lbl:SetJustifyH("LEFT")
     f.label = lbl
@@ -1015,7 +1015,7 @@ slotClearBtn:SetScript("OnClick", function()
         L["SLOT_FILTER_CLEAR_CONFIRM"] .. "\n\n|cffaaaaaa" .. L["SLOT_FILTER_CLEAR_CONFIRM_BODY"] .. "|r")
 end)
 
-local subtitleText = frame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+local subtitleText = frame:CreateFontString(nil, "OVERLAY", "VCAFontNormal")
 subtitleText:SetPoint("TOPLEFT", 18, -40)
 subtitleText:SetText("|cff888888" .. L["DUNGEON_OVERVIEW_SUBTITLE"] .. "|r")
 
@@ -1036,11 +1036,11 @@ contentArea:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", 0, SLOT_SECTION_H + 11
 -- Row widgets live inside the scrollFrame which is offset PADDING from contentArea left.
 -- Therefore contentArea x = PADDING + row x.
 
-local hdrDungeon = contentArea:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+local hdrDungeon = contentArea:CreateFontString(nil, "OVERLAY", "VCAFontNormal")
 hdrDungeon:SetPoint("TOPLEFT", contentArea, "TOPLEFT", PADDING + COL_DUNGEON_X, -6)
 VCA.OnTheme(function() hdrDungeon:SetText(VCA.Theme.hdr .. "" .. L["DUNGEON_OVERVIEW_COL_DUNGEON"] .. "|r") end)
 
-local hdrSpec = contentArea:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+local hdrSpec = contentArea:CreateFontString(nil, "OVERLAY", "VCAFontNormal")
 hdrSpec:SetPoint("TOPLEFT", contentArea, "TOPLEFT", PADDING + COL_SPEC_NAME_X, -6)
 VCA.OnTheme(function() hdrSpec:SetText(VCA.Theme.hdr .. "" .. L["DUNGEON_OVERVIEW_COL_SPEC"] .. "|r") end)
 
@@ -1048,14 +1048,14 @@ VCA.OnTheme(function() hdrSpec:SetText(VCA.Theme.hdr .. "" .. L["DUNGEON_OVERVIE
 -- Row frame right = scrollFrame right = contentArea right - PADDING.
 -- So contentArea offset = -PADDING + COL_*_R.
 
-local hdrLooted = contentArea:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+local hdrLooted = contentArea:CreateFontString(nil, "OVERLAY", "VCAFontNormal")
 hdrLooted:SetJustifyH("RIGHT")
 hdrLooted:SetWidth(COL_LOOTED_W)
 hdrLooted:SetWordWrap(false)
 hdrLooted:SetPoint("TOPRIGHT", contentArea, "TOPRIGHT", -PADDING + COL_LOOTED_R, -6)
 VCA.OnTheme(function() hdrLooted:SetText(VCA.Theme.hdr .. "" .. L["DUNGEON_OVERVIEW_COL_LOOTED"] .. "|r") end)
 
-local hdrChance = contentArea:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+local hdrChance = contentArea:CreateFontString(nil, "OVERLAY", "VCAFontNormal")
 hdrChance:SetJustifyH("RIGHT")
 hdrChance:SetWidth(COL_PCT_W)
 hdrChance:SetWordWrap(false)
@@ -1085,7 +1085,7 @@ local function GetOrCreateDungeonRow(parent)
     rowFrame:EnableMouse(true)
 
     -- Dungeon name (left side)
-    local dungeonLabel = rowFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+    local dungeonLabel = rowFrame:CreateFontString(nil, "OVERLAY", "VCAFontNormal")
     dungeonLabel:SetJustifyH("LEFT")
     dungeonLabel:SetPoint("LEFT", rowFrame, "LEFT", COL_DUNGEON_X, 0)
     dungeonLabel:SetWidth(COL_DUNGEON_W)
@@ -1098,21 +1098,21 @@ local function GetOrCreateDungeonRow(parent)
     specIcon:SetTexCoord(0.08, 0.92, 0.08, 0.92)
 
     -- Spec name (immediately right of icon)
-    local specLabel = rowFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+    local specLabel = rowFrame:CreateFontString(nil, "OVERLAY", "VCAFontNormal")
     specLabel:SetJustifyH("LEFT")
     specLabel:SetPoint("LEFT", rowFrame, "LEFT", COL_SPEC_NAME_X, 0)
     specLabel:SetWidth(COL_SPEC_NAME_W)
     specLabel:SetWordWrap(false)
 
     -- Looted / total (right side, second from right)
-    local obtainedLabel = rowFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+    local obtainedLabel = rowFrame:CreateFontString(nil, "OVERLAY", "VCAFontNormal")
     obtainedLabel:SetJustifyH("RIGHT")
     obtainedLabel:SetWidth(COL_LOOTED_W)
     obtainedLabel:SetWordWrap(false)
     obtainedLabel:SetPoint("RIGHT", rowFrame, "RIGHT", COL_LOOTED_R, 0)
 
     -- Chance percentage (rightmost)
-    local pctLabel = rowFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+    local pctLabel = rowFrame:CreateFontString(nil, "OVERLAY", "VCAFontNormal")
     pctLabel:SetJustifyH("RIGHT")
     pctLabel:SetWidth(COL_PCT_W)
     pctLabel:SetWordWrap(false)

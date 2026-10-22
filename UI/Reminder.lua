@@ -179,7 +179,7 @@ local function NewSpecRows(parent)
         row.icon = parent:CreateTexture(nil, "ARTWORK")
         row.icon:SetSize(20, 20)
         row.icon:SetTexCoord(0.08, 0.92, 0.08, 0.92)
-        row.label = parent:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+        row.label = parent:CreateFontString(nil, "OVERLAY", "VCAFontHighlightSmall")
         row.track = parent:CreateTexture(nil, "BORDER")
         row.track:SetSize(BAR_W, 5)
         row.track:SetColorTexture(0, 0, 0, 0.45)
@@ -217,36 +217,36 @@ tinsert(UISpecialFrames, "VoidcoreAdvisorReminder")
 
 -- ── Title ─────────────────────────────────────────────────────────────────────
 
-local title = frame:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
+local title = frame:CreateFontString(nil, "OVERLAY", "VCAFontNormalLarge")
 VCA.OnTheme(function()
     title:SetText(VCA.RebornTitle(L["REMINDER_TITLE"], ReminderPalette()))
 end)
 
-local subtitle = frame:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+local subtitle = frame:CreateFontString(nil, "OVERLAY", "VCAFontHighlightSmall")
 subtitle:SetWidth(FRAME_W - PAD * 2)
 subtitle:SetJustifyH("CENTER")
 subtitle:SetWordWrap(true)
 subtitle:SetText("|cff9b9ba6" .. L["REMINDER_SUBTITLE"] .. "|r")
 
-local voidcoreCount = frame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+local voidcoreCount = frame:CreateFontString(nil, "OVERLAY", "VCAFontNormal")
 
 local divider = Line(frame)
 
 -- ── Current loot spec row ─────────────────────────────────────────────────────
 
-local curHeader = frame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+local curHeader = frame:CreateFontString(nil, "OVERLAY", "VCAFontNormal")
 curHeader:SetText("|cffa9a9b3" .. L["REMINDER_CURRENT_SPEC"] .. "|r")
 local curIcon = SpecIcon(frame, false)
-local curName = frame:CreateFontString(nil, "OVERLAY", "GameFontHighlightLarge")
+local curName = frame:CreateFontString(nil, "OVERLAY", "VCAFontHighlightLarge")
 
 -- ── Recommended loot spec row ─────────────────────────────────────────────────
 
-local recHeader = frame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+local recHeader = frame:CreateFontString(nil, "OVERLAY", "VCAFontNormal")
 recHeader:SetText("|cff5dff4a" .. L["REMINDER_RECOMMENDED"] .. "|r")
 local recIcon = SpecIcon(frame, true)
-local recName = frame:CreateFontString(nil, "OVERLAY", "GameFontHighlightLarge")
+local recName = frame:CreateFontString(nil, "OVERLAY", "VCAFontHighlightLarge")
 
-local recStats = frame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+local recStats = frame:CreateFontString(nil, "OVERLAY", "VCAFontNormal")
 recStats:SetWidth(FRAME_W - PAD * 2)
 recStats:SetJustifyH("CENTER")
 recStats:SetWordWrap(true)
@@ -261,7 +261,7 @@ dynWarnIcon:SetSize(20, 20)
 dynWarnIcon:SetAtlas("Ping_Wheel_Icon_Warning")
 dynWarnIcon:Hide()
 
-local dynWarnText = frame:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+local dynWarnText = frame:CreateFontString(nil, "OVERLAY", "VCAFontHighlightSmall")
 dynWarnText:SetWidth(FRAME_W - PAD * 2 - 26)
 dynWarnText:SetJustifyH("LEFT")
 dynWarnText:SetWordWrap(true)
@@ -272,14 +272,14 @@ dynWarnText:Hide()
 local dynSpecDivider = Line(frame)
 dynSpecDivider:Hide()
 
-local dynSpecHeader = frame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+local dynSpecHeader = frame:CreateFontString(nil, "OVERLAY", "VCAFontNormal")
 dynSpecHeader:Hide()
 
 local dynSpecRows = NewSpecRows(frame)
 
 -- ── Prompt ────────────────────────────────────────────────────────────────────
 
-local prompt = frame:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
+local prompt = frame:CreateFontString(nil, "OVERLAY", "VCAFontHighlight")
 prompt:SetPoint("LEFT", frame, "LEFT", PAD, 0)
 prompt:SetPoint("RIGHT", frame, "RIGHT", -PAD, 0)
 prompt:SetPoint("BOTTOM", frame, "BOTTOM", 0, 56)
@@ -545,26 +545,26 @@ FlatBackdrop(warnFrame)
 
 tinsert(UISpecialFrames, "VoidcoreAdvisorWarning")
 
-local wf_title = warnFrame:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
+local wf_title = warnFrame:CreateFontString(nil, "OVERLAY", "VCAFontNormalLarge")
 VCA.OnTheme(function()
     wf_title:SetText(VCA.RebornTitle(L["WARNING_TITLE"], ReminderPalette()))
 end)
 
-local wf_subtitle = warnFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+local wf_subtitle = warnFrame:CreateFontString(nil, "OVERLAY", "VCAFontHighlightSmall")
 wf_subtitle:SetWidth(FRAME_W - PAD * 2)
 wf_subtitle:SetJustifyH("CENTER")
 wf_subtitle:SetWordWrap(true)
 wf_subtitle:SetText("|cffff8000" .. L["WARNING_SUBTITLE"] .. "|r")
 
-local wf_voidcoreCount = warnFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+local wf_voidcoreCount = warnFrame:CreateFontString(nil, "OVERLAY", "VCAFontNormal")
 
 local wf_divider1 = Line(warnFrame)
 
-local wf_specHeader = warnFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+local wf_specHeader = warnFrame:CreateFontString(nil, "OVERLAY", "VCAFontNormal")
 wf_specHeader:SetText("|cffa9a9b3" .. L["WARNING_FAVORED_SPEC"] .. "|r")
 
 local wf_curIcon = SpecIcon(warnFrame, false)
-local wf_curName = warnFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlightLarge")
+local wf_curName = warnFrame:CreateFontString(nil, "OVERLAY", "VCAFontHighlightLarge")
 
 -- Warning section (always shown)
 local wf_warnDivider = Line(warnFrame, 1.0, 0.5, 0.0, 0.45)
@@ -573,7 +573,7 @@ local wf_warnIcon = warnFrame:CreateTexture(nil, "ARTWORK")
 wf_warnIcon:SetSize(20, 20)
 wf_warnIcon:SetAtlas("Ping_Wheel_Icon_Warning")
 
-local wf_warnText = warnFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+local wf_warnText = warnFrame:CreateFontString(nil, "OVERLAY", "VCAFontHighlightSmall")
 wf_warnText:SetWidth(FRAME_W - PAD * 2 - 26)
 wf_warnText:SetJustifyH("LEFT")
 wf_warnText:SetWordWrap(true)
@@ -582,7 +582,7 @@ wf_warnText:SetWordWrap(true)
 local wf_specListDivider = Line(warnFrame)
 wf_specListDivider:Hide()
 
-local wf_specListHeader = warnFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+local wf_specListHeader = warnFrame:CreateFontString(nil, "OVERLAY", "VCAFontNormal")
 wf_specListHeader:Hide()
 
 local wf_specRows = NewSpecRows(warnFrame)

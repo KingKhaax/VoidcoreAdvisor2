@@ -8,9 +8,11 @@ local L = VCA.L
 local SW = {}
 VCA.SettingsWindow = SW
 
-local WIDTH, HEIGHT = 700, 520
+local WIDTH, HEIGHT = 700, 560
 local NAV_W = 176
 local ROW_H = 54
+-- Width of the page content: the window minus the tab column, the margins and the scroll bar.
+local PANE_W = WIDTH - NAV_W - 52
 
 local function GDB()
     return _G[VCA.GLOBAL_DB_NAME] or {}
@@ -74,7 +76,7 @@ local function Button(parent, text, width, onClick)
     b:SetBackdrop(FLAT)
     b:SetBackdropColor(0.07, 0.23, 0.13, 1)
     b:SetBackdropBorderColor(0.16, 0.48, 0.29, 1)
-    local fs = b:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
+    local fs = b:CreateFontString(nil, "OVERLAY", "VCAFontHighlight")
     fs:SetPoint("CENTER")
     fs:SetText(text)
     b:SetScript("OnEnter", function(self)
@@ -87,10 +89,106 @@ local function Button(parent, text, width, onClick)
     return b
 end
 
+-- ── Choice list ───────────────────────────────────────────────────────────────
+-- One scrolling list shared by the theme selectors and the font selector.
+-- entries: { {key=, label=, color={r,g,b} (swatch), path= (font file: the label is written in it)} }
+local choiceList
+
+local function OpenChoiceList(anchor, entries, currentKey, onPick, width)
+    width = width or 260
+    if not choiceList then
+        local f = CreateFrame("Frame", "VCAChoiceList", frame, "BackdropTemplate")
+        f:SetFrameStrata("FULLSCREEN_DIALOG")
+        f:SetBackdrop(FLAT)
+        f:SetBackdropColor(0.03, 0.08, 0.05, 0.99)
+        f:SetBackdropBorderColor(0.85, 0.72, 0.41, 1)
+        f:Hide()
+        local scroll = CreateFrame("ScrollFrame", "VCAChoiceListScroll", f, "UIPanelScrollFrameTemplate")
+        scroll:SetPoint("TOPLEFT", f, "TOPLEFT", 6, -6)
+        scroll:SetPoint("BOTTOMRIGHT", f, "BOTTOMRIGHT", -26, 6)
+        local child = CreateFrame("Frame", nil, scroll)
+        child:SetSize(100, 10)
+        scroll:SetScrollChild(child)
+        f.scroll, f.child, f.buttons = scroll, child, {}
+        choiceList = f
+    end
+    local f = choiceList
+    if f:IsShown() and f.owner == anchor then
+        f:Hide()
+        return
+    end
+    f.owner = anchor
+    local rowH = 24
+    local height = math.min(#entries * rowH + 12, 300)
+    f:SetSize(width, height)
+    f.child:SetWidth(width - 34)
+    f:ClearAllPoints()
+    f:SetPoint("TOPLEFT", anchor, "BOTTOMLEFT", 0, -2)
+    for i, e in ipairs(entries) do
+        local b = f.buttons[i]
+        if not b then
+            b = CreateFrame("Button", nil, f.child)
+            b:SetHeight(rowH)
+            local hl = b:CreateTexture(nil, "HIGHLIGHT")
+            hl:SetAllPoints()
+            hl:SetColorTexture(1, 1, 1, 0.12)
+            b.sel = b:CreateTexture(nil, "BACKGROUND")
+            b.sel:SetAllPoints()
+            b.swatch = b:CreateTexture(nil, "ARTWORK")
+            b.swatch:SetSize(14, 14)
+            b.swatch:SetPoint("LEFT", 8, 0)
+            b.fs = b:CreateFontString(nil, "OVERLAY")
+            b.fs:SetJustifyH("LEFT")
+            b.fs:SetWordWrap(false)
+            f.buttons[i] = b
+        end
+        b:ClearAllPoints()
+        b:SetPoint("TOPLEFT", f.child, "TOPLEFT", 0, -(i - 1) * rowH)
+        b:SetPoint("RIGHT", f.child, "RIGHT", 0, 0)
+        if e.color then
+            b.swatch:SetColorTexture(e.color[1], e.color[2], e.color[3], 1)
+            b.swatch:Show()
+        else
+            b.swatch:Hide()
+        end
+        b.fs:ClearAllPoints()
+        b.fs:SetPoint("LEFT", e.color and 30 or 10, 0)
+        b.fs:SetPoint("RIGHT", -6, 0)
+        local ok = false
+        if e.path then
+            ok = b.fs:SetFont(e.path, 13, "") and true or false
+        end
+        if not ok then
+            b.fs:SetFontObject("VCAFontHighlight")
+        end
+        b.fs:SetText(e.label)
+        b.fs:SetTextColor(0.93, 0.95, 0.93)
+        if e.key == currentKey then
+            b.sel:SetColorTexture(0.85, 0.72, 0.41, 0.25)
+        else
+            b.sel:SetColorTexture(0, 0, 0, 0)
+        end
+        b.entryKey = e.key
+        b:SetScript("OnClick", function(self)
+            f:Hide()
+            onPick(self.entryKey)
+        end)
+        b:Show()
+    end
+    for i = #entries + 1, #f.buttons do
+        f.buttons[i]:Hide()
+    end
+    f.child:SetHeight(#entries * rowH + 4)
+    f.scroll:SetVerticalScroll(0)
+    f:Show()
+    f:Raise()
+end
+
 -- "< theme name >" selector tied to a theme key; withCurrent adds "the theme I use".
+-- The arrows step through the themes; the name opens the list with all of them.
 local function ThemeSelector(parent, key, withCurrent, afterChange)
     local box = CreateFrame("Frame", nil, parent)
-    box:SetSize(200, 24)
+    box:SetSize(230, 24)
     local keys = {}
     if withCurrent then
         keys[#keys + 1] = "current"
@@ -102,14 +200,26 @@ local function ThemeSelector(parent, key, withCurrent, afterChange)
     prev:SetPoint("LEFT", box, "LEFT", 0, 0)
     local nxt = Button(box, ">", 24, nil)
     nxt:SetPoint("RIGHT", box, "RIGHT", 0, 0)
-    local mid = CreateFrame("Frame", nil, box, "BackdropTemplate")
+    local mid = CreateFrame("Button", nil, box, "BackdropTemplate")
     mid:SetBackdrop(FLAT)
     mid:SetBackdropColor(0.02, 0.06, 0.04, 1)
     mid:SetBackdropBorderColor(0.16, 0.35, 0.25, 1)
     mid:SetPoint("TOPLEFT", prev, "TOPRIGHT", -1, 0)
     mid:SetPoint("BOTTOMRIGHT", nxt, "BOTTOMLEFT", 1, 0)
-    local label = mid:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
-    label:SetPoint("CENTER")
+    local label = mid:CreateFontString(nil, "OVERLAY", "VCAFontHighlight")
+    label:SetPoint("LEFT", mid, "LEFT", 8, 0)
+    label:SetPoint("RIGHT", mid, "RIGHT", -18, 0)
+    label:SetJustifyH("CENTER")
+    label:SetWordWrap(false)
+    local caret = mid:CreateFontString(nil, "OVERLAY", "VCAFontNormalSmall")
+    caret:SetPoint("RIGHT", mid, "RIGHT", -6, 0)
+    caret:SetText("v")
+    mid:SetScript("OnEnter", function(self)
+        self:SetBackdropBorderColor(0.85, 0.72, 0.41, 1)
+    end)
+    mid:SetScript("OnLeave", function(self)
+        self:SetBackdropBorderColor(0.16, 0.35, 0.25, 1)
+    end)
     local function IndexOf(value)
         for i, k in ipairs(keys) do
             if k == value then
@@ -136,6 +246,24 @@ local function ThemeSelector(parent, key, withCurrent, afterChange)
     nxt:SetScript("OnClick", function()
         Step(1)
     end)
+    mid:SetScript("OnClick", function()
+        local entries = {}
+        for _, k in ipairs(keys) do
+            local ok, palette = pcall(VCA.GetPalette, k)
+            entries[#entries + 1] = {
+                key = k,
+                label = k == "current" and L["THEME_CURRENT"] or VCA.ThemeLabel(k),
+                color = ok and palette and palette.accent or nil
+            }
+        end
+        OpenChoiceList(mid, entries, GDB()[key] or keys[1], function(picked)
+            GDB()[key] = picked
+            box.Update()
+            if afterChange then
+                afterChange()
+            end
+        end, 250)
+    end)
     widgets[#widgets + 1] = box
     return box
 end
@@ -143,25 +271,74 @@ end
 -- ── Layout helpers ────────────────────────────────────────────────────────────
 
 local function NewPane(titleText, subText)
-    local pane = CreateFrame("Frame", nil, frame)
-    pane:SetPoint("TOPLEFT", frame, "TOPLEFT", NAV_W + 18, -62)
-    pane:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -18, 14)
-    local t = pane:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
+    local scroll = CreateFrame("ScrollFrame", nil, frame)
+    scroll:SetPoint("TOPLEFT", frame, "TOPLEFT", NAV_W + 18, -62)
+    scroll:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -40, 14)
+    local pane = CreateFrame("Frame", nil, scroll)
+    pane:SetSize(PANE_W, 10)
+    scroll:SetScrollChild(pane)
+    pane.scroll = scroll
+
+    -- Slim scroll bar to the right of the page
+    local bar = CreateFrame("Slider", nil, scroll)
+    bar:SetOrientation("VERTICAL")
+    bar:SetPoint("TOPLEFT", scroll, "TOPRIGHT", 12, 0)
+    bar:SetPoint("BOTTOMLEFT", scroll, "BOTTOMRIGHT", 12, 0)
+    bar:SetWidth(10)
+    local track = bar:CreateTexture(nil, "BACKGROUND")
+    track:SetPoint("TOP", bar, "TOP", 0, 0)
+    track:SetPoint("BOTTOM", bar, "BOTTOM", 0, 0)
+    track:SetWidth(4)
+    track:SetColorTexture(0, 0, 0, 0.45)
+    local thumb = bar:CreateTexture(nil, "ARTWORK")
+    thumb:SetSize(8, 56)
+    bar:SetThumbTexture(thumb)
+    bar:SetMinMaxValues(0, 0)
+    bar:SetValueStep(1)
+    bar:SetValue(0)
+    bar:Hide()
+    VCA.OnTheme(function()
+        local a = Accent()
+        thumb:SetColorTexture(a[1], a[2], a[3], 0.85)
+    end)
+    bar:SetScript("OnValueChanged", function(_, value)
+        scroll:SetVerticalScroll(value)
+    end)
+    scroll:EnableMouseWheel(true)
+    scroll:SetScript("OnMouseWheel", function(_, delta)
+        local lo, hi = bar:GetMinMaxValues()
+        bar:SetValue(math.max(lo, math.min(hi, bar:GetValue() - delta * 48)))
+    end)
+    -- Called when the page is shown or its content changes size.
+    function scroll.Refresh()
+        local max = math.max(0, (pane:GetHeight() or 0) - (scroll:GetHeight() or 0))
+        bar:SetMinMaxValues(0, max)
+        if bar:GetValue() > max then
+            bar:SetValue(max)
+        end
+        bar:SetShown(max > 0)
+    end
+    local t = pane:CreateFontString(nil, "OVERLAY", "VCAFontNormalLarge")
     t:SetPoint("TOPLEFT", 0, 0)
     t:SetPoint("RIGHT", pane, "RIGHT", 0, 0)
     t:SetJustifyH("LEFT")
     t:SetWordWrap(false)
     t:SetText(titleText)
     t:SetTextColor(0.85, 0.72, 0.41)
-    local s = pane:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+    local s = pane:CreateFontString(nil, "OVERLAY", "VCAFontHighlightSmall")
     s:SetPoint("TOPLEFT", t, "BOTTOMLEFT", 0, -7)
     s:SetPoint("RIGHT", pane, "RIGHT", 0, 0)
     s:SetJustifyH("LEFT")
     s:SetWordWrap(false)
     s:SetText("|cff8fa597" .. subText .. "|r")
     pane.nextY = -58
-    pane:Hide()
+    scroll:Hide()
     return pane
+end
+
+-- Sets the height of a page to its content (or to the given minimum).
+local function FinishPane(pane, minHeight)
+    pane:SetHeight(math.max(minHeight or 0, -pane.nextY + 14))
 end
 
 -- One settings row: bold label, grey hint under it, the control on the right.
@@ -176,13 +353,13 @@ local function Row(pane, label, hint, makeControl, below)
     line:SetPoint("TOPLEFT", row, "TOPLEFT", 0, 0)
     line:SetPoint("TOPRIGHT", row, "TOPRIGHT", 0, 0)
     local control = makeControl(row)
-    local l = row:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+    local l = row:CreateFontString(nil, "OVERLAY", "VCAFontNormal")
     l:SetPoint("TOPLEFT", row, "TOPLEFT", 0, -14)
     l:SetJustifyH("LEFT")
     l:SetText("|cffeeeeee" .. label .. "|r")
     local h
     if hint and hint ~= "" then
-        h = row:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+        h = row:CreateFontString(nil, "OVERLAY", "VCAFontHighlightSmall")
         h:SetPoint("TOPLEFT", l, "BOTTOMLEFT", 0, -8)
         h:SetJustifyH("LEFT")
         h:SetJustifyV("TOP")
@@ -190,7 +367,7 @@ local function Row(pane, label, hint, makeControl, below)
     end
     -- The control sits on the right; the texts use the space left of it and the row grows
     -- with them, so a long label or hint never runs into the next row.
-    local paneW = WIDTH - NAV_W - 36
+    local paneW = PANE_W
     local textW = below and paneW or (paneW - control:GetWidth() - 40)
     for _, fs in ipairs({l, h}) do
         fs:SetWidth(textW)
@@ -221,10 +398,10 @@ end
 local function ThemeRow(pane, key, label, hint, withCurrent, afterChange, onPreview)
     Row(pane, label, hint, function(row)
         local box = CreateFrame("Frame", nil, row)
-        box:SetSize(200 + 8 + 90, 24)
+        box:SetSize(230 + 10 + 120, 24)
         local sel = ThemeSelector(box, key, withCurrent, afterChange)
         sel:SetPoint("LEFT", box, "LEFT", 0, 0)
-        local preview = Button(box, L["OPTIONS_PREVIEW_REMINDER"], 90, onPreview)
+        local preview = Button(box, L["OPTIONS_PREVIEW_REMINDER"], 120, onPreview)
         preview:SetPoint("RIGHT", box, "RIGHT", 0, 0)
         return box
     end, true)
@@ -244,6 +421,44 @@ local function PlaceBeside(frameName)
     else
         f:SetPoint("TOPLEFT", frame, "TOPRIGHT", 12, 0)
     end
+end
+
+-- ── Font selector ─────────────────────────────────────────────────────────────
+-- A button that opens the list with every available font, each name written in its own font.
+
+local function FontRow(pane)
+    Row(pane, L["SETTINGS_FONT_LABEL"], L["SETTINGS_FONT_TIP"], function(row)
+        local box = CreateFrame("Frame", nil, row)
+        box:SetSize(330, 24)
+        local btn = Button(box, "", 250, nil)
+        btn:SetPoint("LEFT", box, "LEFT", 0, 0)
+        local nameText = btn:CreateFontString(nil, "OVERLAY", "VCAFontHighlight")
+        nameText:SetPoint("LEFT", btn, "LEFT", 10, 0)
+        nameText:SetPoint("RIGHT", btn, "RIGHT", -22, 0)
+        nameText:SetJustifyH("LEFT")
+        nameText:SetWordWrap(false)
+        local caret = btn:CreateFontString(nil, "OVERLAY", "VCAFontNormalSmall")
+        caret:SetPoint("RIGHT", btn, "RIGHT", -8, 0)
+        caret:SetText("v")
+        local count = box:CreateFontString(nil, "OVERLAY", "VCAFontHighlightSmall")
+        count:SetPoint("TOPLEFT", btn, "BOTTOMLEFT", 2, -6)
+        function box.Update()
+            nameText:SetText(VCA.Fonts.Current() or L["SETTINGS_FONT_DEFAULT"])
+            count:SetText("|cff8fa597" .. string.format(L["SETTINGS_FONT_COUNT"], #VCA.Fonts.List()) .. "|r")
+        end
+        btn:SetScript("OnClick", function()
+            local entries = {{key = "default", label = L["SETTINGS_FONT_DEFAULT"]}}
+            for _, name in ipairs(VCA.Fonts.List()) do
+                entries[#entries + 1] = {key = name, label = name, path = VCA.Fonts.Resolve(name)}
+            end
+            OpenChoiceList(btn, entries, VCA.Fonts.Current() or "default", function(picked)
+                VCA.Fonts.Choose(picked)
+                box.Update()
+            end, 300)
+        end)
+        widgets[#widgets + 1] = box
+        return box
+    end, true)
 end
 
 local function ApplyAndRefresh()
@@ -276,6 +491,7 @@ local function BuildPanes()
         end
     end)
     SwitchRow(general, "weeklySummary", L["OPTIONS_SUMMARY"], L["OPTIONS_SUMMARY_TOOLTIP"])
+    FontRow(general)
 
     local reminder = NewPane(L["OPTIONS_CAT_REMINDER"], L["SETTINGS_SUB_REMINDER"])
     SwitchRow(reminder, "reminderEnabled", L["OPTIONS_REMINDER_ENABLE"], L["OPTIONS_REMINDER_TOOLTIP"])
@@ -307,21 +523,21 @@ local function BuildPanes()
     local tools = NewPane(L["SETTINGS_TAB_TOOLS"], L["SETTINGS_SUB_TOOLS"])
     for i, tool in ipairs(TOOLS) do
         local b = CreateFrame("Button", nil, tools, "BackdropTemplate")
-        b:SetSize(236, 46)
+        b:SetSize(218, 46)
         b:SetBackdrop(FLAT)
         b:SetBackdropColor(0.04, 0.09, 0.06, 1)
         b:SetBackdropBorderColor(0.09, 0.25, 0.17, 1)
         local col, rowIdx = (i - 1) % 2, math.floor((i - 1) / 2)
-        b:SetPoint("TOPLEFT", tools, "TOPLEFT", col * 246, -58 - rowIdx * 56)
-        local n = b:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+        b:SetPoint("TOPLEFT", tools, "TOPLEFT", col * 228, -58 - rowIdx * 56)
+        local n = b:CreateFontString(nil, "OVERLAY", "VCAFontNormal")
         n:SetPoint("TOPLEFT", 10, -8)
-        n:SetWidth(216)
+        n:SetWidth(198)
         n:SetJustifyH("LEFT")
         n:SetWordWrap(false)
         n:SetText("|cffeeeeee" .. L[tool[1]] .. "|r")
-        local c = b:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+        local c = b:CreateFontString(nil, "OVERLAY", "VCAFontHighlightSmall")
         c:SetPoint("TOPLEFT", n, "BOTTOMLEFT", 0, -4)
-        c:SetWidth(216)
+        c:SetWidth(198)
         c:SetJustifyH("LEFT")
         c:SetWordWrap(false)
         c:SetText("|cffd9b968" .. tool[2] .. "|r")
@@ -342,69 +558,66 @@ local function BuildPanes()
             end
         end)
     end
-    -- Version: what you have, what it adds and who made it
+    -- Version: what you have, what it adds and who made it. Every block is placed from the real
+    -- height of the one above, so nothing overlaps whatever the font or the language.
     local ver = NewPane(L["SETTINGS_TAB_VERSION"], L["SETTINGS_SUB_VERSION"])
-    local paneW = WIDTH - NAV_W - 36
-    local verLine = ver:CreateFontString(nil, "OVERLAY", "GameFontNormalHuge")
-    verLine:SetPoint("TOPLEFT", ver, "TOPLEFT", 0, -56)
-    verLine:SetText("|cffeeeeeeVoidcoreAdvisor Reborn|r  |cffd9b968" .. tostring(VCA.VERSION) .. "|r")
-
-    local notesTitle = ver:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-    notesTitle:SetPoint("TOPLEFT", verLine, "BOTTOMLEFT", 0, -16)
-    notesTitle:SetText("|cffd9b968" .. L["VERSION_NOTES_TITLE"] .. "|r")
-    local notes = ver:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
-    notes:SetPoint("TOPLEFT", notesTitle, "BOTTOMLEFT", 0, -6)
-    notes:SetWidth(paneW)
-    notes:SetJustifyH("LEFT")
-    notes:SetJustifyV("TOP")
-    notes:SetSpacing(4)
-    notes:SetText("|cffdddddd" .. L["VERSION_NOTES"] .. "|r")
-
-    local creditsTitle = ver:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-    creditsTitle:SetPoint("TOPLEFT", notes, "BOTTOMLEFT", 0, -16)
-    creditsTitle:SetText("|cffd9b968" .. L["VERSION_CREDITS_TITLE"] .. "|r")
-    local credits = ver:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
-    credits:SetPoint("TOPLEFT", creditsTitle, "BOTTOMLEFT", 0, -6)
-    credits:SetWidth(paneW)
-    credits:SetJustifyH("LEFT")
-    credits:SetJustifyV("TOP")
-    credits:SetSpacing(4)
-    credits:SetText("|cffdddddd" .. L["VERSION_CREDITS"] .. "|r")
-
-    -- Addresses you can select and copy (the text cannot be edited)
-    local function Link(anchor, labelText, url)
-        local label = ver:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
-        label:SetPoint("TOPLEFT", anchor, "BOTTOMLEFT", 0, -10)
-        label:SetWidth(130)
-        label:SetJustifyH("LEFT")
-        label:SetWordWrap(false)
-        label:SetText("|cff8fa597" .. labelText .. "|r")
-        local box = CreateFrame("EditBox", nil, ver, "BackdropTemplate")
-        box:SetSize(paneW - 138, 20)
-        box:SetPoint("LEFT", label, "RIGHT", 8, 0)
-        box:SetBackdrop(FLAT)
-        box:SetBackdropColor(0.02, 0.06, 0.04, 1)
-        box:SetBackdropBorderColor(0.16, 0.35, 0.25, 1)
-        box:SetFontObject("ChatFontSmall")
-        box:SetTextInsets(6, 6, 0, 0)
-        box:SetAutoFocus(false)
-        box:SetText(url)
-        box:SetCursorPosition(0)
-        box:SetScript("OnTextChanged", function(self, user)
-            if user then
-                self:SetText(url)
-                self:SetCursorPosition(0)
-            end
-        end)
-        box:SetScript("OnEditFocusGained", function(self)
-            self:HighlightText()
-        end)
-        box:SetScript("OnEscapePressed", function(self)
-            self:ClearFocus()
-        end)
-        return label
+    local paneW = PANE_W
+    local y = -58
+    local function Block(fs, gap)
+        fs:ClearAllPoints()
+        fs:SetPoint("TOPLEFT", ver, "TOPLEFT", 0, y)
+        y = y - fs:GetStringHeight() - (gap or 8)
     end
-    Link(credits, L["VERSION_LINK_CURSE"], "https://www.curseforge.com/wow/addons/voidcoreadvisor-reborn")
+    local function Text(template, text, width)
+        local fs = ver:CreateFontString(nil, "OVERLAY", template)
+        fs:SetJustifyH("LEFT")
+        fs:SetJustifyV("TOP")
+        fs:SetSpacing(5)
+        if width then
+            fs:SetWidth(width)
+        end
+        fs:SetText(text)
+        return fs
+    end
+    Block(Text("VCAFontNormalHuge", "|cffeeeeeeVoidcoreAdvisor Reborn|r  |cffd9b968" .. tostring(VCA.VERSION) .. "|r"), 20)
+    Block(Text("VCAFontNormal", "|cffd9b968" .. L["VERSION_NOTES_TITLE"] .. "|r"), 8)
+    Block(Text("VCAFontHighlightSmall", "|cffdddddd" .. L["VERSION_NOTES"] .. "|r", paneW), 22)
+    Block(Text("VCAFontNormal", "|cffd9b968" .. L["VERSION_CREDITS_TITLE"] .. "|r"), 8)
+    Block(Text("VCAFontHighlightSmall", "|cffdddddd" .. L["VERSION_CREDITS"] .. "|r", paneW), 22)
+
+    -- The address you can select and copy (the text cannot be edited): label above, box below
+    Block(Text("VCAFontHighlightSmall", "|cff8fa597" .. L["VERSION_LINK_CURSE"] .. "|r", paneW), 6)
+    local box = CreateFrame("EditBox", nil, ver, "BackdropTemplate")
+    box:SetSize(paneW, 22)
+    box:SetPoint("TOPLEFT", ver, "TOPLEFT", 0, y)
+    y = y - 22 - 10
+    local url = "https://www.curseforge.com/wow/addons/voidcoreadvisor-reborn"
+    box:SetBackdrop(FLAT)
+    box:SetBackdropColor(0.02, 0.06, 0.04, 1)
+    box:SetBackdropBorderColor(0.16, 0.35, 0.25, 1)
+    box:SetFontObject("ChatFontSmall")
+    box:SetTextInsets(8, 8, 0, 0)
+    box:SetAutoFocus(false)
+    box:SetText(url)
+    box:SetCursorPosition(0)
+    box:SetScript("OnTextChanged", function(self, user)
+        if user then
+            self:SetText(url)
+            self:SetCursorPosition(0)
+        end
+    end)
+    box:SetScript("OnEditFocusGained", function(self)
+        self:HighlightText()
+    end)
+    box:SetScript("OnEscapePressed", function(self)
+        self:ClearFocus()
+    end)
+    ver.nextY = y
+    FinishPane(general)
+    FinishPane(reminder)
+    FinishPane(roll)
+    FinishPane(tools, 250)
+    FinishPane(ver)
     return {general, reminder, roll, tools, ver}
 end
 
@@ -417,8 +630,17 @@ local TAB_ICONS = {
 }
 
 local function SelectTab(index)
+    if choiceList then
+        choiceList:Hide()
+    end
     for i, pane in ipairs(panes) do
-        pane:SetShown(i == index)
+        pane.scroll:SetShown(i == index)
+        if i == index then
+            pane.scroll:SetVerticalScroll(0)
+            pane.scroll.Refresh()
+            -- once more after the window has been laid out
+            C_Timer.After(0.05, pane.scroll.Refresh)
+        end
         tabs[i].selected = i == index
         tabs[i].Paint()
     end
@@ -448,12 +670,12 @@ local function Build()
     icon:SetPoint("TOPLEFT", 14, -9)
     icon:SetTexture("Interface\\Icons\\INV_Enchant_VoidSphere")
     icon:SetTexCoord(0.08, 0.92, 0.08, 0.92)
-    local title = frame:CreateFontString(nil, "OVERLAY", "GameFontNormalHuge")
+    local title = frame:CreateFontString(nil, "OVERLAY", "VCAFontNormalHuge")
     title:SetPoint("LEFT", icon, "RIGHT", 10, 0)
     VCA.OnTheme(function()
         title:SetText(VCA.RebornTitle("VoidcoreAdvisor", VCA.GetPalette("current")))
     end)
-    local version = frame:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+    local version = frame:CreateFontString(nil, "OVERLAY", "VCAFontHighlightSmall")
     version:SetPoint("TOPRIGHT", -46, -22)
     version:SetText("|cff8fa597" .. string.format(L["SETTINGS_VERSION"], tostring(VCA.VERSION)) .. "|r")
     local close = CreateFrame("Button", nil, frame, "UIPanelCloseButton")
@@ -491,7 +713,7 @@ local function Build()
         ico:SetPoint("LEFT", 14, 0)
         ico:SetTexture(TAB_ICONS[i])
         ico:SetTexCoord(0.08, 0.92, 0.08, 0.92)
-        local fs = tab:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+        local fs = tab:CreateFontString(nil, "OVERLAY", "VCAFontNormal")
         fs:SetPoint("LEFT", ico, "RIGHT", 10, 0)
         -- Never wider than the tab: a long name is cut with "..." instead of running into the page.
         fs:SetWidth(NAV_W - 14 - 22 - 10 - 10)

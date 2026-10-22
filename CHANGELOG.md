@@ -1,5 +1,8 @@
 # Changelog
 
+## 2.3.0
+- New "Preview" button next to the color theme selector in the options (and /void preview): a sample window that recolors live while you change the theme.
+
 ## 2.2.5
 - The "new raid not in the loot data" message ignores the "Midnight" world boss entry by its ID and tells you about each unknown raid only once, instead of at every login.
 

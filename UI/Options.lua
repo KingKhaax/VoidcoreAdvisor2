@@ -125,7 +125,28 @@ frame:SetScript("OnEvent", function(self, event, loadedAddon)
                 VCA.Panel.Refresh()
             end
         end)
-        Settings.CreateDropdown(category, setting, GetOptions, L["OPTIONS_THEME_TOOLTIP"])
+        local initializer = Settings.CreateDropdown(category, setting, GetOptions, L["OPTIONS_THEME_TOOLTIP"])
+
+        -- "Preview" button on the same row as the theme selector.
+        if SettingsDropdownControlMixin and hooksecurefunc then
+            hooksecurefunc(SettingsDropdownControlMixin, "Init", function(self, init)
+                if init == initializer then
+                    if not self.VCAThemePreviewButton then
+                        local btn = CreateFrame("Button", nil, self, "UIPanelButtonTemplate")
+                        btn:SetSize(100, 22)
+                        btn:SetPoint("RIGHT", self, "RIGHT", -16, 0)
+                        btn:SetText(L["OPTIONS_PREVIEW_REMINDER"])
+                        btn:SetScript("OnClick", function()
+                            VCA.ThemePreview.Toggle()
+                        end)
+                        self.VCAThemePreviewButton = btn
+                    end
+                    self.VCAThemePreviewButton:Show()
+                elseif self.VCAThemePreviewButton then
+                    self.VCAThemePreviewButton:Hide()
+                end
+            end)
+        end
     end)
 
     -- ── Ask for confirmation before rolling or passing ───────────────────

@@ -322,6 +322,9 @@ SlashCmdList["VOIDCOREADVISOR"] = function(msg)
     elseif cmd == "import" then
         VCA.Transfer.Import()
 
+    elseif cmd == "preview" then
+        VCA.ThemePreview.Toggle()
+
     elseif cmd == "resetpanel" then
         if VCA.Panel and VCA.Panel.ResetPlacement then
             VCA.Panel.ResetPlacement()

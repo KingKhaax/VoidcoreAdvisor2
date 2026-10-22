@@ -38,6 +38,12 @@ local function IsConfirmEnabled()
     return not gdb or gdb.brcConfirmEnabled ~= false
 end
 
+-- The bonus roll window has its own theme setting (default: the colors of your class).
+local function RollPalette()
+    local gdb = _G[VCA.GLOBAL_DB_NAME]
+    return VCA.GetPalette(gdb and gdb.rollTheme or "class")
+end
+
 local function IsSpecListEnabled()
     local gdb = _G[VCA.GLOBAL_DB_NAME]
     return gdb and gdb.brcSpecListEnabled == true
@@ -166,8 +172,8 @@ win:SetBackdrop({
         bottom = 3
     }
 })
-VCA.OnTheme(function() local t = VCA.Theme.bg; win:SetBackdropColor(t[1], t[2], t[3], 0.97) end)
-VCA.OnTheme(function() local t = VCA.Theme.border; win:SetBackdropBorderColor(t[1], t[2], t[3], 1) end)
+VCA.OnTheme(function() local t = RollPalette().bg; win:SetBackdropColor(t[1], t[2], t[3], 0.97) end)
+VCA.OnTheme(function() local t = RollPalette().border; win:SetBackdropBorderColor(t[1], t[2], t[3], 1) end)
 
 -- Thin black line just inside the grey frame, like the stock popup frames.
 local winInnerEdge = CreateFrame("Frame", nil, win, "BackdropTemplate")
@@ -182,7 +188,7 @@ winInnerEdge:SetBackdropBorderColor(0, 0, 0, 1)
 -- Title – hidden in compact layout
 local winTitle = win:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
 winTitle:SetPoint("TOP", win, "TOP", 0, -14)
-VCA.OnTheme(function() winTitle:SetText(VCA.Theme.hdr .. "VoidcoreAdvisor|r") end)
+VCA.OnTheme(function() winTitle:SetText(RollPalette().hdr .. "VoidcoreAdvisor|r") end)
 winTitle:Hide()
 
 -- Subtitle – hidden in compact layout
@@ -193,7 +199,7 @@ winSubtitle:Hide()
 
 -- Header divider – hidden in compact layout
 local winHeaderDiv = win:CreateTexture(nil, "ARTWORK")
-VCA.OnTheme(function() local t = VCA.Theme.border; winHeaderDiv:SetColorTexture(t[1], t[2], t[3], 0.4) end)
+VCA.OnTheme(function() local t = RollPalette().border; winHeaderDiv:SetColorTexture(t[1], t[2], t[3], 0.4) end)
 winHeaderDiv:SetHeight(1)
 winHeaderDiv:SetPoint("TOPLEFT", win, "TOPLEFT", 16, -62)
 winHeaderDiv:SetPoint("TOPRIGHT", win, "TOPRIGHT", -16, -62)
@@ -261,7 +267,7 @@ timerBar:SetHeight(14)
 timerBar:SetPoint("TOPLEFT", win, "TOPLEFT", 16, -72)
 timerBar:SetPoint("TOPRIGHT", win, "TOPRIGHT", -16, -72)
 timerBar:SetStatusBarTexture("Interface\\TargetingFrame\\UI-StatusBar")
-VCA.OnTheme(function() local t = VCA.Theme.timer; timerBar:SetStatusBarColor(t[1], t[2], t[3], 1) end)
+VCA.OnTheme(function() local t = RollPalette().timer; timerBar:SetStatusBarColor(t[1], t[2], t[3], 1) end)
 local timerBorder = timerBar:CreateTexture(nil, "BACKGROUND", nil, -1)
 timerBorder:SetColorTexture(0, 0, 0, 1)
 timerBorder:SetPoint("TOPLEFT", timerBar, "TOPLEFT", -1, 1)
@@ -276,11 +282,11 @@ timerText:SetShadowColor(0, 0, 0, 1)
 timerText:SetShadowOffset(1, -1)
 local timerBg = timerBar:CreateTexture(nil, "BACKGROUND")
 timerBg:SetAllPoints()
-VCA.OnTheme(function() local t = VCA.Theme.timerBg; timerBg:SetColorTexture(t[1], t[2], t[3], 0.8) end)
+VCA.OnTheme(function() local t = RollPalette().timerBg; timerBg:SetColorTexture(t[1], t[2], t[3], 0.8) end)
 
 -- Separator between timer and spec row
 local topSep = win:CreateTexture(nil, "ARTWORK")
-VCA.OnTheme(function() local t = VCA.Theme.border; topSep:SetColorTexture(t[1], t[2], t[3], 0.35) end)
+VCA.OnTheme(function() local t = RollPalette().border; topSep:SetColorTexture(t[1], t[2], t[3], 0.35) end)
 topSep:SetHeight(1)
 topSep:SetPoint("TOPLEFT", win, "TOPLEFT", 16, -88)
 topSep:SetPoint("TOPRIGHT", win, "TOPRIGHT", -16, -88)
@@ -403,7 +409,7 @@ end)
 
 -- Dynamic loot section (only shown when Detection recognises the source)
 local lootSep = win:CreateTexture(nil, "ARTWORK")
-VCA.OnTheme(function() local t = VCA.Theme.border; lootSep:SetColorTexture(t[1], t[2], t[3], 0.35) end)
+VCA.OnTheme(function() local t = RollPalette().border; lootSep:SetColorTexture(t[1], t[2], t[3], 0.35) end)
 lootSep:SetHeight(1)
 lootSep:Hide()
 
@@ -429,7 +435,7 @@ warnBody:Hide()
 
 -- Per-spec remaining item counts section
 local specListSep = win:CreateTexture(nil, "ARTWORK")
-VCA.OnTheme(function() local t = VCA.Theme.border; specListSep:SetColorTexture(t[1], t[2], t[3], 0.35) end)
+VCA.OnTheme(function() local t = RollPalette().border; specListSep:SetColorTexture(t[1], t[2], t[3], 0.35) end)
 specListSep:SetHeight(1)
 specListSep:Hide()
 

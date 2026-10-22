@@ -118,6 +118,15 @@ local function Resolve(name)
     return name
 end
 
+-- Palette of a theme key ("current" = the theme in use, "class" = your class).
+function VCA.GetPalette(name)
+    if name == nil or name == "current" then
+        return VCA.Theme
+    end
+    local key = Resolve(name)
+    return VCA.Themes[key] or VCA.Theme
+end
+
 -- Name shown in the options for a theme key.
 function VCA.ThemeLabel(key)
     local file = VCA.THEME_CLASSFILE[key]

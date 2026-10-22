@@ -4,6 +4,9 @@
 - New **Preview** button next to the color theme selector in the options (also `/void preview`): a sample window that recolors live while you change the theme, with a counting-down timer bar.
 - The timer bar of the bonus roll window shows the time left (for example 2:34) in its center.
 - **Mark rolled item** now works in two steps: press the bar, click the items you got (they dim right away, nothing is saved yet), then press the bar again to save them. Closing the panel or changing boss discards unsaved marks. Shift+click still stages everything between two clicks.
+- New **Preview theme** selector in the options: the preview window can show any theme without changing yours (default: your class), with < > buttons inside the window to browse them.
+- New **Bonus roll window theme** selector in the options: the bonus roll window has its own color theme (default: your class).
+- The loot spec reminder popup now also appears in front of raid bosses: target a current-season raid boss before the pull and you get it once per boss. It has its own option (on by default) and boss wording in the warning.
 - Removed the "Style of my specialization" theme. "Style of my class" stays; anyone who had the specialization theme selected is moved to it.
 
 ## 2.2.5

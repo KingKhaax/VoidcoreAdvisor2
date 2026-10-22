@@ -22,10 +22,13 @@ end
 local function GetGlobalDefaults()
     return {
         reminderEnabled = true,
+        reminderBossEnabled = true,
         bonusRollConfirmEnabled = true,
         brcSpecListEnabled = true,
         brcConfirmEnabled = true,
         theme = "green",
+        previewTheme = "class",
+        rollTheme = "class",
         brcDefaultOnV2 = true
     }
 end
@@ -56,11 +59,20 @@ local function InitDB()
         end
         -- 2.0 turns the roll confirmation window on by default; apply it once
         -- to saves created while it was off by default.
+        if gdb.reminderBossEnabled == nil then
+            gdb.reminderBossEnabled = true
+        end
         if gdb.brcConfirmEnabled == nil then
             gdb.brcConfirmEnabled = true
         end
         if gdb.theme == "spec" then
             gdb.theme = "class" -- the specialization theme was removed in 2.3.3
+        end
+        if gdb.previewTheme == nil or (gdb.previewTheme ~= "current" and not VCA.IsTheme(gdb.previewTheme)) then
+            gdb.previewTheme = "class"
+        end
+        if gdb.rollTheme == nil or (gdb.rollTheme ~= "current" and not VCA.IsTheme(gdb.rollTheme)) then
+            gdb.rollTheme = "class"
         end
         if not VCA.IsTheme(gdb.theme) then
             gdb.theme = "green"

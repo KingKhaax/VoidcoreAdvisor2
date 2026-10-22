@@ -291,6 +291,10 @@ end
 
 -- ── Show / Hide ───────────────────────────────────────────────────────────────
 
+-- true while the popup is about a raid boss instead of a Mythic+ dungeon (wording only).
+local popupIsBoss = false
+local shownBosses -- assigned in the raid boss section below
+
 function Reminder.Show(currentSpecID, bestEntry, selectedCount, rankings)
     -- Voidcore count
     local currInfo = C_CurrencyInfo and C_CurrencyInfo.GetCurrencyInfo(VCA.VOIDCORE_CURRENCY_ID)
@@ -330,7 +334,7 @@ function Reminder.Show(currentSpecID, bestEntry, selectedCount, rankings)
 
         dynWarnText:ClearAllPoints()
         dynWarnText:SetPoint("TOPLEFT", frame, "TOPLEFT", 46, dynY)
-        dynWarnText:SetText(L["REMINDER_WARNING_ONE_ITEM"])
+        dynWarnText:SetText(L[popupIsBoss and "REMINDER_WARNING_ONE_ITEM_BOSS" or "REMINDER_WARNING_ONE_ITEM"])
         dynWarnText:Show()
 
         dynY = dynY - 80
@@ -526,7 +530,8 @@ function Reminder.ShowWarning(currentSpecID, currentEntry, rankings)
     wf_curName:SetText("|cffffff00" .. (curSpecName or "Unknown") .. "|r")
 
     -- Warning text
-    wf_warnText:SetText(string.format(L["WARNING_ONE_ITEM"], currentEntry.remainingCount or 1))
+    wf_warnText:SetText(string.format(L[popupIsBoss and "WARNING_ONE_ITEM_BOSS" or "WARNING_ONE_ITEM"],
+        currentEntry.remainingCount or 1))
 
     -- Spec list (dynamic, starts at y=-220 which is well below the 2-3 line warning text)
     local dynY = -220
@@ -637,6 +642,7 @@ function Reminder.Evaluate()
         -- If the favored spec has only 1 item remaining, warn about pool reset.
         if bestSpec.remainingCount == 1 then
             lastShownInstanceID = ejInstanceID
+            popupIsBoss = false
             Reminder.ShowWarning(currentLootSpecID, bestSpec, rankings)
         end
         return
@@ -657,19 +663,157 @@ function Reminder.Evaluate()
     end
 
     lastShownInstanceID = ejInstanceID
+    popupIsBoss = false
     Reminder.Show(currentLootSpecID, bestSpec, #selectedList, rankings)
 end
 
 function Reminder.ForceEvaluate()
     lastShownInstanceID = nil
+    wipe(shownBosses)
     Reminder.Evaluate()
+end
+
+-- ── Raid bosses ───────────────────────────────────────────────────────────────
+-- The same reminder, shown once per boss when you target it before the pull.
+
+shownBosses = {} -- { ["encounterID:difficultyID"] = true }, reset on every loading screen
+local bossNameCache = {} -- { [ejInstanceID] = { [lowercase boss or creature name] = encounterID } }
+
+local function BossNames(ejInstanceID)
+    local cached = bossNameCache[ejInstanceID]
+    if cached then
+        return cached
+    end
+    local map, count = {}, 0
+    for encounterID, data in pairs(VCA.SeasonData and VCA.SeasonData.raids or {}) do
+        if data.instanceID == ejInstanceID then
+            local name = EJ_GetEncounterInfo(encounterID)
+            if name then
+                map[name:lower()] = encounterID
+                count = count + 1
+            end
+            -- Council fights list each boss as a creature of the encounter.
+            local i = 1
+            while EJ_GetCreatureInfo do
+                local _, creatureName = EJ_GetCreatureInfo(i, encounterID)
+                if not creatureName then
+                    break
+                end
+                map[creatureName:lower()] = encounterID
+                i = i + 1
+            end
+        end
+    end
+    if count > 0 then
+        bossNameCache[ejInstanceID] = map
+    end
+    return map
+end
+
+local function FindEncounter(ejInstanceID, unitName)
+    local lower = unitName:lower()
+    local names = BossNames(ejInstanceID)
+    if names[lower] then
+        return names[lower]
+    end
+    for name, encounterID in pairs(names) do
+        if lower:find(name, 1, true) or name:find(lower, 1, true) then
+            return encounterID
+        end
+    end
+end
+
+function Reminder.EvaluateBoss()
+    local db = _G[VCA.GLOBAL_DB_NAME]
+    if db and (db.reminderEnabled == false or db.reminderBossEnabled == false) then
+        return
+    end
+    if InCombatLockdown() or not UnitExists("target") or UnitIsDead("target") or UnitIsPlayer("target") then
+        return
+    end
+    local instanceName, instanceType, difficultyID, _, _, _, _, mapID = GetInstanceInfo()
+    if instanceType ~= "raid" or not (VCA.EligibleRaidDifficulties and VCA.EligibleRaidDifficulties[difficultyID]) then
+        return
+    end
+    -- Raid bosses are the "skull" (worldboss) units.
+    if UnitClassification("target") ~= "worldboss" then
+        return
+    end
+    if not VCA.LootPool.IsSeasonFilterReady or not VCA.LootPool.IsSeasonFilterReady() then
+        return
+    end
+    local ejInstanceID = (mapID and VCA.LootPool.GetSeasonRaidByMapID(mapID)) or
+                             VCA.LootPool.GetSeasonRaidByName(instanceName)
+    if not ejInstanceID then
+        return
+    end
+    local encounterID = FindEncounter(ejInstanceID, UnitName("target") or "")
+    if not encounterID then
+        return
+    end
+    local key = encounterID .. ":" .. difficultyID
+    if shownBosses[key] then
+        return
+    end
+
+    local cost = VCA.Probability.GetVoidcoreCost(VCA.ContentType.RAID)
+    local currInfo = C_CurrencyInfo and C_CurrencyInfo.GetCurrencyInfo(VCA.VOIDCORE_CURRENCY_ID)
+    if (currInfo and currInfo.quantity or 0) < cost then
+        return
+    end
+
+    local selectedSet = VCA.Data.GetSelectedItems(VCA.ContentType.RAID, encounterID, difficultyID)
+    if not next(selectedSet) then
+        return
+    end
+    local selectedList = {}
+    for id in pairs(selectedSet) do
+        selectedList[#selectedList + 1] = id
+    end
+    local rankings = RankCurrentPlayerSpecsForItemsCached(selectedList, VCA.ContentType.RAID, encounterID, difficultyID)
+    if not rankings or #rankings == 0 then
+        return
+    end
+    local bestSpec = rankings[1]
+    if not bestSpec or bestSpec.noItems or bestSpec.allObtained or (bestSpec.selectedOdds or 0) <= 0 then
+        return
+    end
+
+    local currentLootSpecID = VCA.SpecInfo.GetEffectiveLootSpecID()
+    popupIsBoss = true
+    if currentLootSpecID == bestSpec.specID then
+        if bestSpec.remainingCount == 1 then
+            shownBosses[key] = true
+            Reminder.ShowWarning(currentLootSpecID, bestSpec, rankings)
+        end
+        return
+    end
+    for _, r in ipairs(rankings) do
+        if r.specID == currentLootSpecID then
+            if not bestSpec.noItems and r.noItems then
+                break
+            end
+            if r.remainingCount <= bestSpec.remainingCount then
+                return
+            end
+            break
+        end
+    end
+    shownBosses[key] = true
+    Reminder.Show(currentLootSpecID, bestSpec, #selectedList, rankings)
 end
 
 -- ── Event handler ─────────────────────────────────────────────────────────────
 
 local eventFrame = CreateFrame("Frame")
 eventFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
+eventFrame:RegisterEvent("PLAYER_TARGET_CHANGED")
 eventFrame:SetScript("OnEvent", function(self, event, isInitialLogin, isReloadingUi)
+    if event == "PLAYER_TARGET_CHANGED" then
+        C_Timer.After(0.3, Reminder.EvaluateBoss)
+        return
+    end
+    wipe(shownBosses)
     -- Skip UI reloads to avoid repeated popups.
     if isReloadingUi then
         return

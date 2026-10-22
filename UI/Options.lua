@@ -20,6 +20,13 @@ frame:SetScript("OnEvent", function(self, event, loadedAddon)
     local reminderCategory = Settings.RegisterVerticalLayoutSubcategory(category, L["OPTIONS_CAT_REMINDER"])
     local bonusRollCategory = Settings.RegisterVerticalLayoutSubcategory(category, L["OPTIONS_CAT_BONUS_ROLL"])
 
+    -- ── Also remind in front of raid bosses ───────────────────────────────
+    do
+        local setting = Settings.RegisterAddOnSetting(reminderCategory, "VoidcoreAdvisor_ReminderBossEnabled",
+            "reminderBossEnabled", _G[VCA.GLOBAL_DB_NAME], "boolean", L["OPTIONS_REMINDER_BOSS"], true)
+        Settings.CreateCheckbox(reminderCategory, setting, L["OPTIONS_REMINDER_BOSS_TOOLTIP"])
+    end
+
     -- ── Loot Spec Reminder toggle ─────────────────────────────────────────
     do
         local variable = "VoidcoreAdvisor_ReminderEnabled"
@@ -147,6 +154,47 @@ frame:SetScript("OnEvent", function(self, event, loadedAddon)
                 end
             end)
         end
+    end)
+
+    -- ── Theme shown by the preview window ─────────────────────────────────
+    pcall(function()
+        local variable = "VoidcoreAdvisor_PreviewTheme"
+        local variableTbl = _G[VCA.GLOBAL_DB_NAME]
+        local setting = Settings.RegisterAddOnSetting(category, variable, "previewTheme", variableTbl, "string",
+            L["OPTIONS_PREVIEW_THEME"], "class")
+        local function GetOptions()
+            local container = Settings.CreateControlTextContainer()
+            container:Add("current", L["THEME_CURRENT"])
+            for _, key in ipairs(VCA.THEME_ORDER) do
+                container:Add(key, VCA.ThemeLabel(key))
+            end
+            return container:GetData()
+        end
+        Settings.SetOnValueChangedCallback(variable, function()
+            VCA.ThemePreview.SetTheme(variableTbl.previewTheme)
+            VCA.ThemePreview.Show()
+        end)
+        Settings.CreateDropdown(category, setting, GetOptions, L["OPTIONS_PREVIEW_THEME_TOOLTIP"])
+    end)
+
+    -- ── Theme of the bonus roll window ────────────────────────────────────
+    pcall(function()
+        local variable = "VoidcoreAdvisor_RollTheme"
+        local variableTbl = _G[VCA.GLOBAL_DB_NAME]
+        local setting = Settings.RegisterAddOnSetting(category, variable, "rollTheme", variableTbl, "string",
+            L["OPTIONS_ROLL_THEME"], "class")
+        local function GetOptions()
+            local container = Settings.CreateControlTextContainer()
+            container:Add("current", L["THEME_CURRENT"])
+            for _, key in ipairs(VCA.THEME_ORDER) do
+                container:Add(key, VCA.ThemeLabel(key))
+            end
+            return container:GetData()
+        end
+        Settings.SetOnValueChangedCallback(variable, function()
+            VCA.ApplyTheme(variableTbl.theme)
+        end)
+        Settings.CreateDropdown(category, setting, GetOptions, L["OPTIONS_ROLL_THEME_TOOLTIP"])
     end)
 
     -- ── Ask for confirmation before rolling or passing ───────────────────

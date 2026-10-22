@@ -427,6 +427,9 @@ local function CommitPendingMarks()
         staged[#staged + 1] = {itemID, want}
     end
     wipe(Panel.pendingMarks)
+    -- What you mark by hand stays marked: completing a spec's pool must not trigger the
+    -- automatic reset that clears every item of the boss.
+    Panel.keepMarks = true
     for _, entry in ipairs(staged) do
         local itemID, want = entry[1], entry[2]
         for _, r in ipairs(_s.itemRows) do
@@ -470,7 +473,7 @@ local function CommitPendingMarks()
             end
         end
     end
-    Panel.Refresh()
+    Panel.keepMarks = false
 end
 
 Panel.CommitPendingMarks = CommitPendingMarks

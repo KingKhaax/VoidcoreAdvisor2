@@ -357,7 +357,7 @@ local function PopulateItemColumn(sourceType, sourceID, difficultyID, isHighTier
                     for specID, itemList in pairs(dungeonData.bySpec) do
                         for _, id in ipairs(itemList) do
                             if id == self.itemID then
-                                if VCA.Detection and VCA.Detection.CheckAndResetIfComplete then
+                                if VCA.Detection and VCA.Detection.CheckAndResetIfComplete and not Panel.keepMarks then
                                     VCA.Detection.CheckAndResetIfComplete(source, specID, nil)
                                 end
                                 break
@@ -372,7 +372,7 @@ local function PopulateItemColumn(sourceType, sourceID, difficultyID, isHighTier
                         for specID, itemList in pairs(specMap) do
                             for _, id in ipairs(itemList) do
                                 if id == self.itemID then
-                                    if VCA.Detection and VCA.Detection.CheckAndResetIfComplete then
+                                    if VCA.Detection and VCA.Detection.CheckAndResetIfComplete and not Panel.keepMarks then
                                         VCA.Detection.CheckAndResetIfComplete(source, specID, nil)
                                     end
                                     break

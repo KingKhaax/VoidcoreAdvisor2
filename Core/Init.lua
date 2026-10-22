@@ -57,7 +57,7 @@ local function InitDB()
         if gdb.bonusRollConfirmEnabled == nil then
             gdb.bonusRollConfirmEnabled = true
         end
-        -- 2.0 turns the roll confirmation window on by default; apply it once
+        -- Reborn turns the roll confirmation window on by default; apply it once
         -- to saves created while it was off by default.
         if gdb.reminderBossEnabled == nil then
             gdb.reminderBossEnabled = true

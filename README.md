@@ -13,7 +13,7 @@
 
 > **Fork of [VoidcoreAdvisor](https://github.com/rolferik12/VoidcoreAdvisor) by rolferik12**, continued with the author's explicit permission (MIT license). All original credit goes to rolferik12. Season data is generated with the author's [VoidcoreAdvisorGen](https://github.com/rolferik12/VoidcoreAdvisorGen).
 >
-> Changes in 2.0: patch 12.1.5 API fixes (`C_Item.GetItemInfo` / `C_Item.GetItemQualityColor`) and automatic loot-table reading for new raids (The Unbinding of Kith'ix) straight from the Encounter Journal.
+> Changes in Reborn: patch 12.1.5 API fixes (`C_Item.GetItemInfo` / `C_Item.GetItemQualityColor`) and automatic loot-table reading for new raids (The Unbinding of Kith'ix) straight from the Encounter Journal.
 >
 > This is a separate addon (folder `VoidcoreAdvisorReborn`). Disable or remove the original VoidcoreAdvisor before using it, since both use the same saved variables.
 

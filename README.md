@@ -123,6 +123,7 @@ VoidcoreAdvisor was created by [rolferik12](https://github.com/rolferik12) (MIT)
 ## <img src="docs/icons/inv_misc_gear_01.jpg" width="28" height="28" alt="" align="absmiddle"> Commands
 
 - `/void` shows the list of commands.
+- `/void open` opens the addon options page (themes and previews).
 - `/void panel [name]` opens the Adventure Guide on a boss or dungeon with the panel showing.
 - `/void missing [14|15|16]` lists every item you still need for your loot spec, best odds first.
 - `/void export` and `/void import` copy your marked items between characters.

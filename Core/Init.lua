@@ -341,6 +341,11 @@ SlashCmdList["VOIDCOREADVISOR"] = function(msg)
     elseif cmd == "import" then
         VCA.Transfer.Import()
 
+    elseif cmd == "open" then
+        if VCA.OpenOptions then
+            VCA.OpenOptions()
+        end
+
     elseif cmd == "preview" then
         VCA.ThemePreview.Toggle()
 
@@ -378,6 +383,7 @@ SlashCmdList["VOIDCOREADVISOR"] = function(msg)
         print(L["HELP_MISSING"])
         print(L["HELP_EXPORT"])
         print(L["HELP_IMPORT"])
+        print(L["HELP_OPEN"])
         print(L["HELP_THEME"])
         print("    " .. table.concat(VCA.THEME_ORDER, ", "))
         print(L["HELP_RESETPANEL"])

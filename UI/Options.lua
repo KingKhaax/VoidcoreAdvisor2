@@ -221,4 +221,17 @@ frame:SetScript("OnEvent", function(self, event, loadedAddon)
 
     -- ── Finish ────────────────────────────────────────────────────────────
     Settings.RegisterAddOnCategory(category)
+
+    -- /void open: jumps straight to this page (themes and previews).
+    function VCA.OpenOptions()
+        if Settings and Settings.OpenToCategory then
+            local id = category.GetID and category:GetID() or category.ID
+            if pcall(Settings.OpenToCategory, id) then
+                return
+            end
+        end
+        if SettingsPanel and SettingsPanel.Open then
+            SettingsPanel:Open()
+        end
+    end
 end)

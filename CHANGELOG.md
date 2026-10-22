@@ -1,5 +1,8 @@
 # Changelog
 
+## 2.3.2
+- The timer bar of the bonus roll window now shows the time left (for example 2:34) in its center. The sample window of the theme preview counts down too.
+
 ## 2.3.1
 - "Mark rolled item" now works in two steps: press the bar, click the items you got (they dim right away, nothing is saved yet), then press the bar again to save them. Closing the panel or changing boss discards unsaved marks. Shift+click still stages everything between two clicks.
 

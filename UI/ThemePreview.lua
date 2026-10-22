@@ -141,13 +141,27 @@ end
 local timerBg = frame:CreateTexture(nil, "BACKGROUND")
 timerBg:SetPoint("TOPLEFT", frame, "TOPLEFT", 12, -196)
 timerBg:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -12, -196)
-timerBg:SetHeight(8)
+timerBg:SetHeight(14)
 local timerBar = CreateFrame("StatusBar", nil, frame)
 timerBar:SetPoint("TOPLEFT", timerBg, "TOPLEFT", 0, 0)
 timerBar:SetPoint("BOTTOMRIGHT", timerBg, "BOTTOMRIGHT", 0, 0)
 timerBar:SetStatusBarTexture("Interface\\TargetingFrame\\UI-StatusBar")
-timerBar:SetMinMaxValues(0, 1)
-timerBar:SetValue(0.62)
+local PREVIEW_SECONDS = 174
+timerBar:SetMinMaxValues(0, PREVIEW_SECONDS)
+timerBar:SetValue(PREVIEW_SECONDS * 0.62)
+local timerText = timerBar:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+timerText:SetPoint("CENTER", timerBar, "CENTER", 0, 0)
+timerText:SetShadowColor(0, 0, 0, 1)
+timerText:SetShadowOffset(1, -1)
+timerText:SetText(VCA.FormatTimer(PREVIEW_SECONDS * 0.62))
+-- The sample bar counts down like a real bonus roll and starts over when it ends.
+local clock = 0
+frame:SetScript("OnUpdate", function(_, dt)
+    clock = (clock + (dt or 0)) % PREVIEW_SECONDS
+    local remaining = PREVIEW_SECONDS - clock
+    timerBar:SetValue(remaining)
+    timerText:SetText(VCA.FormatTimer(remaining))
+end)
 VCA.OnTheme(function()
     local t, g = VCA.Theme.timer, VCA.Theme.timerBg
     timerBar:SetStatusBarColor(t[1], t[2], t[3], 1)

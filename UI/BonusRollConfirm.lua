@@ -257,7 +257,7 @@ winVoidcoreInfo:SetPoint("TOPLEFT", winItemName, "BOTTOMLEFT", 0, -4)
 
 -- Timer bar  (value mirrored from BonusRollFrame.PromptFrame.Timer.Bar via OnUpdate)
 local timerBar = CreateFrame("StatusBar", nil, win)
-timerBar:SetHeight(8)
+timerBar:SetHeight(14)
 timerBar:SetPoint("TOPLEFT", win, "TOPLEFT", 16, -72)
 timerBar:SetPoint("TOPRIGHT", win, "TOPRIGHT", -16, -72)
 timerBar:SetStatusBarTexture("Interface\\TargetingFrame\\UI-StatusBar")
@@ -268,6 +268,12 @@ timerBorder:SetPoint("TOPLEFT", timerBar, "TOPLEFT", -1, 1)
 timerBorder:SetPoint("BOTTOMRIGHT", timerBar, "BOTTOMRIGHT", 1, -1)
 timerBar:SetMinMaxValues(0, 1)
 timerBar:SetValue(1)
+
+-- Remaining time, centered on the bar.
+local timerText = timerBar:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+timerText:SetPoint("CENTER", timerBar, "CENTER", 0, 0)
+timerText:SetShadowColor(0, 0, 0, 1)
+timerText:SetShadowOffset(1, -1)
 local timerBg = timerBar:CreateTexture(nil, "BACKGROUND")
 timerBg:SetAllPoints()
 VCA.OnTheme(function() local t = VCA.Theme.timerBg; timerBg:SetColorTexture(t[1], t[2], t[3], 0.8) end)
@@ -629,6 +635,7 @@ win:SetScript("OnUpdate", function()
             local elapsed = (GetTime() - previewTimerStart) % previewTimerDuration
             timerBar:SetMinMaxValues(0, previewTimerDuration)
             timerBar:SetValue(previewTimerDuration - elapsed)
+            timerText:SetText(VCA.FormatTimer(previewTimerDuration - elapsed))
         end
         return
     end
@@ -643,6 +650,7 @@ win:SetScript("OnUpdate", function()
     local lo, hi = src:GetMinMaxValues()
     timerBar:SetMinMaxValues(lo, hi)
     timerBar:SetValue(src:GetValue())
+    timerText:SetText(VCA.FormatTimer(src:GetValue()))
 end)
 
 -- Hides per-spec list separator, header and all row widgets.

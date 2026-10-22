@@ -176,6 +176,12 @@ function VCA.ApplyTheme(name)
     end
 end
 
+-- 154 -> "2:34". Used by the countdown drawn on the timer bars.
+function VCA.FormatTimer(seconds)
+    local s = math.max(0, math.floor((seconds or 0) + 0.5))
+    return string.format("%d:%02d", math.floor(s / 60), s % 60)
+end
+
 -- Window title with the theme color on the "Voidcore" part.
 function VCA.TitleText()
     local s = VCA.L and VCA.L["PANEL_TITLE"] or "VoidcoreAdvisor"

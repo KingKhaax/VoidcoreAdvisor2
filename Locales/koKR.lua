@@ -267,3 +267,4 @@ L["OPTIONS_REMINDER_BOSS_TOOLTIP"] = "전투 시작 전에 현재 시즌의 공�
 L["OPTIONS_REMINDER_THEME"] = "알림 창 테마"
 L["OPTIONS_REMINDER_THEME_TOOLTIP"] = "애드온의 다른 부분과 별개로 전리품 전문화 알림 창의 색상 테마를 선택합니다."
 L["HELP_OPEN"] = "  /void open – 설정 페이지 열기 (테마 및 미리보기)"
+L["MARK_MODE_ACTIVE"] = "클릭하여 저장"

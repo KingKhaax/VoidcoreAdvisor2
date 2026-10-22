@@ -266,3 +266,4 @@ L["OPTIONS_REMINDER_BOSS_TOOLTIP"] = "Zeigt dasselbe Popup einmal pro Boss, wenn
 L["OPTIONS_REMINDER_THEME"] = "Thema des Erinnerungs-Popups"
 L["OPTIONS_REMINDER_THEME_TOOLTIP"] = "Wähle das Farbthema der Beutespezialisierungs-Popups, unabhängig vom restlichen Addon."
 L["HELP_OPEN"] = "  /void open – Optionsseite öffnen (Themen und Vorschauen)"
+L["MARK_MODE_ACTIVE"] = "Zum Speichern klicken"

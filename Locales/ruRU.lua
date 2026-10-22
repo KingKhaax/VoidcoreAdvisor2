@@ -282,3 +282,4 @@ L["OPTIONS_REMINDER_BOSS_TOOLTIP"] = "Показывает то же окно о
 L["OPTIONS_REMINDER_THEME"] = "Тема окна напоминания"
 L["OPTIONS_REMINDER_THEME_TOOLTIP"] = "Выберите цветовую тему окон напоминания о специализации добычи независимо от остального аддона."
 L["HELP_OPEN"] = "  /void open – открыть страницу настроек (темы и предпросмотр)"
+L["MARK_MODE_ACTIVE"] = "Нажмите, чтобы сохранить"

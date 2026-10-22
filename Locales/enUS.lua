@@ -255,3 +255,4 @@ L["OPTIONS_REMINDER_BOSS_TOOLTIP"] = "Shows the same popup once per boss when yo
 L["OPTIONS_REMINDER_THEME"] = "Reminder popup theme"
 L["OPTIONS_REMINDER_THEME_TOOLTIP"] = "Choose the color theme of the loot spec reminder popups, independent from the rest of the addon."
 L["HELP_OPEN"] = "  /void open – open the options page (themes and previews)"
+L["MARK_MODE_ACTIVE"] = "Click to save"

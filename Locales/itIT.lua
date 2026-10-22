@@ -266,3 +266,4 @@ L["OPTIONS_REMINDER_BOSS_TOOLTIP"] = "Mostra la stessa finestra una volta per bo
 L["OPTIONS_REMINDER_THEME"] = "Tema del promemoria"
 L["OPTIONS_REMINDER_THEME_TOOLTIP"] = "Scegli il tema colore delle finestre di promemoria della specializzazione del bottino, indipendente dal resto dell'addon."
 L["HELP_OPEN"] = "  /void open – apri la pagina delle opzioni (temi e anteprime)"
+L["MARK_MODE_ACTIVE"] = "Clicca per salvare"

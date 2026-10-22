@@ -263,3 +263,4 @@ L["OPTIONS_REMINDER_BOSS_TOOLTIP"] = "开怪前将当前赛季的团队首领设
 L["OPTIONS_REMINDER_THEME"] = "提醒窗口主题"
 L["OPTIONS_REMINDER_THEME_TOOLTIP"] = "选择拾取专精提醒窗口的颜色主题，与插件其他部分的主题相互独立。"
 L["HELP_OPEN"] = "  /void open – 打开选项页面（主题和预览）"
+L["MARK_MODE_ACTIVE"] = "点击保存"

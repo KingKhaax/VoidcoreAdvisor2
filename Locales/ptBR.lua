@@ -266,3 +266,4 @@ L["OPTIONS_REMINDER_BOSS_TOOLTIP"] = "Mostra o mesmo aviso uma vez por chefe qua
 L["OPTIONS_REMINDER_THEME"] = "Tema do lembrete"
 L["OPTIONS_REMINDER_THEME_TOOLTIP"] = "Escolha o tema de cores dos avisos de especialização de saque, independente do resto do addon."
 L["HELP_OPEN"] = "  /void open – abrir a página de opções (temas e pré-visualizações)"
+L["MARK_MODE_ACTIVE"] = "Clique para salvar"

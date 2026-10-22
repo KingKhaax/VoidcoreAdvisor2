@@ -266,3 +266,4 @@ L["OPTIONS_REMINDER_BOSS_TOOLTIP"] = "Affiche la même fenêtre une fois par bos
 L["OPTIONS_REMINDER_THEME"] = "Thème du rappel"
 L["OPTIONS_REMINDER_THEME_TOOLTIP"] = "Choisissez le thème de couleur des fenêtres de rappel de spécialisation de butin, indépendant du reste de l'addon."
 L["HELP_OPEN"] = "  /void open – ouvrir la page d'options (thèmes et aperçus)"
+L["MARK_MODE_ACTIVE"] = "Cliquer pour enregistrer"

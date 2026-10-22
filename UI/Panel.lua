@@ -384,7 +384,10 @@ markModeBtn:SetBackdrop({
 })
 markModeBtn:SetBackdropBorderColor(0, 0, 0, 1)
 local markModeText = markModeBtn:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
-markModeText:SetPoint("CENTER")
+markModeText:SetPoint("LEFT", markModeBtn, "LEFT", 6, 0)
+markModeText:SetPoint("RIGHT", markModeBtn, "RIGHT", -6, 0)
+markModeText:SetJustifyH("CENTER")
+markModeText:SetWordWrap(false)
 markModeBtn.text = markModeText
 local markShine = markModeBtn:CreateTexture(nil, "ARTWORK")
 markShine:SetPoint("TOPLEFT", markModeBtn, "TOPLEFT", 1, -1)
@@ -409,6 +412,15 @@ local function UpdateMarkModeButton()
 end
 -- Saves the staged marks: every item whose staged state differs from the stored one is
 -- toggled with the same code as the bag icon, so all specs and the roll log are updated.
+local function IsStored(c)
+    for _, sp in ipairs(c.specs or {}) do
+        if VCA.Data.IsObtainedForKeyTier(c.sourceType, c.sourceID, c.diffID, sp.specID, c.itemID, c.isHighTier) then
+            return true
+        end
+    end
+    return VCA.Data.IsObtainedMigrated(c.sourceType, c.sourceID, c.diffID, c.itemID) and true or false
+end
+
 local function CommitPendingMarks()
     local staged = {}
     for itemID, want in pairs(Panel.pendingMarks) do
@@ -420,16 +432,45 @@ local function CommitPendingMarks()
         for _, r in ipairs(_s.itemRows) do
             local cb = r.checkbox
             if r.frame:IsShown() and cb.itemID == itemID then
-                if (cb.isObtained and true or false) ~= want then
+                -- The row is rebuilt after every toggle, so keep a copy of what it holds now.
+                local c = {
+                    itemID = itemID,
+                    itemLink = cb.itemLink,
+                    sourceType = cb.sourceType,
+                    sourceID = cb.sourceID,
+                    diffID = cb.diffID,
+                    isHighTier = cb.isHighTier,
+                    isObtained = cb.isObtained,
+                    specs = cb.specs
+                }
+                if (c.isObtained and true or false) ~= want then
                     local toggle = cb:GetScript("OnClick")
                     if toggle then
-                        toggle(cb)
+                        local ok, err = pcall(toggle, cb)
+                        if not ok then
+                            print(VCA.Theme.title .. "VoidcoreAdvisor Reborn:|r " .. tostring(err))
+                        end
+                    end
+                    -- Safety net: if the normal path left it unchanged, write it for every spec.
+                    if IsStored(c) ~= want then
+                        for _, sp in ipairs(c.specs or {}) do
+                            if want then
+                                VCA.Data.SetObtainedForKeyTier(c.sourceType, c.sourceID, c.diffID, sp.specID,
+                                    itemID, c.isHighTier, true)
+                            else
+                                VCA.Data.SetObtained(c.sourceType, c.sourceID, c.diffID, sp.specID, itemID, false)
+                            end
+                        end
+                        if not want then
+                            VCA.Data.SetObtained(c.sourceType, c.sourceID, c.diffID, 0, itemID, false)
+                        end
                     end
                 end
                 break
             end
         end
     end
+    Panel.Refresh()
 end
 
 Panel.CommitPendingMarks = CommitPendingMarks

@@ -267,3 +267,4 @@ L["OPTIONS_REMINDER_BOSS_TOOLTIP"] = "Muestra el mismo popup una vez por jefe cu
 L["OPTIONS_REMINDER_THEME"] = "Tema del recordatorio"
 L["OPTIONS_REMINDER_THEME_TOOLTIP"] = "Elige el tema de color de los avisos de especialización de botín, independiente del resto del addon."
 L["HELP_OPEN"] = "  /void open – abrir la página de opciones (temas y vistas previas)"
+L["MARK_MODE_ACTIVE"] = "Pulsa para guardar"

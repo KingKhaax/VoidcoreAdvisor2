@@ -378,3 +378,22 @@ do
         assert(not VCA.Data.IsObtained("RAID", 900, 15, 269, 1), "all specs reset")
     end)
 end
+
+-- ---- settings window
+do
+    check("Settings window opens every tab", function()
+        _G.VoidcoreAdvisorDB.showCumulative = nil
+        for i = 1, 4 do VCA.SettingsWindow.Open(i) end
+        VCA.SettingsWindow.Toggle()
+        VCA.SettingsWindow.Toggle()
+        VCA.SettingsWindow.Hide()
+    end)
+    check("/void open uses the settings window", function()
+        SlashCmdList["VOIDCOREADVISOR"]("open")
+    end)
+end
+
+check("Settings window has the version tab", function()
+    VCA.SettingsWindow.Open(5)
+    VCA.SettingsWindow.Hide()
+end)

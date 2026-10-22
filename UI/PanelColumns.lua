@@ -130,6 +130,22 @@ local function PopulateItemColumn(sourceType, sourceID, difficultyID, isHighTier
         end
     end
 
+    -- With no spec picked and nothing chosen, the items your own loot spec cannot get are
+    -- the ones that will not drop: they are tinted red.
+    local lootSpecSet
+    if not specFilterSet and not itemImpliedFilter then
+        local lootSpecID = VCA.SpecInfo.GetEffectiveLootSpecID()
+        if lootSpecID and lootSpecID > 0 then
+            lootSpecSet = {}
+            for _, id in ipairs(VCA.LootPool.GetItemsForSpec(sourceType, sourceID, difficultyID, classID, lootSpecID)) do
+                lootSpecSet[id] = true
+            end
+            if not next(lootSpecSet) then
+                lootSpecSet = nil
+            end
+        end
+    end
+
     -- Fetch enriched item data with class filter so the EJ returns only items
     -- relevant to this class (all specs).  Using the class filter ensures the
     -- client has cached data (name, icon) for every item returned.
@@ -393,15 +409,26 @@ local function PopulateItemColumn(sourceType, sourceID, difficultyID, isHighTier
         -- not lootable by the specs implied by the item selection.
         local specFiltered = specFilterSet and not specFilterSet[item.itemID]
         local itemFiltered = itemImpliedFilter and not itemImpliedFilter[item.itemID]
-        local dimmed = obtained or obtainedMigrated or specFiltered or itemFiltered
+        local otherSpec = specFiltered or itemFiltered or (lootSpecSet ~= nil and not lootSpecSet[item.itemID])
+        local gotIt = obtained or obtainedMigrated
+        -- Dark = you already got it. Red = it will not drop for the spec in use.
+        local dimmed = gotIt or otherSpec
         row.frame.dimmed = dimmed
-        if dimmed then
-            local alpha = (specFiltered or itemFiltered) and 0.25 or 0.4
-            row.nameLabel:SetAlpha(alpha)
-            row.iconButton:SetAlpha(alpha)
+        if gotIt then
+            row.nameLabel:SetAlpha(0.4)
+            row.iconButton:SetAlpha(0.4)
+            row.redShade:Hide()
+            row.icon:SetVertexColor(1, 1, 1)
+        elseif otherSpec then
+            row.nameLabel:SetAlpha(0.6)
+            row.iconButton:SetAlpha(0.75)
+            row.redShade:Show()
+            row.icon:SetVertexColor(1, 0.35, 0.35)
         else
             row.nameLabel:SetAlpha(1)
             row.iconButton:SetAlpha(1)
+            row.redShade:Hide()
+            row.icon:SetVertexColor(1, 1, 1)
         end
 
         rowTop = rowTop + ROW_H + 2
@@ -426,6 +453,8 @@ local function PopulateItemColumn(sourceType, sourceID, difficultyID, isHighTier
         noRow.nameLabel:SetText("|cff888888" .. noticeText .. "|r")
         noRow.nameLabel:SetAlpha(1)
         noRow.iconButton:SetAlpha(0.3)
+        noRow.redShade:Hide()
+        noRow.icon:SetVertexColor(1, 1, 1)
         noRow.iconBorder:Hide()
         noRow.checkbox:Hide()
         _s.itemScrollChild:SetHeight(ROW_H)
@@ -494,6 +523,8 @@ local function PopulateSpecColumn(sourceType, sourceID, difficultyID, filterItem
     local colW = _s.RightColWidth()
     local rowTop = 0
 
+    local hasSelection = filterItemIDs and #filterItemIDs > 0
+    local accent = VCA.Theme.accent
     for _, entry in ipairs(rankings) do
         local row = _s.GetOrCreateSpecRow(_s.specRows, _s.specScrollChild)
         row.frame:SetWidth(colW - PADDING)
@@ -504,31 +535,31 @@ local function PopulateSpecColumn(sourceType, sourceID, difficultyID, filterItem
         -- Store specID for click selection
         row.frame.specID = entry.specID
 
-        -- Selection highlight
+        -- Only the spec you clicked looks selected: a band and a bright edge in the theme color
+        row.selHighlight:Hide()
         if _s.selectedSpecIDs[entry.specID] then
-            row.selHighlight:SetColorTexture(VCA.Theme.accent[1], VCA.Theme.accent[2], VCA.Theme.accent[3], 0.14)
-            row.selHighlight:Show()
+            row.bestBg:SetColorTexture(accent[1], accent[2], accent[3], 0.2)
+            row.bestEdge:SetColorTexture(accent[1], accent[2], accent[3], 1)
+            row.bestBg:Show()
+            row.bestEdge:Show()
         else
-            row.selHighlight:Hide()
+            row.bestBg:Hide()
+            row.bestEdge:Hide()
         end
+        -- The best spec is told apart by its gold rank and its figure in the theme color
+        local isBest = entry.rank == 1 and not entry.noItems
 
         -- Rank #
-        local rankColor = entry.rank == 1 and "|cffffff00" or "|cffaaaaaa"
+        local rankColor = entry.rank == 1 and "|cffffd24d" or "|cffaaaaaa"
         row.rankLabel:SetText(rankColor .. "#" .. entry.rank .. "|r")
 
         -- Spec icon
-        if entry.specIcon then
-            row.icon:SetTexture(entry.specIcon)
-        else
-            row.icon:SetTexture(134400)
-        end
+        row.icon:SetTexture(entry.specIcon or 134400)
 
-        -- Spec name (left part of nameLabel)
-        local nameColor = entry.allObtained and "|cff44ff44" or (entry.noItems and "|cff888888" or "|cffdddddd")
+        -- Spec name
+        local nameColor = entry.allObtained and "|cff44ff44" or (entry.noItems and "|cff888888" or "|cffeeeeee")
         local warnPrefix =
             (entry.remainingCount == 1) and (CreateAtlasMarkup("Ping_Wheel_Icon_Warning", 14, 14) .. " ") or ""
-        row.nameLabel:SetPoint("LEFT", row.icon, "RIGHT", 4, 0)
-        row.nameLabel:SetPoint("RIGHT", row.frame, "RIGHT", -90, 0)
         row.nameLabel:SetText(warnPrefix .. nameColor .. (entry.specName or "?") .. "|r")
         if entry.remainingCount == 1 then
             row.warnHitArea.tooltipText = L["REMINDER_WARNING_ONE_ITEM"]
@@ -536,25 +567,37 @@ local function PopulateSpecColumn(sourceType, sourceID, difficultyID, filterItem
         else
             row.warnHitArea:Hide()
         end
-        -- Stats: obtained/total + percentage (right side)
-        local hasSelection = filterItemIDs and #filterItemIDs > 0
-        local statsText
+
+        -- Figures and bar: with chosen items the chance is the main figure and the bar shows it;
+        -- without them the main figure is obtained/total and the bar shows how many you have.
+        local obtainedCount = (entry.baseCount or 0) - (entry.remainingCount or 0)
+        local frac
         if entry.noItems then
-            statsText = "|cff888888—|r"
+            row.statsLabel:SetText("|cff888888—|r")
+            row.countLabel:SetText("")
+            frac = 0
         elseif entry.allObtained then
-            statsText = "|cff44ff44" .. L["ALL_OBTAINED"] .. "|r"
+            row.statsLabel:SetText("|cff44ff44" .. L["ALL_OBTAINED"] .. "|r")
+            row.countLabel:SetText("")
+            frac = 1
         elseif hasSelection and entry.selectedOdds then
             local pct = math.floor(entry.selectedOdds * 100 + 0.5)
-            local obtainedCount = entry.baseCount - entry.remainingCount
-            statsText = "|cffaaaaaa" .. obtainedCount .. "/" .. entry.baseCount .. "|r  " .. "|cffffff00" .. pct ..
-                            "%|r"
+            row.statsLabel:SetText((isBest and "|cff" .. string.format("%02x%02x%02x", accent[1] * 255, accent[2] * 255,
+                accent[3] * 255) or "|cffffffff") .. pct .. "%|r")
+            row.countLabel:SetText("|cffaaaaaa" .. obtainedCount .. "/" .. entry.baseCount .. "|r")
+            frac = entry.selectedOdds
         else
-            local obtainedCount = entry.baseCount - entry.remainingCount
-            statsText = "|cffaaaaaa" .. obtainedCount .. "/" .. entry.baseCount .. "|r"
+            row.statsLabel:SetText("|cffdddddd" .. obtainedCount .. "/" .. entry.baseCount .. "|r")
+            row.countLabel:SetText("")
+            frac = (entry.baseCount or 0) > 0 and (obtainedCount / entry.baseCount) or 0
         end
-        row.statsLabel:SetText(statsText)
+        -- row width minus rank (2+24), gap, icon (28), gap and the right margin
+        local trackW = math.max(40, colW - PADDING - 2 - 24 - 5 - 28 - 8 - 6)
+        row.barFill:SetColorTexture(accent[1], accent[2], accent[3], isBest and 1 or 0.85)
+        row.barFill:SetWidth(math.max(1, trackW * math.min(1, math.max(0, frac))))
+        row.barFill:SetShown(frac > 0)
 
-        rowTop = rowTop + ROW_H + 2
+        rowTop = rowTop + _s.SPEC_ROW_H + 4
     end
 
     _s.specScrollChild:SetHeight(math.max(rowTop, 1))

@@ -1,3 +1,29 @@
+Version: 2.4.0
+2026/10/22 Released
+
+🔮 New
+- [Settings] New settings window with side tabs (General, Loot Spec Reminder, Bonus Roll, Tools, Version). It opens with `/void open` or with the "Open settings" button of the addon in the game's Options, and saves the same settings as before. The Tools tab has shortcuts to the missing items, where to spend the next Voidcore, your Voidcores, the roll history, the wishlist import and the panel position.
+- [Panel] The spec ranking has a new look: bigger rows with a progress bar under each spec, the chance as the main figure (or obtained/total when nothing is chosen) with the best spec marked by its gold rank and its figure in the color of your theme. The spec you click gets a band and a bright edge in that color.
+- [Panel] Items that will not drop for the spec in use (your loot spec, the spec you picked in the ranking, or the specs that cover your chosen items) are tinted red. Dark still means you already got the item.
+- [Panel] The loot spec ("Loot: Arcane") now sits on its own line right under the "Spec ranking" header, with the icon of the spec in front of its name, instead of being squeezed next to the title.
+- [Theme] The theme preview window has a new "Void stone" look: a double border and a soft glow of the theme color.
+- [Settings] New "Version" tab: the version you have, a short list of what it adds and the credits to the original author (rolferik12), with the address of the CurseForge page ready to copy.
+- [Settings] When the settings window is opened from the game's Options panel (Esc > Options > AddOns), closing that panel no longer closes the addon's window. Opened with `/void open`, Esc still closes it.
+- [Settings] The windows opened from the Tools tab (missing items, where to spend the next one, your Voidcores, the history and the wishlist) also appear beside the settings window, and the report window is wider so the history lines no longer wrap.
+- [Settings] The preview windows opened from the settings (theme, bonus roll and reminder) appear beside the settings window, on its left when there is no room on the right, so they never cover it.
+
+💪 Improvement
+- [Languages] Every text added in 2.3.1 and 2.4.0 (the commands, reports, weekly summary, settings window and Version tab) is now translated into all 11 languages. Until now those texts showed in English outside English and Spanish. They have not been reviewed by native speakers: corrections are welcome.
+- [Tests] The load test also opens every tab of the settings window and checks that `/void open` uses it.
+- [Options] The game's Options list now has a single "Open settings" button for the addon instead of three sub-pages.
+
+🛠️ Fix
+- [Settings] The "Loot Spec Reminder" tab name was longer than its tab and ran into the page, and long labels and hints overlapped the next row. Tab names are short and cut to the tab, rows grow with their text and have more room between the label and its hint.
+- [Panel] In the spec ranking the best spec looked selected even when you had clicked another one. Only the spec you click gets the band and the bright edge now; the best one is marked by its gold rank number and its figure in the theme color.
+- [Panel] The difficulty was shown twice next to the boss name after changing the difficulty in the Adventure Guide.
+
+---
+
 Version: 2.3.1
 2026/10/22 Released
 

@@ -536,7 +536,7 @@ markModeBtn:Hide()
 UpdateMarkModeButton()
 
 local lootSpecLabel = contentArea:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-lootSpecLabel:SetJustifyH("RIGHT")
+lootSpecLabel:SetJustifyH("LEFT")
 lootSpecLabel:SetText("")
 
 -- ── Voidcache icon button (spec column header, right of loot spec label) ──────
@@ -858,6 +858,12 @@ local function GetOrCreateItemRow(pool, parent)
     selHighlight:SetColorTexture(1, 0.75, 0, 0)
     selHighlight:Hide()
 
+    -- Red tint for items your loot spec (or the spec you picked) cannot get from this source.
+    local redShade = rowFrame:CreateTexture(nil, "BACKGROUND", nil, 1)
+    redShade:SetAllPoints(rowFrame)
+    redShade:SetColorTexture(0.75, 0.05, 0.05, 0.38)
+    redShade:Hide()
+
     local rowBg = rowFrame:CreateTexture(nil, "BACKGROUND", nil, -1)
     rowBg:SetAllPoints(rowFrame)
     rowBg:SetColorTexture(1, 1, 1, 0.04)
@@ -967,6 +973,7 @@ local function GetOrCreateItemRow(pool, parent)
         frame = rowFrame,
         flash = flash,
         selHighlight = selHighlight,
+        redShade = redShade,
         iconButton = iconButton,
         icon = icon,
         iconBorder = iconBorder,
@@ -1067,6 +1074,11 @@ end
 
 _s.GetOrCreateItemRow = GetOrCreateItemRow
 
+-- Spec ranking row: rank, icon, name and the odds on top, a progress bar underneath.
+local SPEC_ROW_H = 42
+local SPEC_ICON = 28
+_s.SPEC_ROW_H = SPEC_ROW_H
+
 local function GetOrCreateSpecRow(pool, parent)
     for _, row in ipairs(pool) do
         if not row.frame:IsShown() then
@@ -1074,10 +1086,21 @@ local function GetOrCreateSpecRow(pool, parent)
         end
     end
     local rowFrame = CreateFrame("Button", nil, parent)
-    rowFrame:SetHeight(ROW_H)
+    rowFrame:SetHeight(SPEC_ROW_H)
     rowFrame:RegisterForClicks("LeftButtonUp")
 
-    -- Selection highlight (purple tint when spec is selected)
+    -- Soft green band and a bright left edge behind the best spec.
+    local bestBg = rowFrame:CreateTexture(nil, "BACKGROUND", nil, -2)
+    bestBg:SetAllPoints(rowFrame)
+    bestBg:SetColorTexture(1, 1, 1, 0.1)
+    bestBg:Hide()
+    local bestEdge = rowFrame:CreateTexture(nil, "BACKGROUND", nil, -1)
+    bestEdge:SetPoint("TOPLEFT", rowFrame, "TOPLEFT", 0, 0)
+    bestEdge:SetPoint("BOTTOMLEFT", rowFrame, "BOTTOMLEFT", 0, 0)
+    bestEdge:SetWidth(2)
+    bestEdge:Hide()
+
+    -- Selection highlight (tint when the spec is selected)
     local selHighlight = rowFrame:CreateTexture(nil, "BACKGROUND")
     selHighlight:SetAllPoints(rowFrame)
     selHighlight:SetColorTexture(VCA.Theme.accent[1], VCA.Theme.accent[2], VCA.Theme.accent[3], 0)
@@ -1092,23 +1115,33 @@ local function GetOrCreateSpecRow(pool, parent)
     local rankLabel = rowFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
     rankLabel:SetJustifyH("RIGHT")
     rankLabel:SetWidth(24)
-    rankLabel:SetPoint("LEFT", rowFrame, "LEFT", 0, 0)
+    rankLabel:SetPoint("LEFT", rowFrame, "LEFT", 2, 0)
 
     local icon = rowFrame:CreateTexture(nil, "ARTWORK")
-    icon:SetSize(ICON_SIZE, ICON_SIZE)
-    icon:SetPoint("LEFT", rankLabel, "RIGHT", 3, 0)
+    icon:SetSize(SPEC_ICON, SPEC_ICON)
+    icon:SetPoint("LEFT", rankLabel, "RIGHT", 5, 0)
     icon:SetTexCoord(0.08, 0.92, 0.08, 0.92)
 
     local nameLabel = rowFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
     nameLabel:SetJustifyH("LEFT")
-    nameLabel:SetPoint("LEFT", icon, "RIGHT", 4, 0)
-    nameLabel:SetPoint("RIGHT", rowFrame, "RIGHT", 0, 0)
+    nameLabel:SetPoint("TOPLEFT", icon, "TOPRIGHT", 8, 0)
+    nameLabel:SetPoint("RIGHT", rowFrame, "RIGHT", -70, 0)
     nameLabel:SetWordWrap(false)
+
+    -- Progress bar under the name
+    local barTrack = rowFrame:CreateTexture(nil, "BORDER")
+    barTrack:SetColorTexture(0.02, 0.06, 0.04, 1)
+    barTrack:SetHeight(5)
+    barTrack:SetPoint("BOTTOMLEFT", icon, "BOTTOMRIGHT", 8, 1)
+    barTrack:SetPoint("RIGHT", rowFrame, "RIGHT", -6, 0)
+    local barFill = rowFrame:CreateTexture(nil, "ARTWORK")
+    barFill:SetHeight(5)
+    barFill:SetPoint("BOTTOMLEFT", barTrack, "BOTTOMLEFT", 0, 0)
 
     -- Invisible hit-area for the warning icon (shown only when remainingCount == 1)
     local warnHitArea = CreateFrame("Button", nil, rowFrame)
-    warnHitArea:SetSize(18, ROW_H)
-    warnHitArea:SetPoint("LEFT", icon, "RIGHT", 4, 0)
+    warnHitArea:SetSize(18, 18)
+    warnHitArea:SetPoint("TOPLEFT", icon, "TOPRIGHT", 8, 0)
     warnHitArea:SetFrameLevel(rowFrame:GetFrameLevel() + 2)
     warnHitArea:EnableMouse(true)
     warnHitArea:SetScript("OnEnter", function(self)
@@ -1123,9 +1156,13 @@ local function GetOrCreateSpecRow(pool, parent)
     end)
     warnHitArea:Hide()
 
-    local statsLabel = rowFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+    -- Main figure on the right (chance, or obtained/total when nothing is chosen) and a small line under it
+    local statsLabel = rowFrame:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
     statsLabel:SetJustifyH("RIGHT")
-    statsLabel:SetPoint("RIGHT", rowFrame, "RIGHT", 0, 0)
+    statsLabel:SetPoint("TOPRIGHT", rowFrame, "TOPRIGHT", -6, -3)
+    local countLabel = rowFrame:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+    countLabel:SetJustifyH("RIGHT")
+    countLabel:SetPoint("TOPRIGHT", statsLabel, "BOTTOMRIGHT", 0, -1)
 
     -- Spec selection click (single-select: selecting a new spec deselects the previous one)
     rowFrame:SetScript("OnClick", function(self, btn)
@@ -1141,12 +1178,17 @@ local function GetOrCreateSpecRow(pool, parent)
         -- Update spec highlight visuals
         for _, r in ipairs(pool) do
             if r.frame:IsShown() and r.frame.specID then
+                local a = VCA.Theme.accent
                 if selectedSpecIDs[r.frame.specID] then
-                    r.selHighlight:SetColorTexture(VCA.Theme.accent[1], VCA.Theme.accent[2], VCA.Theme.accent[3], 0.14)
-                    r.selHighlight:Show()
+                    r.bestBg:SetColorTexture(a[1], a[2], a[3], 0.2)
+                    r.bestEdge:SetColorTexture(a[1], a[2], a[3], 1)
+                    r.bestBg:Show()
+                    r.bestEdge:Show()
                 else
-                    r.selHighlight:Hide()
+                    r.bestBg:Hide()
+                    r.bestEdge:Hide()
                 end
+                r.selHighlight:Hide()
             end
         end
         Panel.RefreshItemColumn()
@@ -1155,17 +1197,20 @@ local function GetOrCreateSpecRow(pool, parent)
     local row = {
         frame = rowFrame,
         selHighlight = selHighlight,
+        bestBg = bestBg,
+        bestEdge = bestEdge,
         rankLabel = rankLabel,
         icon = icon,
         nameLabel = nameLabel,
         statsLabel = statsLabel,
+        countLabel = countLabel,
+        barTrack = barTrack,
+        barFill = barFill,
         warnHitArea = warnHitArea
     }
     pool[#pool + 1] = row
     return row
 end
-
--- ── Row hide helpers ──────────────────────────────────────────────────────────
 
 _s.GetOrCreateSpecRow = GetOrCreateSpecRow
 
@@ -1320,9 +1365,10 @@ local function DoLayout()
     voidcacheIconBtn:SetPoint("RIGHT", contentArea, "TOPRIGHT", -PADDING, -6 - (COL_HEADER_H / 2) + 4)
 
     -- Loot spec label (right-aligned, to the left of the voidcache icon)
+    -- Loot spec (icon + name) on its own line right under the ranking header
     lootSpecLabel:ClearAllPoints()
-    lootSpecLabel:SetPoint("RIGHT", voidcacheIconBtn, "LEFT", -4, 0)
-    lootSpecLabel:SetPoint("LEFT", specColHeader, "RIGHT", 8, 0)
+    lootSpecLabel:SetPoint("TOPLEFT", specColHeader, "BOTTOMLEFT", 0, -6)
+    lootSpecLabel:SetPoint("RIGHT", contentArea, "RIGHT", -PADDING, 0)
     lootSpecLabel:SetWordWrap(false)
 
     -- Item scroll frame
@@ -1339,7 +1385,7 @@ local function DoLayout()
 
     -- Spec scroll frame
     specScrollFrame:ClearAllPoints()
-    specScrollFrame:SetPoint("TOPLEFT", contentArea, "TOPLEFT", splitX + PADDING, -(COL_HEADER_H + 8))
+    specScrollFrame:SetPoint("TOPLEFT", contentArea, "TOPLEFT", splitX + PADDING, -(COL_HEADER_H + 30))
     specScrollFrame:SetPoint("BOTTOMRIGHT", contentArea, "BOTTOMRIGHT", -PADDING, 38)
     specScrollFrame:SetWidth(rightW - PADDING)
 
@@ -1494,7 +1540,8 @@ function Panel.SetContext(sourceType, sourceID, difficultyID, sourceName, isRaid
 
     VCA.Detection.SetActiveSource(sourceType, sourceID, difficultyID)
 
-    sourceLabel:SetText((sourceName or "") .. DifficultyTag(sourceType, difficultyID))
+    Panel.sourceName = sourceName or "" -- without the difficulty tag (EJHook re-applies it)
+    sourceLabel:SetText(Panel.sourceName .. DifficultyTag(sourceType, difficultyID))
     Panel.isRaid = isRaid
 
     -- Show key level dropdown only for M+ dungeons
@@ -1555,7 +1602,9 @@ function Panel.Refresh()
     if lootSpecID and lootSpecID > 0 then
         local _, name, _, icon = GetSpecializationInfoByID(lootSpecID)
         if name then
-            lootSpecLabel:SetText("|cff888888" .. L["LOOT_SPEC_LABEL"] .. "|r |cffdddddd" .. name .. "|r")
+            local iconMarkup = icon and ("|T" .. icon .. ":16:16:0:0:64:64:5:59:5:59|t ") or ""
+            lootSpecLabel:SetText("|cff888888" .. L["LOOT_SPEC_LABEL"] .. "|r " .. iconMarkup .. "|cffeeeeee" .. name ..
+                                      "|r")
         else
             lootSpecLabel:SetText("")
         end

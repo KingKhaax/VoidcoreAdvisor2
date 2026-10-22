@@ -57,6 +57,25 @@ Paint(function()
     frame:SetBackdropColor(p.bg[1], p.bg[2], p.bg[3], 0.97)
     frame:SetBackdropBorderColor(p.border[1], p.border[2], p.border[3], 1)
 end)
+-- Void-stone framing: a thin inner border and a soft glow of the theme color along the top,
+-- both following the previewed theme.
+local innerBorder = CreateFrame("Frame", nil, frame, "BackdropTemplate")
+innerBorder:SetPoint("TOPLEFT", frame, "TOPLEFT", 5, -5)
+innerBorder:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -5, 5)
+innerBorder:SetBackdrop({edgeFile = "Interface\\Buttons\\WHITE8X8", edgeSize = 1})
+local outerGlow = frame:CreateTexture(nil, "BACKGROUND", nil, 1)
+outerGlow:SetPoint("TOPLEFT", frame, "TOPLEFT", 1, -1)
+outerGlow:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -1, -1)
+outerGlow:SetHeight(90)
+Paint(function()
+    local a = Palette().accent
+    innerBorder:SetBackdropBorderColor(a[1], a[2], a[3], 0.55)
+    outerGlow:SetColorTexture(a[1], a[2], a[3], 0.1)
+    if outerGlow.SetGradient and CreateColor then
+        pcall(outerGlow.SetGradient, outerGlow, "VERTICAL", CreateColor(a[1], a[2], a[3], 0),
+            CreateColor(a[1], a[2], a[3], 0.22))
+    end
+end)
 frame:Hide()
 tinsert(UISpecialFrames, "VCAThemePreviewFrame")
 

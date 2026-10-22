@@ -15,6 +15,26 @@ frame:SetScript("OnEvent", function(self, event, loadedAddon)
     end
     self:UnregisterEvent("ADDON_LOADED")
 
+    -- The addon has its own settings window (UI/SettingsWindow.lua). The game's Options list
+    -- only gets one button that opens it. If that cannot be registered, the old list below is used.
+    if VCA.SettingsWindow then
+        local ok = pcall(function()
+            local category = Settings.RegisterVerticalLayoutCategory("VoidcoreAdvisor Reborn")
+            local layout = SettingsPanel:GetLayout(category)
+            layout:AddInitializer(CreateSettingsButtonInitializer(L["SETTINGS_OPEN_LABEL"], L["SETTINGS_OPEN"],
+                function()
+                    VCA.SettingsWindow.Open()
+                end, L["SETTINGS_OPEN_TIP"], true))
+            Settings.RegisterAddOnCategory(category)
+            VCA.OpenOptions = function(index)
+                VCA.SettingsWindow.Open(index)
+            end
+        end)
+        if ok then
+            return
+        end
+    end
+
     -- Create a vertical-layout category for the AddOns tab.
     local category = Settings.RegisterVerticalLayoutCategory("VoidcoreAdvisor Reborn")
     local reminderCategory = Settings.RegisterVerticalLayoutSubcategory(category, L["OPTIONS_CAT_REMINDER"])

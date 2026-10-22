@@ -12,7 +12,7 @@ local function Build()
 
 
 local frame = CreateFrame("Frame", "VCAReportFrame", UIParent, "BackdropTemplate")
-frame:SetSize(560, 400)
+frame:SetSize(640, 420)
 frame:SetPoint("CENTER")
 frame:SetFrameStrata("DIALOG")
 frame:SetClampedToScreen(true)
@@ -48,7 +48,7 @@ local edit = CreateFrame("EditBox", nil, scroll)
 edit:SetMultiLine(true)
 edit:SetAutoFocus(false)
 edit:SetFontObject("ChatFontNormal")
-edit:SetWidth(500)
+edit:SetWidth(580)
 edit:SetMaxLetters(0)
 edit:SetScript("OnEscapePressed", function(self)
     self:ClearFocus()
@@ -57,10 +57,10 @@ scroll:SetScrollChild(edit)
 
 -- Rich mode: a text that can show icons (an edit box cannot). Not selectable.
 local richHolder = CreateFrame("Frame", nil, scroll)
-richHolder:SetSize(500, 10)
+richHolder:SetSize(580, 10)
 local richText = richHolder:CreateFontString(nil, "OVERLAY", "ChatFontNormal")
 richText:SetPoint("TOPLEFT", 0, 0)
-richText:SetWidth(500)
+richText:SetWidth(580)
 richText:SetJustifyH("LEFT")
 richText:SetJustifyV("TOP")
 richText:SetSpacing(3)
@@ -96,6 +96,7 @@ function Report.Show(titleText, text, opts)
     else
         actionBtn:Hide()
     end
+    frame:Raise()
     if opts.rich then
         scroll:SetScrollChild(richHolder)
         richText:SetText(text or "")

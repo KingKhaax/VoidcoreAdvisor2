@@ -348,6 +348,8 @@ SlashCmdList["VOIDCOREADVISOR"] = function(msg)
     elseif cmd == "open" then
         if VCA.OpenOptions then
             VCA.OpenOptions()
+        elseif VCA.SettingsWindow then
+            VCA.SettingsWindow.Open()
         end
 
     elseif cmd == "cores" then

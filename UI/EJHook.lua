@@ -237,7 +237,7 @@ hooksecurefunc("EJ_SetDifficulty", function(difficultyID)
 
     -- Update stored difficulty and re-apply context with the same source.
     if VCA.Panel.sourceID then
-        local name = VCA.Panel.sourceLabel and VCA.Panel.sourceLabel:GetText() or ""
+        local name = VCA.Panel.sourceName or ""
         VCA.Panel.SetContext(VCA.ContentType.RAID, VCA.Panel.sourceID, difficultyID, name, true)
     end
 end)

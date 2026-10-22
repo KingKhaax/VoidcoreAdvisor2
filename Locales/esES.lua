@@ -266,3 +266,5 @@ L["REMINDER_WARNING_ONE_ITEM_BOSS"] = "|cffff8000Advertencia:|r Esta especializa
 L["WARNING_ONE_ITEM_BOSS"] = "|cffff8000Advertencia:|r Esta especialización solo tiene |cffff0000%d objeto|r restante con este jefe. Usar un Núcleo del Vacío nebuloso |cffff0000reiniciará el grupo de botín de todas las especializaciones|r con este jefe."
 L["OPTIONS_REMINDER_BOSS"] = "Recordar también delante de jefes de banda"
 L["OPTIONS_REMINDER_BOSS_TOOLTIP"] = "Muestra el mismo popup una vez por jefe cuando fijas como objetivo a un jefe de banda de la temporada actual antes de empezar el combate."
+L["OPTIONS_REMINDER_THEME"] = "Tema del recordatorio"
+L["OPTIONS_REMINDER_THEME_TOOLTIP"] = "Elige el tema de color de los avisos de especialización de botín, independiente del resto del addon."

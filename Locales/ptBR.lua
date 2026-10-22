@@ -265,3 +265,5 @@ L["REMINDER_WARNING_ONE_ITEM_BOSS"] = "|cffff8000Aviso:|r Esta especialização 
 L["WARNING_ONE_ITEM_BOSS"] = "|cffff8000Aviso:|r Esta especialização tem |cffff0000apenas %d item|r restante neste chefe. Usar um Núcleo do Vazio nebuloso |cffff0000reiniciará o saque de todas as especializações|r neste chefe!"
 L["OPTIONS_REMINDER_BOSS"] = "Lembrar também diante de chefes de raide"
 L["OPTIONS_REMINDER_BOSS_TOOLTIP"] = "Mostra o mesmo aviso uma vez por chefe quando você seleciona um chefe de raide da temporada atual antes do pull."
+L["OPTIONS_REMINDER_THEME"] = "Tema do lembrete"
+L["OPTIONS_REMINDER_THEME_TOOLTIP"] = "Escolha o tema de cores dos avisos de especialização de saque, independente do resto do addon."

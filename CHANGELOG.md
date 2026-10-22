@@ -7,6 +7,8 @@
 - New **Preview theme** selector in the options: the preview window can show any theme without changing yours (default: your class), with < > buttons inside the window to browse them.
 - New **Bonus roll window theme** selector in the options: the bonus roll window has its own color theme (default: your class).
 - The loot spec reminder popup now also appears in front of raid bosses: target a current-season raid boss before the pull and you get it once per boss. It has its own option (on by default) and boss wording in the warning.
+- New **Reminder popup theme** selector in the options (default: your class), and the reminder popups show a gold "Reborn" next to the title.
+- Every theme row in the options now has its own **Preview** button: the color theme and the preview theme open the sample window, the bonus roll theme opens the roll window preview and the reminder theme opens the example popup.
 - Removed the "Style of my specialization" theme. "Style of my class" stays; anyone who had the specialization theme selected is moved to it.
 
 ## 2.2.5

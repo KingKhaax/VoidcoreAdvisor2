@@ -265,3 +265,5 @@ L["REMINDER_WARNING_ONE_ITEM_BOSS"] = "|cffff8000Avviso:|r Questa specializzazio
 L["WARNING_ONE_ITEM_BOSS"] = "|cffff8000Avviso:|r Questa specializzazione ha |cffff0000solo %d oggetto|r rimasto per questo boss. Usare un Nucleo del Vuoto nebuloso |cffff0000azzererà il bottino di tutte le specializzazioni|r per questo boss!"
 L["OPTIONS_REMINDER_BOSS"] = "Ricordamelo anche davanti ai boss delle incursioni"
 L["OPTIONS_REMINDER_BOSS_TOOLTIP"] = "Mostra la stessa finestra una volta per boss quando selezioni come bersaglio un boss di incursione della stagione attuale prima del pull."
+L["OPTIONS_REMINDER_THEME"] = "Tema del promemoria"
+L["OPTIONS_REMINDER_THEME_TOOLTIP"] = "Scegli il tema colore delle finestre di promemoria della specializzazione del bottino, indipendente dal resto dell'addon."

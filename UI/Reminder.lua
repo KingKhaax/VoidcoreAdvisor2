@@ -111,8 +111,8 @@ frame:SetBackdrop({
         bottom = 11
     }
 })
-VCA.OnTheme(function() local t = VCA.Theme.bg; frame:SetBackdropColor(t[1], t[2], t[3], 0.95) end)
-VCA.OnTheme(function() local t = VCA.Theme.border; frame:SetBackdropBorderColor(t[1], t[2], t[3], 1) end)
+VCA.OnTheme(function() local t = ReminderPalette().bg; frame:SetBackdropColor(t[1], t[2], t[3], 0.95) end)
+VCA.OnTheme(function() local t = ReminderPalette().border; frame:SetBackdropBorderColor(t[1], t[2], t[3], 1) end)
 
 -- ESC key closes the popup via the global UISpecialFrames mechanism.
 tinsert(UISpecialFrames, "VoidcoreAdvisorReminder")
@@ -121,7 +121,9 @@ tinsert(UISpecialFrames, "VoidcoreAdvisorReminder")
 
 local title = frame:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
 title:SetPoint("TOP", 0, -14)
-title:SetText(L["REMINDER_TITLE"])
+VCA.OnTheme(function()
+    title:SetText(VCA.RebornTitle(L["REMINDER_TITLE"], ReminderPalette()))
+end)
 
 local subtitle = frame:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
 subtitle:SetPoint("TOP", title, "BOTTOM", 0, -4)
@@ -131,7 +133,7 @@ local voidcoreCount = frame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
 voidcoreCount:SetPoint("TOP", subtitle, "BOTTOM", 0, -3)
 
 local divider = frame:CreateTexture(nil, "ARTWORK")
-VCA.OnTheme(function() local t = VCA.Theme.border; divider:SetColorTexture(t[1], t[2], t[3], 0.4) end)
+VCA.OnTheme(function() local t = ReminderPalette().border; divider:SetColorTexture(t[1], t[2], t[3], 0.4) end)
 divider:SetPoint("TOPLEFT", frame, "TOPLEFT", 16, -56)
 divider:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -16, -56)
 divider:SetHeight(1)
@@ -187,7 +189,7 @@ dynWarnText:Hide()
 -- ── Spec-list section ────────────────────────────────────────────────────────
 
 local dynSpecDivider = frame:CreateTexture(nil, "ARTWORK")
-VCA.OnTheme(function() local t = VCA.Theme.border; dynSpecDivider:SetColorTexture(t[1], t[2], t[3], 0.4) end)
+VCA.OnTheme(function() local t = ReminderPalette().border; dynSpecDivider:SetColorTexture(t[1], t[2], t[3], 0.4) end)
 dynSpecDivider:SetHeight(1)
 dynSpecDivider:Hide()
 
@@ -293,6 +295,12 @@ end
 
 -- true while the popup is about a raid boss instead of a Mythic+ dungeon (wording only).
 local popupIsBoss = false
+
+-- The reminder popups have their own theme setting (default: the colors of your class).
+local function ReminderPalette()
+    local gdb = _G[VCA.GLOBAL_DB_NAME]
+    return VCA.GetPalette(gdb and gdb.reminderTheme or "class")
+end
 local shownBosses -- assigned in the raid boss section below
 
 function Reminder.Show(currentSpecID, bestEntry, selectedCount, rankings)
@@ -438,14 +446,16 @@ warnFrame:SetBackdrop({
         bottom = 11
     }
 })
-VCA.OnTheme(function() local t = VCA.Theme.bg; warnFrame:SetBackdropColor(t[1], t[2], t[3], 0.95) end)
-VCA.OnTheme(function() local t = VCA.Theme.border; warnFrame:SetBackdropBorderColor(t[1], t[2], t[3], 1) end)
+VCA.OnTheme(function() local t = ReminderPalette().bg; warnFrame:SetBackdropColor(t[1], t[2], t[3], 0.95) end)
+VCA.OnTheme(function() local t = ReminderPalette().border; warnFrame:SetBackdropBorderColor(t[1], t[2], t[3], 1) end)
 
 tinsert(UISpecialFrames, "VoidcoreAdvisorWarning")
 
 local wf_title = warnFrame:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
 wf_title:SetPoint("TOP", 0, -14)
-wf_title:SetText(L["WARNING_TITLE"])
+VCA.OnTheme(function()
+    wf_title:SetText(VCA.RebornTitle(L["WARNING_TITLE"], ReminderPalette()))
+end)
 
 local wf_subtitle = warnFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
 wf_subtitle:SetPoint("TOP", wf_title, "BOTTOM", 0, -4)
@@ -455,7 +465,7 @@ local wf_voidcoreCount = warnFrame:CreateFontString(nil, "OVERLAY", "GameFontNor
 wf_voidcoreCount:SetPoint("TOP", wf_subtitle, "BOTTOM", 0, -3)
 
 local wf_divider1 = warnFrame:CreateTexture(nil, "ARTWORK")
-VCA.OnTheme(function() local t = VCA.Theme.border; wf_divider1:SetColorTexture(t[1], t[2], t[3], 0.4) end)
+VCA.OnTheme(function() local t = ReminderPalette().border; wf_divider1:SetColorTexture(t[1], t[2], t[3], 0.4) end)
 wf_divider1:SetPoint("TOPLEFT", warnFrame, "TOPLEFT", 16, -56)
 wf_divider1:SetPoint("TOPRIGHT", warnFrame, "TOPRIGHT", -16, -56)
 wf_divider1:SetHeight(1)
@@ -491,7 +501,7 @@ wf_warnText:SetPoint("TOPLEFT", warnFrame, "TOPLEFT", 46, -148)
 
 -- Spec-list section (dynamic height, positioned by ShowWarning)
 local wf_specListDivider = warnFrame:CreateTexture(nil, "ARTWORK")
-VCA.OnTheme(function() local t = VCA.Theme.border; wf_specListDivider:SetColorTexture(t[1], t[2], t[3], 0.4) end)
+VCA.OnTheme(function() local t = ReminderPalette().border; wf_specListDivider:SetColorTexture(t[1], t[2], t[3], 0.4) end)
 wf_specListDivider:SetHeight(1)
 wf_specListDivider:Hide()
 

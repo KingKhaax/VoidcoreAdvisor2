@@ -265,3 +265,5 @@ L["REMINDER_WARNING_ONE_ITEM_BOSS"] = "|cffff8000Avertissement :|r Cette spécia
 L["WARNING_ONE_ITEM_BOSS"] = "|cffff8000Avertissement :|r Cette spécialisation n'a |cffff0000plus que %d objet|r pour ce boss. Utiliser un Noyau du Vide nébuleux |cffff0000réinitialisera le butin de toutes les spécialisations|r pour ce boss !"
 L["OPTIONS_REMINDER_BOSS"] = "Me rappeler aussi devant les boss de raid"
 L["OPTIONS_REMINDER_BOSS_TOOLTIP"] = "Affiche la même fenêtre une fois par boss quand vous ciblez un boss de raid de la saison actuelle avant le pull."
+L["OPTIONS_REMINDER_THEME"] = "Thème du rappel"
+L["OPTIONS_REMINDER_THEME_TOOLTIP"] = "Choisissez le thème de couleur des fenêtres de rappel de spécialisation de butin, indépendant du reste de l'addon."

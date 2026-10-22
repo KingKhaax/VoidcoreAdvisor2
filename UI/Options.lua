@@ -113,89 +113,98 @@ frame:SetScript("OnEvent", function(self, event, loadedAddon)
         Settings.CreateCheckbox(bonusRollCategory, setting, L["OPTIONS_BRC_SPEC_LIST_TOOLTIP"])
     end
 
-    -- ── Color theme ───────────────────────────────────────────────────────
-    pcall(function()
-        local variable = "VoidcoreAdvisor_Theme"
-        local variableTbl = _G[VCA.GLOBAL_DB_NAME]
-        local setting = Settings.RegisterAddOnSetting(category, variable, "theme", variableTbl, "string",
-            L["OPTIONS_THEME"], "green")
-        local function GetOptions()
-            local container = Settings.CreateControlTextContainer()
-            for _, key in ipairs(VCA.THEME_ORDER) do
-                container:Add(key, VCA.ThemeLabel(key))
-            end
-            return container:GetData()
-        end
-        Settings.SetOnValueChangedCallback(variable, function()
-            VCA.ApplyTheme(variableTbl.theme)
-            if VCA.Panel and VCA.Panel.Refresh then
-                VCA.Panel.Refresh()
+    -- ── Theme selectors: one row each, with a "Preview" button on the right ──
+    local previewActions = {} -- initializer -> function run by that row's button
+    if SettingsDropdownControlMixin and hooksecurefunc then
+        hooksecurefunc(SettingsDropdownControlMixin, "Init", function(self, init)
+            local action = previewActions[init]
+            if action then
+                if not self.VCAPreviewButton then
+                    local btn = CreateFrame("Button", nil, self, "UIPanelButtonTemplate")
+                    btn:SetSize(100, 22)
+                    btn:SetPoint("RIGHT", self, "RIGHT", -16, 0)
+                    btn:SetText(L["OPTIONS_PREVIEW_REMINDER"])
+                    btn:SetScript("OnClick", function(button)
+                        if button.vcaAction then
+                            button.vcaAction()
+                        end
+                    end)
+                    self.VCAPreviewButton = btn
+                end
+                self.VCAPreviewButton.vcaAction = action
+                self.VCAPreviewButton:Show()
+            elseif self.VCAPreviewButton then
+                self.VCAPreviewButton:Hide()
             end
         end)
-        local initializer = Settings.CreateDropdown(category, setting, GetOptions, L["OPTIONS_THEME_TOOLTIP"])
+    end
 
-        -- "Preview" button on the same row as the theme selector.
-        if SettingsDropdownControlMixin and hooksecurefunc then
-            hooksecurefunc(SettingsDropdownControlMixin, "Init", function(self, init)
-                if init == initializer then
-                    if not self.VCAThemePreviewButton then
-                        local btn = CreateFrame("Button", nil, self, "UIPanelButtonTemplate")
-                        btn:SetSize(100, 22)
-                        btn:SetPoint("RIGHT", self, "RIGHT", -16, 0)
-                        btn:SetText(L["OPTIONS_PREVIEW_REMINDER"])
-                        btn:SetScript("OnClick", function()
-                            VCA.ThemePreview.Toggle()
-                        end)
-                        self.VCAThemePreviewButton = btn
-                    end
-                    self.VCAThemePreviewButton:Show()
-                elseif self.VCAThemePreviewButton then
-                    self.VCAThemePreviewButton:Hide()
+    local function ThemeRow(variable, key, labelKey, tooltipKey, default, withCurrent, onChange, onPreview)
+        pcall(function()
+            local tbl = _G[VCA.GLOBAL_DB_NAME]
+            local setting = Settings.RegisterAddOnSetting(category, variable, key, tbl, "string", L[labelKey], default)
+            local function GetOptions()
+                local container = Settings.CreateControlTextContainer()
+                if withCurrent then
+                    container:Add("current", L["THEME_CURRENT"])
                 end
+                for _, themeKey in ipairs(VCA.THEME_ORDER) do
+                    container:Add(themeKey, VCA.ThemeLabel(themeKey))
+                end
+                return container:GetData()
+            end
+            Settings.SetOnValueChangedCallback(variable, function()
+                onChange(tbl)
             end)
+            previewActions[Settings.CreateDropdown(category, setting, GetOptions, L[tooltipKey])] = onPreview
+        end)
+    end
+
+    -- 1. The color theme of the addon; its button shows that theme in the sample window.
+    ThemeRow("VoidcoreAdvisor_Theme", "theme", "OPTIONS_THEME", "OPTIONS_THEME_TOOLTIP", "green", false, function(tbl)
+        VCA.ApplyTheme(tbl.theme)
+        if VCA.Panel and VCA.Panel.Refresh then
+            VCA.Panel.Refresh()
         end
+    end, function()
+        VCA.ThemePreview.SetTheme("current", false)
+        VCA.ThemePreview.Show()
     end)
 
-    -- ── Theme shown by the preview window ─────────────────────────────────
-    pcall(function()
-        local variable = "VoidcoreAdvisor_PreviewTheme"
-        local variableTbl = _G[VCA.GLOBAL_DB_NAME]
-        local setting = Settings.RegisterAddOnSetting(category, variable, "previewTheme", variableTbl, "string",
-            L["OPTIONS_PREVIEW_THEME"], "class")
-        local function GetOptions()
-            local container = Settings.CreateControlTextContainer()
-            container:Add("current", L["THEME_CURRENT"])
-            for _, key in ipairs(VCA.THEME_ORDER) do
-                container:Add(key, VCA.ThemeLabel(key))
-            end
-            return container:GetData()
-        end
-        Settings.SetOnValueChangedCallback(variable, function()
-            VCA.ThemePreview.SetTheme(variableTbl.previewTheme)
+    -- 2. The theme the sample window shows.
+    ThemeRow("VoidcoreAdvisor_PreviewTheme", "previewTheme", "OPTIONS_PREVIEW_THEME", "OPTIONS_PREVIEW_THEME_TOOLTIP",
+        "class", true, function(tbl)
+            VCA.ThemePreview.SetTheme(tbl.previewTheme)
+            VCA.ThemePreview.Show()
+        end, function()
+            local gdb = _G[VCA.GLOBAL_DB_NAME]
+            VCA.ThemePreview.SetTheme(gdb and gdb.previewTheme or "class")
             VCA.ThemePreview.Show()
         end)
-        Settings.CreateDropdown(category, setting, GetOptions, L["OPTIONS_PREVIEW_THEME_TOOLTIP"])
-    end)
 
-    -- ── Theme of the bonus roll window ────────────────────────────────────
-    pcall(function()
-        local variable = "VoidcoreAdvisor_RollTheme"
-        local variableTbl = _G[VCA.GLOBAL_DB_NAME]
-        local setting = Settings.RegisterAddOnSetting(category, variable, "rollTheme", variableTbl, "string",
-            L["OPTIONS_ROLL_THEME"], "class")
-        local function GetOptions()
-            local container = Settings.CreateControlTextContainer()
-            container:Add("current", L["THEME_CURRENT"])
-            for _, key in ipairs(VCA.THEME_ORDER) do
-                container:Add(key, VCA.ThemeLabel(key))
+    -- 3. The theme of the bonus roll window; its button opens the roll window preview.
+    ThemeRow("VoidcoreAdvisor_RollTheme", "rollTheme", "OPTIONS_ROLL_THEME", "OPTIONS_ROLL_THEME_TOOLTIP", "class", true,
+        function(tbl)
+            VCA.ApplyTheme(tbl.theme)
+        end, function()
+            if VCARollWindow and VCARollWindow:IsShown() then
+                VCA.BonusRollConfirm.Hide()
+            else
+                VCA.BonusRollConfirm.ShowPreview()
             end
-            return container:GetData()
-        end
-        Settings.SetOnValueChangedCallback(variable, function()
-            VCA.ApplyTheme(variableTbl.theme)
         end)
-        Settings.CreateDropdown(category, setting, GetOptions, L["OPTIONS_ROLL_THEME_TOOLTIP"])
-    end)
+
+    -- 4. The theme of the loot spec reminder popups; its button opens the example popup.
+    ThemeRow("VoidcoreAdvisor_ReminderTheme", "reminderTheme", "OPTIONS_REMINDER_THEME",
+        "OPTIONS_REMINDER_THEME_TOOLTIP", "class", true, function(tbl)
+            VCA.ApplyTheme(tbl.theme)
+        end, function()
+            if VoidcoreAdvisorReminder and VoidcoreAdvisorReminder:IsShown() then
+                VCA.Reminder.Hide()
+            else
+                VCA.Reminder.ShowExample()
+            end
+        end)
 
     -- ── Ask for confirmation before rolling or passing ───────────────────
     do

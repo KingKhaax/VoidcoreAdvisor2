@@ -29,6 +29,7 @@ local function GetGlobalDefaults()
         theme = "green",
         previewTheme = "class",
         rollTheme = "class",
+        reminderTheme = "class",
         brcDefaultOnV2 = true
     }
 end
@@ -73,6 +74,9 @@ local function InitDB()
         end
         if gdb.rollTheme == nil or (gdb.rollTheme ~= "current" and not VCA.IsTheme(gdb.rollTheme)) then
             gdb.rollTheme = "class"
+        end
+        if gdb.reminderTheme == nil or (gdb.reminderTheme ~= "current" and not VCA.IsTheme(gdb.reminderTheme)) then
+            gdb.reminderTheme = "class"
         end
         if not VCA.IsTheme(gdb.theme) then
             gdb.theme = "green"

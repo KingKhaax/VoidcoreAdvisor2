@@ -266,3 +266,5 @@ L["REMINDER_WARNING_ONE_ITEM_BOSS"] = "|cffff8000경고:|r 이 전문화는 이 
 L["WARNING_ONE_ITEM_BOSS"] = "|cffff8000경고:|r 이 전문화는 이 우두머리에서 |cffff0000%d개의 아이템만|r 남았습니다. 공허 핵을 사용하면 이 우두머리의 |cffff0000모든 전문화 전리품 목록이 초기화|r됩니다!"
 L["OPTIONS_REMINDER_BOSS"] = "공격대 우두머리 앞에서도 알림"
 L["OPTIONS_REMINDER_BOSS_TOOLTIP"] = "전투 시작 전에 현재 시즌의 공격대 우두머리를 대상으로 지정하면 우두머리마다 한 번 같은 창을 표시합니다."
+L["OPTIONS_REMINDER_THEME"] = "알림 창 테마"
+L["OPTIONS_REMINDER_THEME_TOOLTIP"] = "애드온의 다른 부분과 별개로 전리품 전문화 알림 창의 색상 테마를 선택합니다."

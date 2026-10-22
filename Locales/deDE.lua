@@ -265,3 +265,5 @@ L["REMINDER_WARNING_ONE_ITEM_BOSS"] = "|cffff8000Warnung:|r Diese Spezialisierun
 L["WARNING_ONE_ITEM_BOSS"] = "|cffff8000Warnung:|r Diese Spezialisierung hat |cffff0000nur noch %d Gegenstand|r bei diesem Boss. Ein Nebulöser Leerenkern |cffff0000setzt den Beutepool aller Spezialisierungen zurück|r bei diesem Boss!"
 L["OPTIONS_REMINDER_BOSS"] = "Auch vor Schlachtzugs-Bossen erinnern"
 L["OPTIONS_REMINDER_BOSS_TOOLTIP"] = "Zeigt dasselbe Popup einmal pro Boss, wenn du vor dem Pull einen Schlachtzugs-Boss der aktuellen Saison anvisierst."
+L["OPTIONS_REMINDER_THEME"] = "Thema des Erinnerungs-Popups"
+L["OPTIONS_REMINDER_THEME_TOOLTIP"] = "Wähle das Farbthema der Beutespezialisierungs-Popups, unabhängig vom restlichen Addon."

@@ -254,3 +254,5 @@ L["REMINDER_WARNING_ONE_ITEM_BOSS"] = "|cffff8000Warning:|r This spec has |cffff
 L["WARNING_ONE_ITEM_BOSS"] = "|cffff8000Warning:|r This spec has |cffff0000only %d item|r remaining on this boss. Using a Nebulous Voidcore will |cffff0000reset the loot pool for every specialization|r on this boss!"
 L["OPTIONS_REMINDER_BOSS"] = "Also remind me in front of raid bosses"
 L["OPTIONS_REMINDER_BOSS_TOOLTIP"] = "Shows the same popup once per boss when you target a current-season raid boss before the pull."
+L["OPTIONS_REMINDER_THEME"] = "Reminder popup theme"
+L["OPTIONS_REMINDER_THEME_TOOLTIP"] = "Choose the color theme of the loot spec reminder popups, independent from the rest of the addon."

@@ -161,6 +161,11 @@ function VCA.FormatTimer(seconds)
     return string.format("%d:%02d", math.floor(s / 60), s % 60)
 end
 
+-- A locale title ("Voidcore" + "Advisor") painted with a palette, followed by a gold "Reborn".
+function VCA.RebornTitle(text, palette)
+    return (text:gsub("|cff8fe36b", (palette or VCA.Theme).title)) .. " |cffffd100Reborn|r"
+end
+
 -- Window title with the theme color on the "Voidcore" part.
 function VCA.TitleText()
     local s = VCA.L and VCA.L["PANEL_TITLE"] or "VoidcoreAdvisor"

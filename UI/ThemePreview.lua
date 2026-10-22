@@ -84,13 +84,14 @@ local function Label(key)
     return VCA.ThemeLabel(key)
 end
 
-function Preview.SetTheme(key)
+-- persist == false previews a theme without saving it as your preview setting.
+function Preview.SetTheme(key, persist)
     if key ~= "current" and not VCA.IsTheme(key) then
         key = "current"
     end
     previewKey = key
     local gdb = _G[VCA.GLOBAL_DB_NAME]
-    if gdb then
+    if gdb and persist ~= false then
         gdb.previewTheme = key
     end
     themeName:SetText(Label(key))

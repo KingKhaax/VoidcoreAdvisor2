@@ -262,3 +262,5 @@ L["REMINDER_WARNING_ONE_ITEM_BOSS"] = "|cffff8000警告：|r 此专精在该首�
 L["WARNING_ONE_ITEM_BOSS"] = "|cffff8000警告：|r 此专精在该首领处|cffff0000只剩 %d 件物品|r。使用虚空之核将|cffff0000重置该首领所有专精的战利品池|r！"
 L["OPTIONS_REMINDER_BOSS"] = "在团队首领面前也提醒"
 L["OPTIONS_REMINDER_BOSS_TOOLTIP"] = "开怪前将当前赛季的团队首领设为目标时，每个首领显示一次同样的弹窗。"
+L["OPTIONS_REMINDER_THEME"] = "提醒窗口主题"
+L["OPTIONS_REMINDER_THEME_TOOLTIP"] = "选择拾取专精提醒窗口的颜色主题，与插件其他部分的主题相互独立。"

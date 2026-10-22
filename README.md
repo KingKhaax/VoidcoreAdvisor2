@@ -6,7 +6,7 @@
 
 <p align="center">
 <a href="LICENSE"><img src="https://img.shields.io/github/license/KingKhaax/VoidcoreAdvisorReborn?label=license" alt="License: MIT"></a>
-<img src="https://img.shields.io/badge/WoW-Retail%2012.1.5-8b5cf6" alt="WoW Retail 12.1.5">
+<img src="https://img.shields.io/badge/WoW-Retail%2012.1.7-8b5cf6" alt="WoW Retail 12.1.7">
 <img src="https://img.shields.io/badge/languages-11-3fcf6a" alt="11 languages">
 </p>
 

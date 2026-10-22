@@ -192,7 +192,13 @@ function Missing.Refresh()
     emptyText:SetShown(#entries == 0)
 end
 
-frame:RegisterEvent("GET_ITEM_INFO_RECEIVED")
+-- Only listens for item data while the list is open.
+frame:SetScript("OnShow", function(self)
+    self:RegisterEvent("GET_ITEM_INFO_RECEIVED")
+end)
+frame:SetScript("OnHide", function(self)
+    self:UnregisterEvent("GET_ITEM_INFO_RECEIVED")
+end)
 local pendingRefresh = false
 frame:SetScript("OnEvent", function()
     if frame:IsShown() and not pendingRefresh then

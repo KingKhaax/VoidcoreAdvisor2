@@ -635,7 +635,14 @@ end)
 
 -- â”€â”€ Timer mirroring â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
-win:SetScript("OnUpdate", function()
+-- Refreshed 10 times per second: the bar and the seconds text do not need every frame.
+local timerClock = 0
+win:SetScript("OnUpdate", function(_, dt)
+    timerClock = timerClock + (dt or 0)
+    if timerClock < 0.1 then
+        return
+    end
+    timerClock = 0
     if isPreview then
         if previewTimerStart then
             local elapsed = (GetTime() - previewTimerStart) % previewTimerDuration

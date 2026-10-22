@@ -237,9 +237,15 @@ Paint(function()
     timerBg:SetColorTexture(g[1], g[2], g[3], 0.9)
 end)
 -- The sample bar counts down like a real bonus roll and starts over when it ends.
-local clock = 0
+local clock, sinceDraw = 0, 0
 frame:SetScript("OnUpdate", function(_, dt)
-    clock = (clock + (dt or 0)) % PREVIEW_SECONDS
+    dt = dt or 0
+    clock = (clock + dt) % PREVIEW_SECONDS
+    sinceDraw = sinceDraw + dt
+    if sinceDraw < 0.1 then
+        return
+    end
+    sinceDraw = 0
     local remaining = PREVIEW_SECONDS - clock
     timerBar:SetValue(remaining)
     timerText:SetText(VCA.FormatTimer(remaining))

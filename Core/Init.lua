@@ -57,7 +57,7 @@ local function InitDB()
         if gdb.bonusRollConfirmEnabled == nil then
             gdb.bonusRollConfirmEnabled = true
         end
-        -- Reborn turns the roll confirmation window on by default; apply it once
+        -- VoidcoreAdvisor Reborn turns the roll confirmation window on by default; apply it once
         -- to saves created while it was off by default.
         if gdb.reminderBossEnabled == nil then
             gdb.reminderBossEnabled = true

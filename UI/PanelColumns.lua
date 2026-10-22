@@ -206,6 +206,14 @@ local function PopulateItemColumn(sourceType, sourceID, difficultyID, isHighTier
         -- Amber state: obtained only under specID=0 (migrated from pre-spec data).
         local obtainedMigrated = not obtained and
                                      VCA.Data.IsObtainedMigrated(sourceType, sourceID, difficultyID, item.itemID)
+        -- Marks staged with the "Mark rolled item" bar are shown (dimmed or not) before
+        -- they are saved; the stored state stays in realObtained.
+        local realObtained, realMigrated = obtained, obtainedMigrated
+        local pending = Panel.pendingMarks and Panel.pendingMarks[item.itemID]
+        if pending ~= nil then
+            obtained = pending
+            obtainedMigrated = false
+        end
         local row = _s.GetOrCreateItemRow(_s.itemRows, _s.itemScrollChild)
         row.frame:SetWidth(colW - PADDING)
         row.frame:ClearAllPoints()
@@ -263,7 +271,7 @@ local function PopulateItemColumn(sourceType, sourceID, difficultyID, isHighTier
         row.checkbox.sourceID = sourceID
         row.checkbox.diffID = difficultyID
         row.checkbox.isHighTier = isHighTier
-        row.checkbox.isObtained = obtained or obtainedMigrated
+        row.checkbox.isObtained = realObtained or realMigrated
         -- Obtained loot icon button tooltip: list which specs have it obtained.
         row.checkbox.specs = specs
         row.checkbox:SetScript("OnEnter", function(self)

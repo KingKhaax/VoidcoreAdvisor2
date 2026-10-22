@@ -146,6 +146,7 @@ end)
 
 -- Persist item selections when the panel hides (close, navigate away, logout).
 frame:SetScript("OnHide", function()
+    Panel.ClearPending()
     Panel.SaveItemSelections()
 end)
 
@@ -370,6 +371,7 @@ clearItemBtn:Hide()
 -- Mark-roll mode: while active, clicking a loot row marks (or unmarks) the item
 -- as obtained for every spec, for rolls the addon did not track.
 Panel.markMode = false
+Panel.pendingMarks = {} -- { [itemID] = true (mark) | false (unmark) }, saved when the bar is pressed again
 -- Bar fixed to the bottom of the loot column, so it never collides with the
 -- key level selector that sits next to the "LOOT" title on Mythic+ sources.
 local MARK_BAR_H = 24
@@ -395,16 +397,61 @@ markHover:SetColorTexture(1, 1, 1, 0.12)
 local function UpdateMarkModeButton()
     if Panel.markMode then
         markModeBtn:SetBackdropColor(0.45, 0.35, 0.05, 1)
-        markModeText:SetText("|cffffe9a3" .. L["MARK_MODE_ACTIVE"] .. "|r")
+        local n = 0
+        for _ in pairs(Panel.pendingMarks) do
+            n = n + 1
+        end
+        markModeText:SetText("|cffffe9a3" .. L["MARK_MODE_ACTIVE"] .. (n > 0 and (" (" .. n .. ")") or "") .. "|r")
     else
         markModeBtn:SetBackdropColor(0.14, 0.42, 0.16, 1)
         markModeText:SetText("+ " .. L["MARK_MODE_BUTTON"])
     end
 end
-markModeBtn:SetScript("OnClick", function()
-    Panel.markMode = not Panel.markMode
+-- Saves the staged marks: every item whose staged state differs from the stored one is
+-- toggled with the same code as the bag icon, so all specs and the roll log are updated.
+local function CommitPendingMarks()
+    local staged = {}
+    for itemID, want in pairs(Panel.pendingMarks) do
+        staged[#staged + 1] = {itemID, want}
+    end
+    wipe(Panel.pendingMarks)
+    for _, entry in ipairs(staged) do
+        local itemID, want = entry[1], entry[2]
+        for _, r in ipairs(_s.itemRows) do
+            local cb = r.checkbox
+            if r.frame:IsShown() and cb.itemID == itemID then
+                if (cb.isObtained and true or false) ~= want then
+                    local toggle = cb:GetScript("OnClick")
+                    if toggle then
+                        toggle(cb)
+                    end
+                end
+                break
+            end
+        end
+    end
+end
+
+Panel.CommitPendingMarks = CommitPendingMarks
+
+-- Leaves mark mode and forgets anything that was not saved.
+function Panel.ClearPending()
+    wipe(Panel.pendingMarks)
+    Panel.markMode = false
     Panel.lastMarkItemID = nil
     UpdateMarkModeButton()
+end
+
+markModeBtn:SetScript("OnClick", function()
+    if Panel.markMode then
+        CommitPendingMarks()
+        Panel.markMode = false
+    else
+        Panel.markMode = true
+    end
+    Panel.lastMarkItemID = nil
+    UpdateMarkModeButton()
+    Panel.RefreshItemColumn()
 end)
 markModeBtn:SetScript("OnEnter", function(self)
     GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
@@ -867,14 +914,21 @@ local function GetOrCreateItemRow(pool, parent)
         end
         if Panel.markMode then
             local cb = row.checkbox
-            local toggle = cb:GetScript("OnClick")
-            if not (toggle and cb.itemID == id) then
+            if cb.itemID ~= id then
                 return
             end
-            local wantObtained = not cb.isObtained
+            -- What the row shows now (a staged mark wins over the stored state).
+            local function shown(r)
+                local staged = Panel.pendingMarks[r.frame.itemID]
+                if staged ~= nil then
+                    return staged
+                end
+                return r.checkbox.isObtained and true or false
+            end
+            local want = not shown(row)
             local ids = {id}
             if IsShiftKeyDown() and Panel.lastMarkItemID then
-                -- Shift+click marks every item between the previous click and this one.
+                -- Shift+click stages every item between the previous click and this one.
                 local from, to
                 for i, r in ipairs(pool) do
                     if r.frame:IsShown() then
@@ -895,22 +949,22 @@ local function GetOrCreateItemRow(pool, parent)
                     end
                 end
             end
-            -- Each toggle refreshes (and may reorder) the rows, so look rows up by item ID.
             for _, itemID in ipairs(ids) do
                 for _, r in ipairs(pool) do
-                    local rcb = r.checkbox
-                    if r.frame:IsShown() and rcb.itemID == itemID then
-                        if (rcb.isObtained and true or false) ~= wantObtained then
-                            local rtoggle = rcb:GetScript("OnClick")
-                            if rtoggle then
-                                rtoggle(rcb)
-                            end
+                    if r.frame:IsShown() and r.frame.itemID == itemID then
+                        local stored = r.checkbox.isObtained and true or false
+                        if want == stored then
+                            Panel.pendingMarks[itemID] = nil
+                        else
+                            Panel.pendingMarks[itemID] = want
                         end
                         break
                     end
                 end
             end
             Panel.lastMarkItemID = id
+            UpdateMarkModeButton()
+            Panel.RefreshItemColumn()
             return
         end
         if self.dimmed then
@@ -1299,6 +1353,8 @@ function Panel.ReloadItemSelections()
 end
 
 function Panel.SetContext(sourceType, sourceID, difficultyID, sourceName, isRaid)
+    -- Marks that were not saved belong to the previous source.
+    Panel.ClearPending()
     -- Persist outgoing selections before switching context.
     Panel.SaveItemSelections()
 

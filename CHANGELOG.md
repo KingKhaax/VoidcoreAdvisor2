@@ -1,5 +1,8 @@
 # Changelog
 
+## 2.3.1
+- "Mark rolled item" now works in two steps: press the bar, click the items you got (they dim right away, nothing is saved yet), then press the bar again to save them. Closing the panel or changing boss discards unsaved marks. Shift+click still stages everything between two clicks.
+
 ## 2.3.0
 - New "Preview" button next to the color theme selector in the options (and /void preview): a sample window that recolors live while you change the theme.
 

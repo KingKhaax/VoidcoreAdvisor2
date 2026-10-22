@@ -16,10 +16,8 @@ Version: 2.3.0
 - [Panel] The save bar text is short in all 11 languages so it always fits.
 - [Bonus Roll] The timer bar refreshes 10 times per second instead of every frame, using less CPU. The theme preview does the same.
 - [Missing] The missing items list only listens for item data while it is open.
-- [Options] The Interface version now includes 12.1.7, so the addon is not shown as out of date.
-
-🛠️ Fix
 - [Theme] Removed the "Style of my specialization" theme. "Style of my class" stays; anyone who had the specialization theme selected is moved to it.
+- [Options] The Interface version now includes 12.1.7, so the addon is not shown as out of date.
 
 ---
 

@@ -23,6 +23,7 @@ local function GetGlobalDefaults()
     return {
         reminderEnabled = true,
         reminderBossEnabled = true,
+        showCumulative = true,
         bonusRollConfirmEnabled = true,
         brcSpecListEnabled = true,
         brcConfirmEnabled = true,
@@ -61,6 +62,9 @@ local function InitDB()
         -- to saves created while it was off by default.
         if gdb.reminderBossEnabled == nil then
             gdb.reminderBossEnabled = true
+        end
+        if gdb.showCumulative == nil then
+            gdb.showCumulative = true
         end
         if gdb.brcConfirmEnabled == nil then
             gdb.brcConfirmEnabled = true
@@ -342,6 +346,31 @@ SlashCmdList["VOIDCOREADVISOR"] = function(msg)
             VCA.OpenOptions()
         end
 
+    elseif cmd == "cores" then
+        VCA.Tools.Cores(msg:match("^%s*%S+%s+(%d+)"))
+
+    elseif cmd == "next" then
+        VCA.Tools.Next(msg:match("^%s*%S+%s+(%d+)"))
+
+    elseif cmd == "history" then
+        VCA.Tools.History()
+
+    elseif cmd == "chars" then
+        VCA.Planner.SaveCharacterSummary()
+        VCA.Tools.Chars()
+
+    elseif cmd == "debug" then
+        VCA.Tools.Debug()
+
+    elseif cmd == "prio" then
+        VCA.Tools.Priority(msg:match("^%s*%S+%s+(.-)%s*$"))
+
+    elseif cmd == "wish" then
+        VCA.Tools.Wish()
+
+    elseif cmd == "select" then
+        VCA.Tools.SelectAll((msg:match("^%s*%S+%s+(%S+)") or ""):lower() == "clear")
+
     elseif cmd == "preview" then
         VCA.ThemePreview.Toggle()
 
@@ -380,6 +409,14 @@ SlashCmdList["VOIDCOREADVISOR"] = function(msg)
         print(L["HELP_EXPORT"])
         print(L["HELP_IMPORT"])
         print(L["HELP_OPEN"])
+        print(L["HELP_CORES"])
+        print(L["HELP_NEXT"])
+        print(L["HELP_HISTORY"])
+        print(L["HELP_CHARS"])
+        print(L["HELP_PRIO"])
+        print(L["HELP_WISH"])
+        print(L["HELP_SELECT"])
+        print(L["HELP_DEBUG"])
         print(L["HELP_THEME"])
         print("    " .. table.concat(VCA.THEME_ORDER, ", "))
         print(L["HELP_RESETPANEL"])

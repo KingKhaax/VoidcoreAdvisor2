@@ -438,6 +438,41 @@ end
 
 -- ── Populate spec column ───────────────────────────────────────────────────────
 
+-- "At least one chosen item" odds for the best spec, from your chosen items.
+local function UpdateCumulative(rankings, hasSelection, sourceType)
+    local label = _s.cumLabel
+    local gdb = _G[VCA.GLOBAL_DB_NAME]
+    if not label then
+        return
+    end
+    if not hasSelection or (gdb and gdb.showCumulative == false) then
+        label:SetText("")
+        return
+    end
+    local best
+    for _, r in ipairs(rankings) do
+        if not r.noItems and not r.allObtained and r.remainingCount > 0 and r.matchRemainingCount then
+            best = r
+            break
+        end
+    end
+    if not best then
+        label:SetText("")
+        return
+    end
+    local Planner = VCA.Planner
+    local total, wanted = best.remainingCount, best.matchRemainingCount
+    local text = string.format(L["CUMULATIVE_LINE"], Planner.AtLeastOne(total, wanted, 1) * 100,
+        Planner.AtLeastOne(total, wanted, 3) * 100)
+    local cost = VCA.Probability.GetVoidcoreCost(sourceType)
+    local owned = Planner.OwnedCores()
+    local rolls = math.floor(owned / cost)
+    if rolls > 0 and rolls ~= 1 and rolls ~= 3 then
+        text = text .. string.format(L["CUMULATIVE_OWNED"], owned, Planner.AtLeastOne(total, wanted, rolls) * 100)
+    end
+    label:SetText("|cffbbbbbb" .. text .. "|r")
+end
+
 local function PopulateSpecColumn(sourceType, sourceID, difficultyID, filterItemIDs)
     _s.HideAllSpecRows()
 
@@ -455,6 +490,7 @@ local function PopulateSpecColumn(sourceType, sourceID, difficultyID, filterItem
     else
         rankings = VCA.Probability.RankCurrentPlayerSpecs(sourceType, sourceID, difficultyID, isHighTier)
     end
+    UpdateCumulative(rankings, filterItemIDs ~= nil and #filterItemIDs > 0, sourceType)
     local colW = _s.RightColWidth()
     local rowTop = 0
 

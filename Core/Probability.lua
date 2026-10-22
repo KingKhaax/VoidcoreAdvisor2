@@ -176,6 +176,7 @@ function Probability.RankCurrentPlayerSpecsForItems(itemIDs, sourceType, sourceI
     for _, id in ipairs(itemIDs) do
         selectedSet[id] = true
     end
+    local usePriorities = VCA.Planner and VCA.Planner.HasPriorities()
 
     local results = {}
     for _, spec in ipairs(specs) do
@@ -206,7 +207,19 @@ function Probability.RankCurrentPlayerSpecsForItems(itemIDs, sourceType, sourceI
         end
 
         local selectedCount = #itemIDs
+        -- Priorities (/void prio): remaining chosen items count by their weight.
+        local weightedRemaining = 0
+        if usePriorities then
+            for _, itemID in ipairs(allSpecItemIDs) do
+                if selectedSet[itemID] and
+                    not VCA.Data.IsObtainedForKeyTier(sourceType, sourceID, difficultyID, spec.specID, itemID,
+                        isHighTier) then
+                    weightedRemaining = weightedRemaining + VCA.Planner.Weight(itemID)
+                end
+            end
+        end
         results[#results + 1] = {
+            weightedOdds = usePriorities and remainingCount > 0 and (weightedRemaining / remainingCount) or nil,
             specID = spec.specID,
             specName = spec.name,
             specIcon = spec.icon,
@@ -230,6 +243,10 @@ function Probability.RankCurrentPlayerSpecsForItems(itemIDs, sourceType, sourceI
         end
         if a.allObtained ~= b.allObtained then
             return not a.allObtained
+        end
+        -- With priorities, the spec that favors your best-in-slot items comes first.
+        if usePriorities and a.weightedOdds ~= b.weightedOdds then
+            return (a.weightedOdds or 0) > (b.weightedOdds or 0)
         end
         -- Smaller remaining pool = higher drop chance = ranks higher.
         if a.remainingCount ~= b.remainingCount then

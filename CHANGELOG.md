@@ -10,6 +10,17 @@ Version: 2.3.0
 - [Bonus Roll] The timer bar shows the time left (for example 2:34) in its center.
 - [Panel] **Mark rolled item** works in two steps: press the bar, click the items you got (they dim right away), then press "Click to save". Closing the panel or changing boss discards unsaved marks.
 - [Panel] The raid boss overview explains what to do while no boss has chosen items, instead of showing a table full of dashes.
+- [Panel] New line under the spec ranking with the chance to get at least one chosen item with 1 roll, 3 rolls and with the Voidcores you have. Turn it off with "Show cumulative odds" in the options.
+- [Voidcores] New `/void cores [14|15|16]`: Voidcores you have, spent this week, and about how many you need to get everything you chose.
+- [Voidcores] New `/void next [14|15|16]`: raid bosses and dungeons ranked by your chance of a chosen item. Bosses killed this week go last and the dungeon of your keystone gets a bonus.
+- [Voidcores] New `/void history`: your last 200 rolls, how many gave a chosen item and where you rolled most.
+- [Wishlist] New `/void prio <item> bis|alt|clear` (full or half weight). Priorities now weigh the spec ranking and `/void next`.
+- [Wishlist] New `/void wish`: paste item IDs, links or a Raidbots / Droptimizer list and they are chosen everywhere they drop.
+- [Panel] New green + button (and `/void select [clear]`) that chooses everything your loot spec can still get from the open boss or dungeon.
+- [Characters] New `/void chars`: Voidcores and missing chosen items of each character, saved when you log out.
+- [Reminder] After a wipe, the popup appears again on the next pull of that boss.
+- [Live Raid] When the loot data is missing a new raid, a banner appears at the top of the screen as well as the chat message.
+- [Support] New `/void debug`: version, settings and recent messages in a window you can copy into a bug report.
 
 💪 Improvement
 - [Panel] Items saved with the Mark bar are never wiped by the automatic pool reset (it used to clear the whole boss when a spec had all its items marked). Saving is also double-checked and any error is printed in chat.
@@ -17,6 +28,7 @@ Version: 2.3.0
 - [Bonus Roll] The timer bar refreshes 10 times per second instead of every frame, using less CPU. The theme preview does the same.
 - [Missing] The missing items list only listens for item data while it is open.
 - [Theme] Removed the "Style of my specialization" theme. "Style of my class" stays; anyone who had the specialization theme selected is moved to it.
+- [Panel] The roll history keeps the last 200 rolls (it kept 50).
 - [Options] The Interface version now includes 12.1.7, so the addon is not shown as out of date.
 
 ---

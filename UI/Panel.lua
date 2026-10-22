@@ -368,6 +368,31 @@ clearItemBtn:SetScript("OnLeave", function()
 end)
 clearItemBtn:Hide()
 
+-- "+" button: choose everything your loot spec can still get from this source.
+local selectAllBtn = CreateFrame("Button", nil, contentArea)
+selectAllBtn:SetSize(14, 14)
+selectAllBtn:SetNormalFontObject("GameFontNormal")
+selectAllBtn:SetText("|cff66ff66+|r")
+selectAllBtn:SetScript("OnClick", function()
+    Panel.SelectAllUseful()
+end)
+selectAllBtn:SetScript("OnEnter", function(self)
+    GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+    GameTooltip:SetText(L["SELECT_ALL_USEFUL"])
+    GameTooltip:AddLine(L["SELECT_ALL_USEFUL_TIP"], nil, nil, nil, true)
+    GameTooltip:Show()
+end)
+selectAllBtn:SetScript("OnLeave", function()
+    GameTooltip:Hide()
+end)
+
+-- Cumulative odds line at the bottom of the spec column (filled by PanelColumns).
+local cumLabel = contentArea:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+cumLabel:SetJustifyH("LEFT")
+cumLabel:SetJustifyV("BOTTOM")
+cumLabel:SetWordWrap(true)
+_s.cumLabel = cumLabel
+
 -- Mark-roll mode: while active, clicking a loot row marks (or unmarks) the item
 -- as obtained for every spec, for rolls the addon did not track.
 Panel.markMode = false
@@ -1282,6 +1307,14 @@ local function DoLayout()
     clearItemBtn:ClearAllPoints()
     clearItemBtn:SetPoint("RIGHT", contentArea, "TOPLEFT", splitX - 22, -6 - (COL_HEADER_H / 2) + 4)
 
+    selectAllBtn:ClearAllPoints()
+    selectAllBtn:SetPoint("RIGHT", contentArea, "TOPLEFT", splitX - 40, -6 - (COL_HEADER_H / 2) + 4)
+
+    cumLabel:ClearAllPoints()
+    cumLabel:SetPoint("BOTTOMLEFT", contentArea, "BOTTOMLEFT", splitX + PADDING, 4)
+    cumLabel:SetPoint("BOTTOMRIGHT", contentArea, "BOTTOMRIGHT", -PADDING, 4)
+    cumLabel:SetHeight(30)
+
     -- Voidcache icon (at the far right of the spec column header row)
     voidcacheIconBtn:ClearAllPoints()
     voidcacheIconBtn:SetPoint("RIGHT", contentArea, "TOPRIGHT", -PADDING, -6 - (COL_HEADER_H / 2) + 4)
@@ -1307,7 +1340,7 @@ local function DoLayout()
     -- Spec scroll frame
     specScrollFrame:ClearAllPoints()
     specScrollFrame:SetPoint("TOPLEFT", contentArea, "TOPLEFT", splitX + PADDING, -(COL_HEADER_H + 8))
-    specScrollFrame:SetPoint("BOTTOMRIGHT", contentArea, "BOTTOMRIGHT", -PADDING, 4)
+    specScrollFrame:SetPoint("BOTTOMRIGHT", contentArea, "BOTTOMRIGHT", -PADDING, 38)
     specScrollFrame:SetWidth(rightW - PADDING)
 
     specScrollChild:SetWidth(rightW - PADDING)
@@ -1394,6 +1427,36 @@ function Panel.ReloadItemSelections()
     for id in pairs(saved) do
         selectedItemIDs[id] = true
     end
+end
+
+-- Chooses every item your loot spec can still get from the current source
+-- (clear = true empties the choice instead). Returns how many items were chosen,
+-- or nil when no boss or dungeon is open.
+function Panel.SelectAllUseful(clear)
+    if not (Panel.sourceType and Panel.sourceID and Panel.difficultyID) then
+        return nil
+    end
+    wipe(selectedItemIDs)
+    local count = 0
+    if not clear then
+        local specID = VCA.SpecInfo.GetEffectiveLootSpecID()
+        local classID = VCA.SpecInfo.GetPlayerClassID()
+        local isHighTier = nil
+        if Panel.sourceType == VCA.ContentType.MYTHIC_PLUS then
+            isHighTier = _s.getSelectedKeyLevel() >= 10
+        end
+        for _, itemID in ipairs(VCA.LootPool.GetItemsForSpec(Panel.sourceType, Panel.sourceID, Panel.difficultyID,
+            classID, specID)) do
+            if not VCA.Data.IsObtainedForKeyTier(Panel.sourceType, Panel.sourceID, Panel.difficultyID, specID, itemID,
+                isHighTier) then
+                selectedItemIDs[itemID] = true
+                count = count + 1
+            end
+        end
+    end
+    Panel.SaveItemSelections()
+    Panel.Refresh()
+    return count
 end
 
 function Panel.SetContext(sourceType, sourceID, difficultyID, sourceName, isRaid)

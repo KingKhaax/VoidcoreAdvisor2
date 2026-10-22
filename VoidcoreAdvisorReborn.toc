@@ -30,6 +30,7 @@ Core\LootPool.lua
 Core\LootPoolWarm.lua
 Core\VoidcacheScan.lua
 Core\Probability.lua
+Core\Planner.lua
 Core\Detection.lua
 Core\Init.lua
 Core\LiveRaid.lua
@@ -44,6 +45,8 @@ UI\BonusRollConfirm.lua
 UI\EJHook.lua
 UI\EJHookView.lua
 UI\Shortcuts.lua
+UI\Report.lua
+UI\Tools.lua
 UI\Missing.lua
 UI\Transfer.lua
 UI\ThemePreview.lua

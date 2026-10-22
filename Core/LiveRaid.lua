@@ -316,8 +316,11 @@ local function CheckOutdated()
                 gdb.warnedRaids[id] = true
             end
         end
-        print(VCA.Theme.title .. "VoidcoreAdvisor Reborn:|r " ..
-                  string.format(L["DATA_OUTDATED"], table.concat(unknown, ", ")))
+        local text = string.format(L["DATA_OUTDATED"], table.concat(unknown, ", "))
+        print(VCA.Theme.title .. "VoidcoreAdvisor Reborn:|r " .. text)
+        if VCA.Banner then
+            VCA.Banner(text)
+        end
     end
 end
 

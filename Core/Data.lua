@@ -319,9 +319,9 @@ end
 
 -- ── Bonus roll event log ──────────────────────────────────────────────────────
 -- Stores raw BONUS_ROLL_RESULT payloads so the player can manually verify
--- item detection after the fact.  Capped at the last 50 rolls.
+-- item detection after the fact.  Capped at the last 200 rolls.
 
-local BONUS_ROLL_LOG_MAX = 50
+local BONUS_ROLL_LOG_MAX = 200
 
 -- Records one bonus roll entry.  source may be nil if it could not be resolved.
 -- entry = { timestamp, itemID, itemLink, specID, sourceType, sourceID, difficultyID }
@@ -332,10 +332,16 @@ function Data.LogBonusRoll(itemID, itemLink, specID, source)
     end
     db.bonusRollLog = db.bonusRollLog or {}
     local log = db.bonusRollLog
+    -- Was it one of the items you had chosen? (the choice is removed once it drops)
+    local wanted = false
+    if source and source.sourceType and source.sourceID and source.difficultyID then
+        wanted = Data.GetSelectedItems(source.sourceType, source.sourceID, source.difficultyID)[itemID] == true
+    end
     log[#log + 1] = {
         timestamp = time(),
         itemID = itemID,
         itemLink = itemLink,
+        wanted = wanted,
         specID = specID,
         sourceType = source and source.sourceType or nil,
         sourceID = source and source.sourceID or nil,

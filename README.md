@@ -126,11 +126,41 @@ VoidcoreAdvisor was created by [rolferik12](https://github.com/rolferik12) (MIT)
 - `/void open` opens the addon options page (themes and previews).
 - `/void panel [name]` opens the Adventure Guide on a boss or dungeon with the panel showing.
 - `/void missing [14|15|16]` lists every item you still need for your loot spec, best odds first.
+- `/void cores [14|15|16]` shows the Voidcores you have, the ones you spent this week and about how many you need to get everything you chose.
+- `/void next [14|15|16]` ranks the raid bosses and dungeons by your chance of getting a chosen item (bosses you already killed this week go last, the dungeon of your keystone gets a small bonus).
+- `/void history` shows your Voidcore rolls and how often they gave an item you had chosen.
+- `/void chars` lists what each of your characters still needs (updated when you log out).
+- `/void prio <item> bis|alt|clear` sets a priority per item (shift-click the item to paste its link). Priorities weigh the spec ranking and `/void next`.
+- `/void wish` opens a box where you paste item IDs, links or a Raidbots / Droptimizer list to choose them everywhere they drop.
+- `/void select [clear]` chooses everything your loot spec can still get from the open boss or dungeon (the green + button in the panel does the same).
+- `/void debug` shows version, settings and recent messages to copy into a bug report.
 - `/void export` and `/void import` copy your marked items between characters.
 - `/void theme <name>` changes the window colors: green, purple, blue, light, fire, frost, red, `class` (follows your class) or a class like `mage`, `priest`, `deathknight`.
 - `/void resetpanel` puts the panel back next to the Adventure Guide (drag the header to move it, drag the corner to resize it).
 - `/void liveraid` forces reading a new raid from the Adventure Guide.
 - `/void restore`, `/void replaylog`, `/void version`.
+
+## <img src="docs/icons/inv_misc_book_09.jpg" width="28" height="28" alt="" align="absmiddle"> Frequently asked questions
+
+**I used the original VoidcoreAdvisor. Do I lose my data?**
+No. Reborn uses the same saved variables (`VoidcoreAdvisorDB` and `VoidcoreAdvisorCharDB`), so your marked items and choices carry over. Close the game, remove or disable the original addon, put the `VoidcoreAdvisorReborn` folder in `Interface/AddOns` and start the game.
+
+**What do I have to disable?**
+The original VoidcoreAdvisor. Both addons register the same options and saved variables, so running them together causes errors. Reborn warns you in chat if it finds the original enabled.
+
+**A new raid is not in the addon yet. What now?**
+Reborn tells you with a message and a banner. Type `/void liveraid` to read the loot of the new raid from the Adventure Guide, or wait for the next release, which ships it.
+
+**My marks disappeared after I saved several items.**
+That was fixed in 2.3.0: items saved with the "Mark rolled item" bar are no longer cleared by the automatic reset of a finished loot pool.
+
+**How do I report a bug?**
+Open an issue on GitHub, type `/void debug` in game and paste the text in the report.
+
+## <img src="docs/icons/inv_scroll_03.jpg" width="28" height="28" alt="" align="absmiddle"> Tests and tools
+
+- `lua tests/run.lua` runs the automated tests of the probability and planner math.
+- `lua tools/compare_seasondata.lua old.lua new.lua` lists the items that changed between two generated SeasonData files.
 
 ## <img src="docs/icons/inv_scroll_03.jpg" width="28" height="28" alt="" align="absmiddle"> Translations
 

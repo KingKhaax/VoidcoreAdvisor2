@@ -20,6 +20,13 @@ frame:SetScript("OnEvent", function(self, event, loadedAddon)
     local reminderCategory = Settings.RegisterVerticalLayoutSubcategory(category, L["OPTIONS_CAT_REMINDER"])
     local bonusRollCategory = Settings.RegisterVerticalLayoutSubcategory(category, L["OPTIONS_CAT_BONUS_ROLL"])
 
+    -- ── Cumulative odds line in the panel ─────────────────────────────────
+    do
+        local setting = Settings.RegisterAddOnSetting(category, "VoidcoreAdvisor_ShowCumulative", "showCumulative",
+            _G[VCA.GLOBAL_DB_NAME], "boolean", L["OPTIONS_CUMULATIVE"], true)
+        Settings.CreateCheckbox(category, setting, L["OPTIONS_CUMULATIVE_TOOLTIP"])
+    end
+
     -- ── Also remind in front of raid bosses ───────────────────────────────
     do
         local setting = Settings.RegisterAddOnSetting(reminderCategory, "VoidcoreAdvisor_ReminderBossEnabled",

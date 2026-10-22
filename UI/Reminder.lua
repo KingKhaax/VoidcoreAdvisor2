@@ -913,7 +913,15 @@ end
 local eventFrame = CreateFrame("Frame")
 eventFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
 eventFrame:RegisterEvent("PLAYER_TARGET_CHANGED")
-eventFrame:SetScript("OnEvent", function(self, event, isInitialLogin, isReloadingUi)
+eventFrame:RegisterEvent("ENCOUNTER_END")
+eventFrame:SetScript("OnEvent", function(self, event, isInitialLogin, isReloadingUi, _, _, success)
+    if event == "ENCOUNTER_END" then
+        -- encounterID, name, difficultyID, groupSize, success: after a wipe the next pull gets the popup again.
+        if success == 0 then
+            wipe(shownBosses)
+        end
+        return
+    end
     if event == "PLAYER_TARGET_CHANGED" then
         C_Timer.After(0.3, Reminder.EvaluateBoss)
         return

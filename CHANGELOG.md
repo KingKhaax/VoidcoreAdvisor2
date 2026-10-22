@@ -1,3 +1,23 @@
+Version: 2.3.1
+2026/10/22 Released
+
+🔮 New
+- [Voidcores] `/void history` now shows the icon of each item in front of its name, and compares how many chosen items the odds of your rolls predicted with how many you got (each roll saves its odds from now on).
+- [Wishlist] `/void wish [min gain %]`: with a minimum gain (for example `/void wish 1.5`) the lines of a pasted Raidbots / Droptimizer list that show a smaller percentage are skipped.
+- [Notices] Once per week, at login, a chat line tells you how many chosen items you still miss in Heroic and Mythic. Turn it off with "Weekly summary at login" in the options.
+- [Characters] The raid overview has an "All my characters" link that opens the list of your characters.
+- [Support] New `/void perf`: memory and CPU used by the addon, with the steps to measure it in each situation.
+- [Tools] New `tools/build_seasondata.lua` writes `Core/SeasonData.lua` straight from the generator's saved variables (no copy and paste), and `tools/upload_curseforge.ps1` uploads a release to CurseForge.
+
+💪 Improvement
+- [Memory] The Missing, Transfer, theme preview and report windows are created the first time they are used instead of at login.
+- [Tests] 26 automated tests of the probability, saved data and wishlist parsing (`lua tests/run.lua`) and a load test of every file (`lua tests/smoke.lua`).
+
+🛠️ Fix
+- [Voidcores] `/void history` counted rolls of unknown origin as "most rolled" and mixed old entries that never stored whether the item was chosen into the luck percentage. Both are fixed.
+
+---
+
 Version: 2.3.0
 2026/10/22 Released
 
@@ -13,23 +33,18 @@ Version: 2.3.0
 - [Panel] New line under the spec ranking with the chance to get at least one chosen item with 1 roll, 3 rolls and with the Voidcores you have. Turn it off with "Show cumulative odds" in the options.
 - [Voidcores] New `/void cores [14|15|16]`: Voidcores you have, spent this week, and about how many you need to get everything you chose.
 - [Voidcores] New `/void next [14|15|16]`: raid bosses and dungeons ranked by your chance of a chosen item. Bosses killed this week go last and the dungeon of your keystone gets a bonus.
-- [Voidcores] New `/void history`: your last 200 rolls with the icon of each item, how many gave a chosen item, where you rolled most and, from now on, how many chosen items the odds of each roll predicted compared with what you got.
+- [Voidcores] New `/void history`: your last 200 rolls, how many gave a chosen item and where you rolled most.
 - [Wishlist] New `/void prio <item> bis|alt|clear` (full or half weight). Priorities now weigh the spec ranking and `/void next`.
-- [Wishlist] New `/void wish [min gain %]`: paste item IDs, links or a Raidbots / Droptimizer list and they are chosen everywhere they drop. With a minimum gain (for example `/void wish 1.5`) lines that show a percentage below it are skipped.
+- [Wishlist] New `/void wish`: paste item IDs, links or a Raidbots / Droptimizer list and they are chosen everywhere they drop.
 - [Panel] New green + button (and `/void select [clear]`) that chooses everything your loot spec can still get from the open boss or dungeon.
-- [Characters] New `/void chars`: Voidcores and missing chosen items of each character, saved when you log out. The raid overview has an "All my characters" link that opens it.
-- [Notices] Once per week, at login, a chat line tells you how many chosen items you still miss in Heroic and Mythic. Turn it off with "Weekly summary at login" in the options.
+- [Characters] New `/void chars`: Voidcores and missing chosen items of each character, saved when you log out.
 - [Reminder] After a wipe, the popup appears again on the next pull of that boss.
 - [Live Raid] When the loot data is missing a new raid, a banner appears at the top of the screen as well as the chat message.
 - [Support] New `/void debug`: version, settings and recent messages in a window you can copy into a bug report.
-- [Support] New `/void perf`: memory and CPU used by the addon, with the steps to measure it in each situation.
-- [Tools] New `tools/build_seasondata.lua` writes `Core/SeasonData.lua` straight from the generator's saved variables (no copy and paste) and `tools/compare_seasondata.lua` lists what changed between two data files.
 
 💪 Improvement
 - [Bonus Roll] The timer bar refreshes 10 times per second instead of every frame, using less CPU. The theme preview does the same.
 - [Missing] The missing items list only listens for item data while it is open.
-- [Memory] The Missing, Transfer, theme preview and report windows are created the first time they are used instead of at login.
-- [Tests] 26 automated tests of the probability, saved data and wishlist parsing (`lua tests/run.lua`) and a load test of every file (`lua tests/smoke.lua`).
 - [Theme] Removed the "Style of my specialization" theme. "Style of my class" stays; anyone who had the specialization theme selected is moved to it.
 - [Panel] The roll history keeps the last 200 rolls (it kept 50).
 - [Options] The Preview buttons of the "Bonus roll window" and "Loot spec reminder" checkboxes were removed: every preview is now on the theme rows.
@@ -41,7 +56,6 @@ Version: 2.3.0
 - [Panel] The raid boss overview showed a table full of dashes when no boss had chosen items. It now explains what to do instead.
 - [Panel] Items whose data was not in the local cache showed as "Item 123456" with a broken icon. The icon now always comes from the client item tables, and the name and link are requested and filled in as soon as they arrive, in every language.
 - [Panel] The "all" label of a fully obtained spec showed an empty box instead of a check mark (the game font has no such character); it now uses a check icon in all 11 languages.
-- [Voidcores] `/void history` counted rolls of unknown origin as "most rolled" and mixed old entries that never stored whether the item was chosen into the luck percentage. Both are fixed.
 - [Panel] Missing icons (spec rows, the "no items" row, the roll window and the reminder) showed a red slash instead of a question mark; they now use a valid icon.
 - [Theme] In the preview window the hint line overlapped the Mark bar; the window is taller now.
 - [Reminder] The text of the loot spec popup (for example the chance line) was clipped by the old dialog frame. The new layout sizes everything by its real text height, so nothing is cut in any language.

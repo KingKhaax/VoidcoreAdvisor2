@@ -23,7 +23,7 @@ L["NEBULOUS_VOIDCORES"] = "성운의 공허핵"
 L["NO_ITEMS_FOR_SPEC"] = "이 전문화에 해당하는 아이템이 없습니다"
 
 L["LOOT_SPEC_LABEL"] = "전리품:"
-L["ALL_OBTAINED"] = "✓ 전부"
+L["ALL_OBTAINED"] = "|TInterface\\Buttons\\UI-CheckBox-Check:14:14|t 전부"
 
 L["DETECTED_OBTAINED"] = "%s|1을;를; 성운의 공허핵으로 획득한 것으로 자동 감지했습니다."
 

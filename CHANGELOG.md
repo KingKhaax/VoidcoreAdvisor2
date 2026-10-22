@@ -33,6 +33,7 @@ Version: 2.3.0
 
 🛠️ Fix
 - [Panel] Items whose data was not in the local cache showed as "Item 123456" with a broken icon. The icon now always comes from the client item tables, and the name and link are requested and filled in as soon as they arrive, in every language.
+- [Panel] The "all" label of a fully obtained spec showed an empty box instead of a check mark (the game font has no such character); it now uses a check icon in all 11 languages.
 
 ---
 

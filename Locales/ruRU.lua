@@ -23,7 +23,7 @@ L["NEBULOUS_VOIDCORES"] = "Туманные ядра Бездны"
 L["NO_ITEMS_FOR_SPEC"] = "Нет предметов для этого спека"
 
 L["LOOT_SPEC_LABEL"] = "Добыча:"
-L["ALL_OBTAINED"] = "✓ все"
+L["ALL_OBTAINED"] = "|TInterface\\Buttons\\UI-CheckBox-Check:14:14|t все"
 
 L["DETECTED_OBTAINED"] =
     "%s автоматически учтен как полученный через Туманное ядро Бездны."

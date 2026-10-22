@@ -23,7 +23,7 @@ L["NEBULOUS_VOIDCORES"] = "Núcleos del Vacío nebulosos"
 L["NO_ITEMS_FOR_SPEC"] = "No hay objetos para esta especialización"
 
 L["LOOT_SPEC_LABEL"] = "Botín:"
-L["ALL_OBTAINED"] = "✓ todos"
+L["ALL_OBTAINED"] = "|TInterface\\Buttons\\UI-CheckBox-Check:14:14|t todos"
 
 L["DETECTED_OBTAINED"] = "%s detectado automáticamente como obtenido mediante Núcleo del Vacío nebuloso."
 

@@ -23,7 +23,7 @@ L["NEBULOUS_VOIDCORES"] = "Nebulöse Leerenkerne"
 L["NO_ITEMS_FOR_SPEC"] = "Keine Gegenstände für diese Spezialisierung"
 
 L["LOOT_SPEC_LABEL"] = "Beute:"
-L["ALL_OBTAINED"] = "✓ alle"
+L["ALL_OBTAINED"] = "|TInterface\\Buttons\\UI-CheckBox-Check:14:14|t alle"
 
 L["DETECTED_OBTAINED"] = "%s automatisch als über Nebulösen Leerenkern erhalten erkannt."
 

@@ -23,7 +23,7 @@ L["NEBULOUS_VOIDCORES"] = "星云虚空核心"
 L["NO_ITEMS_FOR_SPEC"] = "该专精没有可用物品"
 
 L["LOOT_SPEC_LABEL"] = "拾取："
-L["ALL_OBTAINED"] = "✓ 全部"
+L["ALL_OBTAINED"] = "|TInterface\\Buttons\\UI-CheckBox-Check:14:14|t 全部"
 
 L["DETECTED_OBTAINED"] = "已自动检测到 %s 通过星云虚空核心获取。"
 

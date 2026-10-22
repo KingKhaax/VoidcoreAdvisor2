@@ -25,7 +25,7 @@ L["NO_ITEMS_FOR_SPEC"] = "No items for this spec"
 L["LFR_NOT_ELIGIBLE"] = "Not available in Raid Finder"
 
 L["LOOT_SPEC_LABEL"] = "Loot:"
-L["ALL_OBTAINED"] = "✓ all"
+L["ALL_OBTAINED"] = "|TInterface\\Buttons\\UI-CheckBox-Check:14:14|t all"
 
 L["DETECTED_OBTAINED"] = "Auto-detected %s as obtained via Nebulous Voidcore."
 

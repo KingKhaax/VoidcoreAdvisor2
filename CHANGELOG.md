@@ -31,6 +31,9 @@ Version: 2.3.0
 - [Panel] The roll history keeps the last 200 rolls (it kept 50).
 - [Options] The Interface version now includes 12.1.7, so the addon is not shown as out of date.
 
+🛠️ Fix
+- [Panel] Items whose data was not in the local cache showed as "Item 123456" with a broken icon. The icon now always comes from the client item tables, and the name and link are requested and filled in as soon as they arrive, in every language.
+
 ---
 
 Version: 2.2.5

@@ -250,11 +250,17 @@ end
 -- server (warmup primes this with GetItemInfo calls).
 local function EnrichItemID(itemID)
     local name, link, _, _, _, _, subType, _, equipLoc, icon = C_Item.GetItemInfo(itemID)
+    if not name and C_Item.RequestLoadItemDataByID then
+        -- Not in the local item cache yet (new items, or a language whose data was not
+        -- downloaded): ask for it; the panel redraws when it arrives.
+        C_Item.RequestLoadItemDataByID(itemID)
+    end
     return {
         itemID = itemID,
         name = name or "",
         link = link or "",
-        icon = icon or 0,
+        -- The icon comes from the client item tables, which do not need the server cache.
+        icon = icon or (C_Item.GetItemIconByID and C_Item.GetItemIconByID(itemID)) or 0,
         -- _G[equipLoc] maps internal "INVTYPE_*" tokens to localized slot names.
         slot = (equipLoc and equipLoc ~= "" and _G[equipLoc]) or "",
         armorType = subType or ""

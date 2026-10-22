@@ -1659,6 +1659,7 @@ end
 -- When the player changes their loot spec setting, or when the EJ finishes
 -- loading loot data for a newly selected instance, refresh both columns.
 
+local rowRedrawPending = false
 local specChangeFrame = CreateFrame("Frame")
 specChangeFrame:RegisterEvent("PLAYER_LOOT_SPEC_UPDATED")
 specChangeFrame:RegisterEvent("EJ_LOOT_DATA_RECIEVED")
@@ -1698,6 +1699,21 @@ specChangeFrame:SetScript("OnEvent", function(self, event, ...)
     elseif event == "GET_ITEM_INFO_RECEIVED" then
         -- Retry showing the icon if item data arrived after the initial Refresh.
         local itemID = ...
+        -- A row that was waiting for its item data gets redrawn (once, for a burst of items).
+        if frame:IsShown() and not rowRedrawPending then
+            for _, r in ipairs(itemRows) do
+                if r.frame:IsShown() and r.checkbox.itemID == itemID then
+                    rowRedrawPending = true
+                    C_Timer.After(0.3, function()
+                        rowRedrawPending = false
+                        if frame:IsShown() then
+                            Panel.RefreshItemColumn()
+                        end
+                    end)
+                    break
+                end
+            end
+        end
         if itemID == _currentVoidcacheID and frame:IsShown() and not voidcacheIconBtn:IsShown() then
             local texture = select(10, C_Item.GetItemInfo(itemID))
             if texture then

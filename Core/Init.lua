@@ -24,6 +24,7 @@ local function GetGlobalDefaults()
         reminderEnabled = true,
         reminderBossEnabled = true,
         showCumulative = true,
+        weeklySummary = true,
         bonusRollConfirmEnabled = true,
         brcSpecListEnabled = true,
         brcConfirmEnabled = true,
@@ -62,6 +63,9 @@ local function InitDB()
         -- to saves created while it was off by default.
         if gdb.reminderBossEnabled == nil then
             gdb.reminderBossEnabled = true
+        end
+        if gdb.weeklySummary == nil then
+            gdb.weeklySummary = true
         end
         if gdb.showCumulative == nil then
             gdb.showCumulative = true
@@ -359,6 +363,9 @@ SlashCmdList["VOIDCOREADVISOR"] = function(msg)
         VCA.Planner.SaveCharacterSummary()
         VCA.Tools.Chars()
 
+    elseif cmd == "perf" then
+        VCA.Tools.Perf(msg:match("^%s*%S+%s+(%S+)"))
+
     elseif cmd == "debug" then
         VCA.Tools.Debug()
 
@@ -366,7 +373,7 @@ SlashCmdList["VOIDCOREADVISOR"] = function(msg)
         VCA.Tools.Priority(msg:match("^%s*%S+%s+(.-)%s*$"))
 
     elseif cmd == "wish" then
-        VCA.Tools.Wish()
+        VCA.Tools.Wish(msg:match("^%s*%S+%s+([%d%.]+)"))
 
     elseif cmd == "select" then
         VCA.Tools.SelectAll((msg:match("^%s*%S+%s+(%S+)") or ""):lower() == "clear")
@@ -417,6 +424,7 @@ SlashCmdList["VOIDCOREADVISOR"] = function(msg)
         print(L["HELP_WISH"])
         print(L["HELP_SELECT"])
         print(L["HELP_DEBUG"])
+        print(L["HELP_PERF"])
         print(L["HELP_THEME"])
         print("    " .. table.concat(VCA.THEME_ORDER, ", "))
         print(L["HELP_RESETPANEL"])

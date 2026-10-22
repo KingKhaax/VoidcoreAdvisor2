@@ -6,6 +6,11 @@ local _, VCA = ...
 local Report = {}
 VCA.Report = Report
 
+-- The window is created the first time it is used, so it costs nothing until then.
+local built = false
+local function Build()
+
+
 local frame = CreateFrame("Frame", "VCAReportFrame", UIParent, "BackdropTemplate")
 frame:SetSize(560, 400)
 frame:SetPoint("CENTER")
@@ -50,6 +55,16 @@ edit:SetScript("OnEscapePressed", function(self)
 end)
 scroll:SetScrollChild(edit)
 
+-- Rich mode: a text that can show icons (an edit box cannot). Not selectable.
+local richHolder = CreateFrame("Frame", nil, scroll)
+richHolder:SetSize(500, 10)
+local richText = richHolder:CreateFontString(nil, "OVERLAY", "ChatFontNormal")
+richText:SetPoint("TOPLEFT", 0, 0)
+richText:SetWidth(500)
+richText:SetJustifyH("LEFT")
+richText:SetJustifyV("TOP")
+richText:SetSpacing(3)
+
 local actionBtn = CreateFrame("Button", nil, frame, "UIPanelButtonTemplate")
 actionBtn:SetSize(140, 24)
 actionBtn:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -16, 14)
@@ -81,6 +96,15 @@ function Report.Show(titleText, text, opts)
     else
         actionBtn:Hide()
     end
+    if opts.rich then
+        scroll:SetScrollChild(richHolder)
+        richText:SetText(text or "")
+        richHolder:SetHeight(math.max(10, richText:GetStringHeight() + 6))
+        scroll:SetVerticalScroll(0)
+        frame:Show()
+        return
+    end
+    scroll:SetScrollChild(edit)
     edit:SetText(opts.editable and "" or text or "")
     frame:Show()
     edit:SetFocus()
@@ -92,6 +116,26 @@ end
 
 function Report.Hide()
     frame:Hide()
+end
+end
+
+local function EnsureBuilt()
+    if not built then
+        built = true
+        Build()
+    end
+end
+do
+    Report.Show = function(...)
+        EnsureBuilt()
+        return Report.Show(...)
+    end
+    Report.Hide = function(...)
+        if not built then
+            return
+        end
+        return Report.Hide(...)
+    end
 end
 
 -- ── Banner ────────────────────────────────────────────────────────────────────

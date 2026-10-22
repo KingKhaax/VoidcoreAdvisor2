@@ -27,6 +27,13 @@ frame:SetScript("OnEvent", function(self, event, loadedAddon)
         Settings.CreateCheckbox(category, setting, L["OPTIONS_CUMULATIVE_TOOLTIP"])
     end
 
+    -- ── Weekly summary at login ────────────────────────────────────────────
+    do
+        local setting = Settings.RegisterAddOnSetting(category, "VoidcoreAdvisor_WeeklySummary", "weeklySummary",
+            _G[VCA.GLOBAL_DB_NAME], "boolean", L["OPTIONS_SUMMARY"], true)
+        Settings.CreateCheckbox(category, setting, L["OPTIONS_SUMMARY_TOOLTIP"])
+    end
+
     -- ── Also remind in front of raid bosses ───────────────────────────────
     do
         local setting = Settings.RegisterAddOnSetting(reminderCategory, "VoidcoreAdvisor_ReminderBossEnabled",

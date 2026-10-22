@@ -9,6 +9,11 @@ local L = VCA.L
 local Preview = {}
 VCA.ThemePreview = Preview
 
+-- The window is created the first time it is used, so it costs nothing until then.
+local built = false
+local function Build()
+
+
 -- "current" = the theme you use; otherwise a theme key (or "class").
 local previewKey = "current"
 
@@ -297,3 +302,29 @@ function Preview.Toggle()
 end
 
 themeName:SetText(Label(previewKey))
+end
+
+local function EnsureBuilt()
+    if not built then
+        built = true
+        Build()
+    end
+end
+do
+    Preview.SetTheme = function(...)
+        EnsureBuilt()
+        return Preview.SetTheme(...)
+    end
+    Preview.GetTheme = function(...)
+        EnsureBuilt()
+        return Preview.GetTheme(...)
+    end
+    Preview.Show = function(...)
+        EnsureBuilt()
+        return Preview.Show(...)
+    end
+    Preview.Toggle = function(...)
+        EnsureBuilt()
+        return Preview.Toggle(...)
+    end
+end

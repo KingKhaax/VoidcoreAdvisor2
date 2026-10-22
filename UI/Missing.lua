@@ -8,6 +8,11 @@ local L = VCA.L
 local Missing = {}
 VCA.Missing = Missing
 
+-- The window is created the first time it is used, so it costs nothing until then.
+local built = false
+local function Build()
+
+
 local WIDTH, HEIGHT = 540, 470
 local ROW_H = 26
 local RAID_DIFFICULTIES = {[14] = true, [15] = true, [16] = true}
@@ -220,4 +225,22 @@ function Missing.Show(difficulty)
     end
     Missing.Refresh()
     frame:Show()
+end
+end
+
+local function EnsureBuilt()
+    if not built then
+        built = true
+        Build()
+    end
+end
+do
+    Missing.Refresh = function(...)
+        EnsureBuilt()
+        return Missing.Refresh(...)
+    end
+    Missing.Show = function(...)
+        EnsureBuilt()
+        return Missing.Show(...)
+    end
 end

@@ -20,6 +20,16 @@ local function ItemText(itemID, link)
     return C_Item.GetItemNameByID(itemID) or ("item " .. tostring(itemID))
 end
 
+-- The item with its own icon in front of it (for windows that can draw icons).
+local function ItemWithIcon(itemID, link)
+    local icon = itemID and C_Item.GetItemIconByID and C_Item.GetItemIconByID(itemID)
+    local text = ItemText(itemID, link)
+    if icon then
+        return "|T" .. icon .. ":16:16:0:0|t " .. text
+    end
+    return text
+end
+
 local function SourceName(sourceType, sourceID)
     if not sourceID then
         return "?"
@@ -106,22 +116,38 @@ end
 function Tools.History()
     local log = VCA.Data.GetBonusRollLog() or {}
     local rolls, wanted, manual = 0, 0, 0
+    local tracked = 0 -- rolls that stored whether they were a chosen item (newer entries)
+    local expected, withOdds = 0, 0
     local bySource = {}
     for _, e in ipairs(log) do
         if e.manual then
             manual = manual + 1
         else
             rolls = rolls + 1
-            if e.wanted then
-                wanted = wanted + 1
+            if e.wanted ~= nil then
+                tracked = tracked + 1
+                if e.wanted then
+                    wanted = wanted + 1
+                end
             end
-            local name = SourceName(e.sourceType, e.sourceID)
-            bySource[name] = (bySource[name] or 0) + 1
+            if e.odds then
+                expected = expected + e.odds
+                withOdds = withOdds + 1
+            end
+            if e.sourceID then
+                local name = SourceName(e.sourceType, e.sourceID)
+                bySource[name] = (bySource[name] or 0) + 1
+            end
         end
     end
     local lines = {string.format(L["TOOLS_HISTORY_TOTAL"], rolls, manual)}
     if rolls > 0 then
-        lines[#lines + 1] = string.format(L["TOOLS_HISTORY_LUCK"], wanted, rolls, wanted * 100 / rolls)
+        if tracked > 0 then
+            lines[#lines + 1] = string.format(L["TOOLS_HISTORY_LUCK"], wanted, tracked, wanted * 100 / tracked)
+        end
+        if withOdds > 0 then
+            lines[#lines + 1] = string.format(L["TOOLS_HISTORY_EXPECTED"], expected, withOdds, wanted)
+        end
         local topName, topCount
         for name, count in pairs(bySource) do
             if not topCount or count > topCount then
@@ -139,13 +165,13 @@ function Tools.History()
             break
         end
         lines[#lines + 1] = string.format("%s  %s  -  %s%s", date("%Y/%m/%d %H:%M", e.timestamp or 0),
-            ItemText(e.itemID, e.itemLink), SourceName(e.sourceType, e.sourceID),
+            ItemWithIcon(e.itemID, e.itemLink), e.sourceID and SourceName(e.sourceType, e.sourceID) or L["TOOLS_HISTORY_UNKNOWN"],
             e.manual and ("  " .. L["TOOLS_HISTORY_MANUAL"]) or (e.wanted and ("  " .. L["TOOLS_HISTORY_WANTED"]) or ""))
     end
     if #log == 0 then
         lines[#lines + 1] = L["TOOLS_HISTORY_EMPTY"]
     end
-    VCA.Report.Show(L["TOOLS_HISTORY_TITLE"], table.concat(lines, "\n"), {footer = L["TOOLS_HISTORY_NOTE"]})
+    VCA.Report.Show(L["TOOLS_HISTORY_TITLE"], table.concat(lines, "\n"), {footer = L["TOOLS_HISTORY_NOTE"], rich = true})
 end
 
 -- ── /void chars ───────────────────────────────────────────────────────────────
@@ -222,6 +248,39 @@ function Tools.Debug()
     VCA.Report.Show(L["TOOLS_DEBUG_TITLE"], table.concat(lines, "\n"), {footer = L["TOOLS_DEBUG_NOTE"]})
 end
 
+-- ── /void perf ────────────────────────────────────────────────────────────────
+
+local ADDON = "VoidcoreAdvisorReborn"
+
+function Tools.Perf(arg)
+    local getMem = (C_AddOns and C_AddOns.GetAddOnMemoryUsage) or GetAddOnMemoryUsage
+    local getCPU = (C_AddOns and C_AddOns.GetAddOnCPUUsage) or GetAddOnCPUUsage
+    if (arg or ""):lower() == "reset" and ResetCPUUsage then
+        ResetCPUUsage()
+        Say(L["TOOLS_PERF_RESET"])
+        return
+    end
+    if UpdateAddOnMemoryUsage then
+        UpdateAddOnMemoryUsage()
+    end
+    local lines = {}
+    if getMem then
+        lines[#lines + 1] = string.format(L["TOOLS_PERF_MEMORY"], getMem(ADDON) / 1024)
+    end
+    local profiling = GetCVar and GetCVar("scriptProfile") == "1"
+    if profiling and getCPU then
+        if UpdateAddOnCPUUsage then
+            UpdateAddOnCPUUsage()
+        end
+        lines[#lines + 1] = string.format(L["TOOLS_PERF_CPU"], getCPU(ADDON))
+    else
+        lines[#lines + 1] = L["TOOLS_PERF_CPU_OFF"]
+    end
+    lines[#lines + 1] = ""
+    lines[#lines + 1] = L["TOOLS_PERF_HOWTO"]
+    VCA.Report.Show(L["TOOLS_PERF_TITLE"], table.concat(lines, "\n"), {footer = L["TOOLS_PERF_NOTE"]})
+end
+
 -- ── /void prio ────────────────────────────────────────────────────────────────
 
 local PRIORITY_WORDS = {bis = 1, alt = 2}
@@ -262,7 +321,10 @@ end
 -- ── /void wish (import a list of items) ───────────────────────────────────────
 
 -- Every item ID found in the text: links ("item:123456"), "id=123456" and plain numbers.
-function Tools.ParseItemIDs(text)
+-- minGain (optional, in percent): a line that also shows a gain ("+1.8%" or "1.8 %") below
+-- it is skipped, so a Droptimizer list can be pasted and only the real upgrades are chosen.
+-- Lines without any percentage are kept.
+function Tools.ParseItemIDs(text, minGain)
     local ids, seen = {}, {}
     local function add(n)
         n = tonumber(n)
@@ -271,14 +333,26 @@ function Tools.ParseItemIDs(text)
             ids[#ids + 1] = n
         end
     end
-    for n in (text or ""):gmatch("item:(%d+)") do
-        add(n)
-    end
-    for n in (text or ""):gmatch("[Ii][Dd]=(%d+)") do
-        add(n)
-    end
-    for n in (text or ""):gmatch("%f[%d](%d%d%d%d%d%d?%d?)%f[%D]") do
-        add(n)
+    for line in ((text or "") .. "\n"):gmatch("([^\n]*)\n") do
+        local skip = false
+        if minGain and minGain > 0 then
+            local gain = line:match("([%+%-]?%d+%.?%d*)%s*%%")
+            if gain and tonumber(gain) < minGain then
+                skip = true
+            end
+        end
+        if not skip then
+            for n in line:gmatch("item:(%d+)") do
+                add(n)
+            end
+            for n in line:gmatch("[Ii][Dd]=(%d+)") do
+                add(n)
+            end
+            -- Plain item IDs; the percentage itself is never read as an ID.
+            for n in line:gsub("[%+%-]?%d+%.?%d*%s*%%", " "):gmatch("%f[%d](%d%d%d%d%d%d?%d?)%f[%D]") do
+                add(n)
+            end
+        end
     end
     return ids
 end
@@ -329,13 +403,14 @@ function Tools.SelectItems(ids)
     return added
 end
 
-function Tools.Wish()
+function Tools.Wish(minGain)
+    minGain = tonumber(minGain)
     VCA.Report.Show(L["TOOLS_WISH_TITLE"], "", {
         editable = true,
         button = L["TOOLS_WISH_BUTTON"],
-        footer = L["TOOLS_WISH_HINT"],
+        footer = minGain and string.format(L["TOOLS_WISH_HINT_GAIN"], minGain) or L["TOOLS_WISH_HINT"],
         onAction = function(text)
-            local ids = Tools.ParseItemIDs(text)
+            local ids = Tools.ParseItemIDs(text, minGain)
             if #ids == 0 then
                 Say(L["TOOLS_WISH_NONE"])
                 return
@@ -368,4 +443,34 @@ local logoutFrame = CreateFrame("Frame")
 logoutFrame:RegisterEvent("PLAYER_LOGOUT")
 logoutFrame:SetScript("OnEvent", function()
     pcall(VCA.Planner.SaveCharacterSummary)
+end)
+
+-- ── Weekly summary at login ───────────────────────────────────────────────────
+-- Once per weekly reset: how many of the items you chose are still missing.
+
+local loginFrame = CreateFrame("Frame")
+loginFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
+loginFrame:SetScript("OnEvent", function(self, _, isInitialLogin)
+    if not isInitialLogin then
+        return
+    end
+    self:UnregisterEvent("PLAYER_ENTERING_WORLD")
+    C_Timer.After(12, function()
+        local gdb = _G[VCA.GLOBAL_DB_NAME]
+        if not gdb or gdb.weeklySummary == false then
+            return
+        end
+        local week = VCA.Planner.WeekStart()
+        local cdb = _G[VCA.CHAR_DB_NAME]
+        if not cdb or (cdb.lastSummaryWeek and math.abs(cdb.lastSummaryWeek - week) < 3600) then
+            return
+        end
+        local _, heroic = VCA.Planner.CountMissing(VCA.Difficulty.RAID_HEROIC)
+        local _, mythic = VCA.Planner.CountMissing(VCA.Difficulty.RAID_MYTHIC)
+        if heroic + mythic == 0 then
+            return
+        end
+        cdb.lastSummaryWeek = week
+        Say(string.format(L["SUMMARY_LOGIN"], heroic, mythic))
+    end)
 end)

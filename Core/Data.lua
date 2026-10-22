@@ -337,11 +337,36 @@ function Data.LogBonusRoll(itemID, itemLink, specID, source)
     if source and source.sourceType and source.sourceID and source.difficultyID then
         wanted = Data.GetSelectedItems(source.sourceType, source.sourceID, source.difficultyID)[itemID] == true
     end
+    -- The chance this roll had of giving one of the chosen items, from the pool as it was
+    -- before the item left it (used by /void history to compare luck with the odds).
+    local odds
+    pcall(function()
+        local classID = VCA.SpecInfo and VCA.SpecInfo.GetPlayerClassID and VCA.SpecInfo.GetPlayerClassID()
+        if not (source and source.sourceType and classID and specID) then
+            return
+        end
+        local tier = source.keyLevel and (source.keyLevel >= 10) or nil
+        local selected = Data.GetSelectedItems(source.sourceType, source.sourceID, source.difficultyID)
+        local total, want = 0, 0
+        for _, id in ipairs(VCA.LootPool.GetItemsForSpec(source.sourceType, source.sourceID, source.difficultyID,
+            classID, specID)) do
+            if not Data.IsObtainedForKeyTier(source.sourceType, source.sourceID, source.difficultyID, specID, id, tier) then
+                total = total + 1
+                if selected[id] then
+                    want = want + 1
+                end
+            end
+        end
+        if total > 0 then
+            odds = want / total
+        end
+    end)
     log[#log + 1] = {
         timestamp = time(),
         itemID = itemID,
         itemLink = itemLink,
         wanted = wanted,
+        odds = odds,
         specID = specID,
         sourceType = source and source.sourceType or nil,
         sourceID = source and source.sourceID or nil,

@@ -254,6 +254,23 @@ end
 
 -- ── Account summary (compare characters) ──────────────────────────────────────
 
+-- How many items you chose in raid bosses of one difficulty, and how many of them your
+-- loot spec has not obtained yet.
+function Planner.CountMissing(difficulty)
+    local specID = VCA.SpecInfo and VCA.SpecInfo.GetEffectiveLootSpecID and VCA.SpecInfo.GetEffectiveLootSpecID()
+    local chosen, remaining = 0, 0
+    for encounterID in pairs(VCA.SeasonData and VCA.SeasonData.raids or {}) do
+        for itemID in pairs(VCA.Data.GetSelectedItems(VCA.ContentType.RAID, encounterID, difficulty)) do
+            chosen = chosen + 1
+            if not (specID and
+                VCA.Data.IsObtainedForKeyTier(VCA.ContentType.RAID, encounterID, difficulty, specID, itemID, nil)) then
+                remaining = remaining + 1
+            end
+        end
+    end
+    return chosen, remaining
+end
+
 -- Stores what this character still needs in the account-wide saved variables so
 -- /void chars can list every character. Called when you log out.
 function Planner.SaveCharacterSummary()
@@ -261,7 +278,6 @@ function Planner.SaveCharacterSummary()
     if not gdb or not VCA.SeasonData then
         return
     end
-    local specID = VCA.SpecInfo and VCA.SpecInfo.GetEffectiveLootSpecID and VCA.SpecInfo.GetEffectiveLootSpecID()
     local summary = {
         updated = time(),
         class = select(2, UnitClass("player")),
@@ -269,16 +285,7 @@ function Planner.SaveCharacterSummary()
         raid = {}
     }
     for _, diff in ipairs({VCA.Difficulty.RAID_HEROIC, VCA.Difficulty.RAID_MYTHIC}) do
-        local chosen, remaining = 0, 0
-        for encounterID in pairs(VCA.SeasonData.raids or {}) do
-            for itemID in pairs(VCA.Data.GetSelectedItems(VCA.ContentType.RAID, encounterID, diff)) do
-                chosen = chosen + 1
-                if not (specID and
-                    VCA.Data.IsObtainedForKeyTier(VCA.ContentType.RAID, encounterID, diff, specID, itemID, nil)) then
-                    remaining = remaining + 1
-                end
-            end
-        end
+        local chosen, remaining = Planner.CountMissing(diff)
         summary.raid[diff] = {chosen = chosen, remaining = remaining}
     end
     gdb.characters = gdb.characters or {}

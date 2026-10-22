@@ -128,12 +128,13 @@ VoidcoreAdvisor was created by [rolferik12](https://github.com/rolferik12) (MIT)
 - `/void missing [14|15|16]` lists every item you still need for your loot spec, best odds first.
 - `/void cores [14|15|16]` shows the Voidcores you have, the ones you spent this week and about how many you need to get everything you chose.
 - `/void next [14|15|16]` ranks the raid bosses and dungeons by your chance of getting a chosen item (bosses you already killed this week go last, the dungeon of your keystone gets a small bonus).
-- `/void history` shows your Voidcore rolls and how often they gave an item you had chosen.
+- `/void history` shows your Voidcore rolls with the icon of each item and how often they gave an item you had chosen, next to what the odds predicted.
 - `/void chars` lists what each of your characters still needs (updated when you log out).
 - `/void prio <item> bis|alt|clear` sets a priority per item (shift-click the item to paste its link). Priorities weigh the spec ranking and `/void next`.
-- `/void wish` opens a box where you paste item IDs, links or a Raidbots / Droptimizer list to choose them everywhere they drop.
+- `/void wish [min gain %]` opens a box where you paste item IDs, links or a Raidbots / Droptimizer list to choose them everywhere they drop; with a minimum gain, lines showing a smaller percentage are skipped.
 - `/void select [clear]` chooses everything your loot spec can still get from the open boss or dungeon (the green + button in the panel does the same).
 - `/void debug` shows version, settings and recent messages to copy into a bug report.
+- `/void perf` shows the memory and CPU used by the addon.
 - `/void export` and `/void import` copy your marked items between characters.
 - `/void theme <name>` changes the window colors: green, purple, blue, light, fire, frost, red, `class` (follows your class) or a class like `mage`, `priest`, `deathknight`.
 - `/void resetpanel` puts the panel back next to the Adventure Guide (drag the header to move it, drag the corner to resize it).
@@ -159,7 +160,8 @@ Open an issue on GitHub, type `/void debug` in game and paste the text in the re
 
 ## <img src="docs/icons/inv_scroll_03.jpg" width="28" height="28" alt="" align="absmiddle"> Tests and tools
 
-- `lua tests/run.lua` runs the automated tests of the probability and planner math.
+- `lua tests/run.lua` runs the automated tests (probability, planner, saved data, wishlist parsing). `lua tests/smoke.lua` loads every file with a fake game API and exercises the commands and windows.
+- `lua tools/build_seasondata.lua <VoidcoreAdvisorGen.lua>` writes `Core/SeasonData.lua` from the generator's saved variables.
 - `lua tools/compare_seasondata.lua old.lua new.lua` lists the items that changed between two generated SeasonData files.
 
 ## <img src="docs/icons/inv_scroll_03.jpg" width="28" height="28" alt="" align="absmiddle"> Translations

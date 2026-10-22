@@ -7,6 +7,11 @@ local L = VCA.L
 local Transfer = {}
 VCA.Transfer = Transfer
 
+-- The window is created the first time it is used, so it costs nothing until then.
+local built = false
+local function Build()
+
+
 local PREFIX = "VCAR1;"
 local KEY_PATTERN = "^[A-Z_]+:%d+:%d+:%d+:%d+:?[HL]?$"
 
@@ -119,3 +124,21 @@ importBtn:SetScript("OnClick", function()
         VCA.Panel.Refresh()
     end
 end)
+end
+
+local function EnsureBuilt()
+    if not built then
+        built = true
+        Build()
+    end
+end
+do
+    Transfer.Export = function(...)
+        EnsureBuilt()
+        return Transfer.Export(...)
+    end
+    Transfer.Import = function(...)
+        EnsureBuilt()
+        return Transfer.Import(...)
+    end
+end

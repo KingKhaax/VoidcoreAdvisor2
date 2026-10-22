@@ -211,6 +211,19 @@ local contentArea = CreateFrame("Frame", nil, frame)
 contentArea:SetPoint("TOPLEFT", frame, "TOPLEFT", 0, -(HEADER_H + 1))
 contentArea:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", 0, 11)
 
+-- Link to the list of all your characters (same as /void chars).
+local charsBtn = CreateFrame("Button", nil, frame)
+charsBtn:SetSize(150, 16)
+charsBtn:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -16, 12)
+charsBtn:SetNormalFontObject("GameFontNormalSmall")
+charsBtn:SetHighlightFontObject("GameFontHighlightSmall")
+charsBtn:SetText(L["OVERVIEW_CHARACTERS"])
+charsBtn:GetFontString():SetJustifyH("RIGHT")
+charsBtn:SetScript("OnClick", function()
+    VCA.Planner.SaveCharacterSummary()
+    VCA.Tools.Chars()
+end)
+
 local hdrBoss = contentArea:CreateFontString(nil, "OVERLAY", "GameFontNormal")
 hdrBoss:SetPoint("TOPLEFT", contentArea, "TOPLEFT", PADDING + COL_BOSS_X, -6)
 VCA.OnTheme(function() hdrBoss:SetText(VCA.Theme.hdr .. "" .. L["RAID_OVERVIEW_COL_BOSS"] .. "|r") end)
@@ -422,7 +435,7 @@ local function Populate()
     local contentW = frame:GetWidth() - PADDING * 2
     scrollFrame:ClearAllPoints()
     scrollFrame:SetPoint("TOPLEFT", contentArea, "TOPLEFT", PADDING, -(COL_HEADER_H + 8))
-    scrollFrame:SetPoint("BOTTOMRIGHT", contentArea, "BOTTOMRIGHT", -PADDING, 4)
+    scrollFrame:SetPoint("BOTTOMRIGHT", contentArea, "BOTTOMRIGHT", -PADDING, 20)
     scrollChild:SetWidth(contentW)
 
     local instanceID = Overview.instanceID

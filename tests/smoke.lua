@@ -366,7 +366,7 @@ end
 -- ---- detection: finishing a spec's pool resets every spec of that boss
 do
     local D = VCA.Detection
-    check("Detection.CheckAndResetIfComplete resets only when the pool is complete", function()
+    check("Detection.CheckAndResetIfComplete resets only the spec whose pool is complete", function()
         _G.VoidcoreAdvisorCharDB = {obtained = {}}
         VCA.SpecInfo.GetPlayerClassID = function() return 10 end
         VCA.LootPool.GetCachedItemsForSpec = function() return {1, 2} end
@@ -377,7 +377,8 @@ do
         assert(VCA.Data.IsObtained("RAID", 900, 15, 269, 1), "kept")
         VCA.Data.SetObtained("RAID", 900, 15, 268, 2, true)
         assert(D.CheckAndResetIfComplete(src, 268, nil) == true, "complete")
-        assert(not VCA.Data.IsObtained("RAID", 900, 15, 269, 1), "all specs reset")
+        assert(not VCA.Data.IsObtained("RAID", 900, 15, 268, 1), "the finished spec is reset")
+        assert(VCA.Data.IsObtained("RAID", 900, 15, 269, 1), "the other spec keeps its marks")
     end)
 end
 

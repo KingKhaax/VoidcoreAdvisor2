@@ -1,3 +1,11 @@
+Version: 2.6.1
+2026/10/23 Released
+
+🛠️ Fix
+- [Detection] When all the items of one loot specialization were obtained (by hand with the Mark bar, with the bag icon, or by a real roll), the addon reset every specialization of that boss, so you lost the progress of the others. Now only the specialization whose pool ran out starts a new cycle; the rest keep their marks. Reported on CurseForge by a user who was missing one item for Restoration while the Enhancement pool was finished.
+
+---
+
 Version: 2.6.0
 2026/10/22 Released
 

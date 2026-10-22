@@ -1,74 +1,45 @@
 # Changelog
 
-## 2.3.3
+## 2.3.0
+- New **Preview** button next to the color theme selector in the options (also `/void preview`): a sample window that recolors live while you change the theme, with a counting-down timer bar.
+- The timer bar of the bonus roll window shows the time left (for example 2:34) in its center.
+- **Mark rolled item** now works in two steps: press the bar, click the items you got (they dim right away, nothing is saved yet), then press the bar again to save them. Closing the panel or changing boss discards unsaved marks. Shift+click still stages everything between two clicks.
 - Removed the "Style of my specialization" theme. "Style of my class" stays; anyone who had the specialization theme selected is moved to it.
 
-## 2.3.2
-- The timer bar of the bonus roll window now shows the time left (for example 2:34) in its center. The sample window of the theme preview counts down too.
-
-## 2.3.1
-- "Mark rolled item" now works in two steps: press the bar, click the items you got (they dim right away, nothing is saved yet), then press the bar again to save them. Closing the panel or changing boss discards unsaved marks. Shift+click still stages everything between two clicks.
-
-## 2.3.0
-- New "Preview" button next to the color theme selector in the options (and /void preview): a sample window that recolors live while you change the theme.
-
 ## 2.2.5
-- The "new raid not in the loot data" message ignores the "Midnight" world boss entry by its ID and tells you about each unknown raid only once, instead of at every login.
+Fork of VoidcoreAdvisor 2.4.0 by rolferik12 (MIT license, with the author's permission). Everything below is new compared to the original.
 
-## 2.2.4
-- Login item-cache warmup is gentler (about 80 items per second instead of 600) to avoid frame rate dips right after logging in.
+Compatibility
+- Works on patch 12.1.5: the removed global item functions were replaced with their `C_Item` versions.
+- The addon lives in its own folder (`VoidcoreAdvisorReborn`). Disable or remove the original VoidcoreAdvisor first: both use the same saved variables, and Reborn warns you if the original is also enabled.
 
-## 2.2.3
-- The bonus roll window showed a cost of 2 for raid bosses; it now shows the real cost reported by the roll prompt (and 1 when the prompt gives none). The cost in the panel header follows the same fallback.
+Loot tracking
+- Fixed Voidcore rolls not being tracked when the boss selected in the Adventure Guide was not the boss that dropped the item. Rolls saved by the old version are applied again when you log in.
+- New **Mark rolled item** bar to mark by hand the items you got from a Voidcore roll that the addon did not track.
+- `/void scan [raid 14|15|16]` reads the Voidcache of every spec to mark the items you already got from the Voidcores you spent. A one-time hint tells you about it.
+- `/void missing [14|15|16]` lists every item you still need for your loot spec, best odds first.
+- `/void export` and `/void import` copy your marked items between characters.
 
-## 2.2.2
-- The "new raid not in the loot data" message no longer names the expansion's world boss entry ("Midnight"): entries named like the expansion or without a map are ignored.
+New raid
+- The loot of The Unbinding of Kith'ix (Normal, Heroic and Mythic, every class and spec) ships with the addon, outside the season fingerprint so your obtained items are never reset.
+- `/void liveraid` reads a new raid straight from the Adventure Guide when the built-in data does not include it yet. A chat message names raids missing from the loot data, once per raid.
 
-## 2.2.1
-- New /void scan [raid 14|15|16] command: reads the Voidcache of every spec to mark the items you already got from the Voidcores you spent (the same scan as the Scan Loot Specs buttons).
-- A one-time hint about /void scan for characters that have nothing marked yet.
+Bonus roll window
+- Redesigned: green Roll button, red Pass button, themed frame and timer bar.
+- Optional "Are you sure?" confirmation before rolling or passing (on by default). The window is enabled by default.
+- A red warning, a sound and an extra line in the confirmation appear when only 1 item is left for your spec.
+- Shows the real Voidcore cost reported by the roll prompt.
 
-## 2.2.0
-- 22 color themes: venom green (default), void purple, arcane blue, light, fire, frost, red and one for each of the 13 classes, using the class colors.
-- Two themes that follow you: "Style of my class" and "Style of my specialization". They change by themselves when you switch character or specialization.
-- /void theme <name> accepts every theme key; /void theme lists them.
+Panel and looks
+- 22 color themes: venom green (default), void purple, arcane blue, light, fire, frost, red, one for each of the 13 classes, and "Style of my class", which follows the character you are playing. Choose one in the options or with `/void theme <name>`.
+- The panel can be moved (drag the header) and resized (corner grip), and remembers both. `/void resetpanel` puts it back next to the Adventure Guide.
+- The raid overview shows a progress bar per boss. The loot spec label no longer overlaps the spec column title.
+- `/void panel [name]` opens the Adventure Guide on a boss or dungeon with the panel showing.
+- New logo and icon.
 
-## 2.1.2
-- The loot of The Unbinding of Kith'ix (Normal, Heroic and Mythic, every class and spec) now ships with the addon in Core/SeasonDataExtra.lua, so nobody needs to scan it. It stays outside the season fingerprint, so obtained items are never reset.
-- The "new raid not in the loot data" message ignores world boss entries such as the expansion's own "Midnight" entry.
+Languages
+- All 11 languages are complete (the original left some texts in English). The newest texts were translated without a native review: corrections are welcome.
 
-## 2.1.1
-- Bonus roll window: the timer bar no longer covers the cost line when the item name takes two lines.
-- Panel: the loot spec label no longer overlaps the spec column title (it is shortened instead).
-- /void liveraid now lists the raids it finds in the Adventure Guide, selects each raid before reading its bosses and falls back to any raid of the newest tier that is not in the loot data.
-
-## 2.1.0
-- Color themes: venom green (default), void purple and arcane blue, from the options or with /void theme.
-- /void panel [name] opens the Adventure Guide on a boss or dungeon with the panel showing.
-- /void missing [14|15|16] lists every item you still need for your loot spec, best odds first.
-- Shift+click in mark mode marks every item between two clicks.
-- /void export and /void import copy your marked items between characters.
-- The panel can be moved (drag the header) and resized (corner grip); /void resetpanel restores it.
-- Raid overview shows a progress bar per boss.
-- Bonus roll window warns louder (red text, sound, confirmation text) when only 1 item is left for your spec.
-- A chat message names new raids that are not in the loot data yet.
-- All new texts translated in the 11 languages.
-
-## 2.0.2
-- Bonus roll window restyled: grey double frame, epic-coloured item border, green Roll and red Pass buttons.
-- New option to ask "Are you sure?" before rolling or passing (on by default).
-- Fixed the automatic reading of new raids (The Unbinding of Kith'ix): it looked the boss up with the wrong ID. New command /void liveraid forces the scan and prints what happened.
-
-## 2.0.1
-- Fixed rolls that were not tracked when the boss selected in the Encounter Journal was not the boss that dropped the item: the item is now searched in the whole raid, and the saved roll log is replayed on login so past rolls get marked.
-- New "Mark rolled item" button in the loot column to mark items by hand.
-- Bonus roll confirmation window is now enabled by default.
-- Message when you open a raid that is not in the loot data yet.
-- Slash command is now /void (/voidcoreadvisor2) and a warning is shown if the original addon is also enabled.
-- All 11 languages: added missing strings, translated the spec switch tooltip, fixed Spanish wording.
-
-## 2.0.0
-- Fork of VoidcoreAdvisor 2.4.0 by rolferik12 (MIT, with permission).
-- Patch 12.1.5: replaced removed global `GetItemInfo` and `GetItemQualityColor` with `C_Item` versions.
-- New `Core/LiveRaid.lua`: reads loot tables of raids missing from SeasonData (The Unbinding of Kith'ix) from the Encounter Journal, without touching the season fingerprint so obtained items are never reset.
-- Interface version 12.1.5 added.
+Commands and performance
+- The command is now `/void` (also `/voidreborn`).
+- The login item-cache warmup is gentler, to avoid frame rate dips after logging in.

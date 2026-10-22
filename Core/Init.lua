@@ -59,6 +59,9 @@ local function InitDB()
         if gdb.brcConfirmEnabled == nil then
             gdb.brcConfirmEnabled = true
         end
+        if gdb.theme == "spec" then
+            gdb.theme = "class" -- the specialization theme was removed in 2.3.3
+        end
         if not VCA.IsTheme(gdb.theme) then
             gdb.theme = "green"
         end

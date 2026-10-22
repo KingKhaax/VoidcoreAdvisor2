@@ -86,34 +86,8 @@ VCA.CLASS_THEMES = {
     {"warrior", "WARRIOR", 0.78, 0.61, 0.43}
 }
 
-VCA.THEME_ORDER = {"class", "spec", "green", "purple", "blue", "light", "fire", "frost", "red"}
+VCA.THEME_ORDER = {"class", "green", "purple", "blue", "light", "fire", "frost", "red"}
 VCA.THEME_CLASSFILE = {}
-
--- "spec" picks a look that fits the specialization you are playing: elemental
--- palettes where the spec has an obvious one, the class color for the rest.
-VCA.SPEC_THEMES = {
-    [62] = "purple", -- Arcane mage
-    [63] = "fire", -- Fire mage
-    [64] = "frost", -- Frost mage
-    [65] = "light", -- Holy paladin
-    [70] = "light", -- Retribution paladin
-    [71] = "red", -- Arms warrior
-    [72] = "fire", -- Fury warrior
-    [250] = "red", -- Blood death knight
-    [251] = "frost", -- Frost death knight
-    [252] = "green", -- Unholy death knight
-    [256] = "light", -- Discipline priest
-    [257] = "light", -- Holy priest
-    [258] = "purple", -- Shadow priest
-    [262] = "blue", -- Elemental shaman
-    [263] = "blue", -- Enhancement shaman
-    [264] = "blue", -- Restoration shaman
-    [265] = "green", -- Affliction warlock
-    [266] = "purple", -- Demonology warlock
-    [267] = "fire", -- Destruction warlock
-    [577] = "purple", -- Havoc demon hunter
-    [581] = "red" -- Vengeance demon hunter
-}
 for _, c in ipairs(VCA.CLASS_THEMES) do
     VCA.Themes[c[1]] = FromColor(c[3], c[4], c[5])
     VCA.THEME_CLASSFILE[c[1]] = c[2]
@@ -122,9 +96,9 @@ end
 
 VCA.Theme = VCA.Themes.green
 
--- "class" and "spec" follow the character; everything else is a key of VCA.Themes.
+-- "class" follows the character; everything else is a key of VCA.Themes.
 function VCA.IsTheme(name)
-    return name == "class" or name == "spec" or (name ~= nil and VCA.Themes[name] ~= nil)
+    return name == "class" or (name ~= nil and VCA.Themes[name] ~= nil)
 end
 
 local function ClassThemeKey()
@@ -140,10 +114,6 @@ end
 local function Resolve(name)
     if name == "class" then
         return ClassThemeKey()
-    elseif name == "spec" then
-        local index = GetSpecialization and GetSpecialization()
-        local specID = index and GetSpecializationInfo and GetSpecializationInfo(index)
-        return (specID and VCA.SPEC_THEMES[specID]) or ClassThemeKey()
     end
     return name
 end
@@ -188,18 +158,13 @@ function VCA.TitleText()
     return (s:gsub("|cff8fe36b", VCA.Theme.title))
 end
 
--- "class" and "spec" themes follow the character, so repaint when the player logs
--- in (the spec is not known earlier) and when the specialization changes.
+-- The "class" theme follows the character: repaint once the player is known.
 local follower = CreateFrame("Frame")
 follower:RegisterEvent("PLAYER_LOGIN")
-follower:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED")
-follower:SetScript("OnEvent", function(_, event, unit)
-    if event == "PLAYER_SPECIALIZATION_CHANGED" and unit and unit ~= "player" then
-        return
-    end
+follower:SetScript("OnEvent", function()
     local gdb = _G[VCA.GLOBAL_DB_NAME]
     local name = gdb and gdb.theme
-    if name == "class" or name == "spec" then
+    if name == "class" then
         VCA.ApplyTheme(name)
         if VCA.Panel and VCA.Panel.Refresh then
             VCA.Panel.Refresh()

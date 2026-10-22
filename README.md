@@ -126,7 +126,7 @@ VoidcoreAdvisor was created by [rolferik12](https://github.com/rolferik12) (MIT)
 - `/void panel [name]` opens the Adventure Guide on a boss or dungeon with the panel showing.
 - `/void missing [14|15|16]` lists every item you still need for your loot spec, best odds first.
 - `/void export` and `/void import` copy your marked items between characters.
-- `/void theme <name>` changes the window colors: green, purple, blue, light, fire, frost, red, `class`, `spec` (they follow your class or specialization) or a class like `mage`, `priest`, `deathknight`.
+- `/void theme <name>` changes the window colors: green, purple, blue, light, fire, frost, red, `class` (follows your class) or a class like `mage`, `priest`, `deathknight`.
 - `/void resetpanel` puts the panel back next to the Adventure Guide (drag the header to move it, drag the corner to resize it).
 - `/void liveraid` forces reading a new raid from the Adventure Guide.
 - `/void restore`, `/void replaylog`, `/void version`.

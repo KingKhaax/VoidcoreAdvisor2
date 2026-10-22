@@ -1,5 +1,8 @@
 # Changelog
 
+## 2.3.3
+- Removed the "Style of my specialization" theme. "Style of my class" stays; anyone who had the specialization theme selected is moved to it.
+
 ## 2.3.2
 - The timer bar of the bonus roll window now shows the time left (for example 2:34) in its center. The sample window of the theme preview counts down too.
 

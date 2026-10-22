@@ -9,7 +9,6 @@ Version: 2.3.0
 - [Reminder] Both popups use the flat themed look of the sample windows (gold corners, spec rows with a progress bar, no clipped text) and show a gold "Reborn" next to the title. Try it with the Preview button of the reminder theme.
 - [Bonus Roll] The timer bar shows the time left (for example 2:34) in its center.
 - [Panel] **Mark rolled item** works in two steps: press the bar, click the items you got (they dim right away), then press "Click to save". Closing the panel or changing boss discards unsaved marks.
-- [Panel] The raid boss overview explains what to do while no boss has chosen items, instead of showing a table full of dashes.
 - [Panel] New line under the spec ranking with the chance to get at least one chosen item with 1 roll, 3 rolls and with the Voidcores you have. Turn it off with "Show cumulative odds" in the options.
 - [Voidcores] New `/void cores [14|15|16]`: Voidcores you have, spent this week, and about how many you need to get everything you chose.
 - [Voidcores] New `/void next [14|15|16]`: raid bosses and dungeons ranked by your chance of a chosen item. Bosses killed this week go last and the dungeon of your keystone gets a bonus.
@@ -23,8 +22,6 @@ Version: 2.3.0
 - [Support] New `/void debug`: version, settings and recent messages in a window you can copy into a bug report.
 
 💪 Improvement
-- [Panel] Items saved with the Mark bar are never wiped by the automatic pool reset (it used to clear the whole boss when a spec had all its items marked). Saving is also double-checked and any error is printed in chat.
-- [Panel] The save bar text is short in all 11 languages so it always fits.
 - [Bonus Roll] The timer bar refreshes 10 times per second instead of every frame, using less CPU. The theme preview does the same.
 - [Missing] The missing items list only listens for item data while it is open.
 - [Theme] Removed the "Style of my specialization" theme. "Style of my class" stays; anyone who had the specialization theme selected is moved to it.
@@ -32,8 +29,12 @@ Version: 2.3.0
 - [Options] The Interface version now includes 12.1.7, so the addon is not shown as out of date.
 
 🛠️ Fix
+- [Panel] Saving items with the **Mark rolled item** bar did nothing: when the saved items completed a spec's loot pool, the automatic pool reset cleared every marked item of the boss. Saved marks are now kept, the save is double-checked for every spec and any error is printed in chat.
+- [Panel] The text of the Mark bar in save mode was longer than the bar and got cut off. It is now short ("Click to save") and cannot overflow, in all 11 languages.
+- [Panel] The raid boss overview showed a table full of dashes when no boss had chosen items. It now explains what to do instead.
 - [Panel] Items whose data was not in the local cache showed as "Item 123456" with a broken icon. The icon now always comes from the client item tables, and the name and link are requested and filled in as soon as they arrive, in every language.
 - [Panel] The "all" label of a fully obtained spec showed an empty box instead of a check mark (the game font has no such character); it now uses a check icon in all 11 languages.
+- [Reminder] The text of the loot spec popup (for example the chance line) was clipped by the old dialog frame. The new layout sizes everything by its real text height, so nothing is cut in any language.
 
 ---
 

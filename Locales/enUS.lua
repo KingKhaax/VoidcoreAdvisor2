@@ -313,3 +313,4 @@ L["TOOLS_WISH_DONE"] = "Found %d items, chose %d new (boss, difficulty) combinat
 L["TOOLS_SELECT_NO_SOURCE"] = "Open a boss or dungeon in the Adventure Guide first."
 L["TOOLS_SELECT_CLEARED"] = "Choice cleared."
 L["TOOLS_SELECT_DONE"] = "Chose %d items your loot spec can still get here."
+L["DIFFICULTY_MYTHIC_PLUS"] = "Mythic+"

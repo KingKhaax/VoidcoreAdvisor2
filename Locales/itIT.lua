@@ -268,3 +268,4 @@ L["OPTIONS_REMINDER_THEME_TOOLTIP"] = "Scegli il tema colore delle finestre di p
 L["HELP_OPEN"] = "  /void open – apri la pagina delle opzioni (temi e anteprime)"
 L["MARK_MODE_ACTIVE"] = "Clicca per salvare"
 L["RAID_OVERVIEW_EMPTY_HINT"] = "Nessun oggetto scelto.\nClicca un boss nell'elenco e poi gli oggetti che vuoi: qui vedrai le tue probabilità per ogni boss."
+L["DIFFICULTY_MYTHIC_PLUS"] = "Mitica+"

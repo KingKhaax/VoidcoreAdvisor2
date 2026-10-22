@@ -1459,6 +1459,19 @@ function Panel.SelectAllUseful(clear)
     return count
 end
 
+-- "[Mythic]" style tag shown after the boss or dungeon name, colored by difficulty.
+local DIFFICULTY_COLORS = {[17] = "|cff66ccff", [14] = "|cff1eff00", [15] = "|cff0070dd", [16] = "|cffa335ee"}
+local function DifficultyTag(sourceType, difficultyID)
+    if sourceType == VCA.ContentType.MYTHIC_PLUS then
+        return "  |cffff8000[" .. L["DIFFICULTY_MYTHIC_PLUS"] .. "]|r"
+    end
+    local name = GetDifficultyInfo and GetDifficultyInfo(difficultyID)
+    if not name then
+        return ""
+    end
+    return "  " .. (DIFFICULTY_COLORS[difficultyID] or "|cffffffff") .. "[" .. name .. "]|r"
+end
+
 function Panel.SetContext(sourceType, sourceID, difficultyID, sourceName, isRaid)
     -- Marks that were not saved belong to the previous source.
     Panel.ClearPending()
@@ -1481,7 +1494,7 @@ function Panel.SetContext(sourceType, sourceID, difficultyID, sourceName, isRaid
 
     VCA.Detection.SetActiveSource(sourceType, sourceID, difficultyID)
 
-    sourceLabel:SetText(sourceName or "")
+    sourceLabel:SetText((sourceName or "") .. DifficultyTag(sourceType, difficultyID))
     Panel.isRaid = isRaid
 
     -- Show key level dropdown only for M+ dungeons

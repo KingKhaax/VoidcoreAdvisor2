@@ -268,3 +268,4 @@ L["OPTIONS_REMINDER_THEME_TOOLTIP"] = "Escolha o tema de cores dos avisos de esp
 L["HELP_OPEN"] = "  /void open – abrir a página de opções (temas e pré-visualizações)"
 L["MARK_MODE_ACTIVE"] = "Clique para salvar"
 L["RAID_OVERVIEW_EMPTY_HINT"] = "Nenhum item escolhido ainda.\nClique em um chefe da lista e depois nos itens que quer: aqui aparecerá sua chance para cada chefe."
+L["DIFFICULTY_MYTHIC_PLUS"] = "Mítica+"

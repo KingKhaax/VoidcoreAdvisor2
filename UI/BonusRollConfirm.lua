@@ -509,7 +509,7 @@ local function ShowSpecListTooltip(owner, anchor)
             end
         end
         local _, sName = GetSpecializationInfoByID(spec.specID)
-        local iconT = "|T" .. (spec.icon or "Interface\\Icons\\INV_Misc_QuestionMark") .. ":14:14|t"
+        local iconT = "|T" .. (spec.icon or 134400) .. ":14:14|t"
         local wantedColor = wanted > 0 and "|cffffff00" or "|cff888888"
         local rightStr = wantedColor .. wanted .. " wanted|r |cff888888-  " .. remaining .. " remaining|r"
         GameTooltip:AddDoubleLine(iconT .. " " .. (sName or "?"), rightStr, 1, 1, 1, 1, 1, 1)
@@ -746,7 +746,7 @@ local function ShowSpecList(source, dynY)
 
         row.btn:ClearAllPoints()
         row.btn:SetPoint("TOPLEFT", win, "TOPLEFT", startX + (i - 1) * CELL_W, dynY)
-        row.icon:SetTexture(spec.icon or "Interface\\Icons\\INV_Misc_QuestionMark")
+        row.icon:SetTexture(spec.icon or 134400)
         if spec.specID == activeSpecID then
             row.glow:Show()
         else
@@ -1032,7 +1032,7 @@ function BRC.Show()
 
     local specID = VCA.SpecInfo.GetEffectiveLootSpecID()
     local _, sName, _, sIcon = GetSpecializationInfoByID(specID)
-    cachedSpecIcon = sIcon or "Interface\\Icons\\INV_Misc_QuestionMark"
+    cachedSpecIcon = sIcon or 134400
     cachedSpecName = sName or "?"
     cachedSpecID = specID
     specCornerIcon:SetTexture(cachedSpecIcon)
@@ -1211,7 +1211,7 @@ function BRC.ShowPreview()
 
     local specID = VCA.SpecInfo.GetEffectiveLootSpecID()
     local _, sName, _, sIcon = GetSpecializationInfoByID(specID)
-    cachedSpecIcon = sIcon or "Interface\\Icons\\INV_Misc_QuestionMark"
+    cachedSpecIcon = sIcon or 134400
     cachedSpecName = sName or "?"
     cachedSpecID = specID
     specCornerIcon:SetTexture(cachedSpecIcon)

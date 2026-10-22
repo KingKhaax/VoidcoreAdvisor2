@@ -269,3 +269,4 @@ L["OPTIONS_REMINDER_THEME_TOOLTIP"] = "애드온의 다른 부분과 별개로 �
 L["HELP_OPEN"] = "  /void open – 설정 페이지 열기 (테마 및 미리보기)"
 L["MARK_MODE_ACTIVE"] = "클릭하여 저장"
 L["RAID_OVERVIEW_EMPTY_HINT"] = "아직 선택한 아이템이 없습니다.\n목록에서 보스를 누른 뒤 원하는 아이템을 누르세요. 보스별 확률이 여기에 표시됩니다."
+L["DIFFICULTY_MYTHIC_PLUS"] = "신화+"

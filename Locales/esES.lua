@@ -325,3 +325,4 @@ L["TOOLS_WISH_DONE"] = "Encontrados %d objetos, elegidas %d combinaciones nuevas
 L["TOOLS_SELECT_NO_SOURCE"] = "Abre antes un jefe o mazmorra en la Guía de aventuras."
 L["TOOLS_SELECT_CLEARED"] = "Elección borrada."
 L["TOOLS_SELECT_DONE"] = "Elegidos %d objetos que tu especialización aún puede conseguir aquí."
+L["DIFFICULTY_MYTHIC_PLUS"] = "Mítica+"

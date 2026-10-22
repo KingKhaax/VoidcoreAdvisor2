@@ -179,7 +179,7 @@ function Missing.Refresh()
         if not name and C_Item.RequestLoadItemDataByID then
             C_Item.RequestLoadItemDataByID(entry.itemID)
         end
-        row.icon:SetTexture(C_Item.GetItemIconByID(entry.itemID) or "Interface\\Icons\\INV_Misc_QuestionMark")
+        row.icon:SetTexture(C_Item.GetItemIconByID(entry.itemID) or 134400)
         row.name:SetText(link or name or ("Item " .. entry.itemID))
         row.source:SetText("|cffb8b8c0" .. entry.source .. "|r")
         row.chance:SetText(string.format("%.0f%%", entry.chance * 100))

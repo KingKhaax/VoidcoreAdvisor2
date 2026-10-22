@@ -268,3 +268,4 @@ L["OPTIONS_REMINDER_THEME_TOOLTIP"] = "Choisissez le thème de couleur des fenê
 L["HELP_OPEN"] = "  /void open – ouvrir la page d'options (thèmes et aperçus)"
 L["MARK_MODE_ACTIVE"] = "Cliquer pour enregistrer"
 L["RAID_OVERVIEW_EMPTY_HINT"] = "Aucun objet choisi pour le moment.\nCliquez sur un boss de la liste puis sur les objets voulus : vos chances pour chaque boss s'afficheront ici."
+L["DIFFICULTY_MYTHIC_PLUS"] = "Mythique+"

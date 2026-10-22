@@ -265,3 +265,4 @@ L["OPTIONS_REMINDER_THEME_TOOLTIP"] = "选择拾取专精提醒窗口的颜色�
 L["HELP_OPEN"] = "  /void open – 打开选项页面（主题和预览）"
 L["MARK_MODE_ACTIVE"] = "点击保存"
 L["RAID_OVERVIEW_EMPTY_HINT"] = "尚未选择物品。\n点击列表中的首领，再点击你想要的物品：这里会显示每个首领的概率。"
+L["DIFFICULTY_MYTHIC_PLUS"] = "史诗+"

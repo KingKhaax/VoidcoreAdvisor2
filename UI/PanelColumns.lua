@@ -237,7 +237,7 @@ local function PopulateItemColumn(sourceType, sourceID, difficultyID, isHighTier
         if item.icon and item.icon ~= 0 and item.icon ~= "" then
             row.icon:SetTexture(item.icon)
         else
-            row.icon:SetTexture("Interface\\Icons\\INV_Misc_QuestionMark")
+            row.icon:SetTexture(134400)
         end
 
         -- Name with quality color and slot.
@@ -422,7 +422,7 @@ local function PopulateItemColumn(sourceType, sourceID, difficultyID, isHighTier
         noRow.frame:ClearAllPoints()
         noRow.frame:SetPoint("TOPLEFT", _s.itemScrollChild, "TOPLEFT", 0, 0)
         noRow.frame:Show()
-        noRow.icon:SetTexture("Interface\\Icons\\INV_Misc_QuestionMark")
+        noRow.icon:SetTexture(134400)
         noRow.nameLabel:SetText("|cff888888" .. noticeText .. "|r")
         noRow.nameLabel:SetAlpha(1)
         noRow.iconButton:SetAlpha(0.3)
@@ -520,7 +520,7 @@ local function PopulateSpecColumn(sourceType, sourceID, difficultyID, filterItem
         if entry.specIcon then
             row.icon:SetTexture(entry.specIcon)
         else
-            row.icon:SetTexture("Interface\\Icons\\INV_Misc_QuestionMark")
+            row.icon:SetTexture(134400)
         end
 
         -- Spec name (left part of nameLabel)

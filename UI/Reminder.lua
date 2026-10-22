@@ -330,7 +330,7 @@ local function BuildSpecList(parentFrame, startY, rows, rankings, highlightSpecI
 
         row.icon:ClearAllPoints()
         row.icon:SetPoint("TOPLEFT", parentFrame, "TOPLEFT", PAD + 3, dynY - 2)
-        row.icon:SetTexture(r.specIcon or "Interface\\Icons\\INV_Misc_QuestionMark")
+        row.icon:SetTexture(r.specIcon or 134400)
         row.icon:Show()
 
         local nameColor = (r.specID == highlightSpecID) and "cffffff00" or "cffa0a0a0"
@@ -392,11 +392,11 @@ function Reminder.Show(currentSpecID, bestEntry, selectedCount, rankings)
 
     -- Current spec info
     local _, curSpecName, _, curSpecIcon = GetSpecializationInfoByID(currentSpecID)
-    curIcon:SetTexture(curSpecIcon or "Interface\\Icons\\INV_Misc_QuestionMark")
+    curIcon:SetTexture(curSpecIcon or 134400)
     curName:SetText("|cffffffff" .. (curSpecName or "Unknown") .. "|r")
 
     -- Recommended spec info
-    recIcon:SetTexture(bestEntry.specIcon or "Interface\\Icons\\INV_Misc_QuestionMark")
+    recIcon:SetTexture(bestEntry.specIcon or 134400)
     recName:SetText("|cfffff6d8" .. (bestEntry.specName or "Unknown") .. "|r")
 
     local pct = math.floor((bestEntry.selectedOdds or 0) * 100 + 0.5)
@@ -603,7 +603,7 @@ function Reminder.ShowWarning(currentSpecID, currentEntry, rankings)
 
     -- Current (favored) spec
     local _, curSpecName, _, curSpecIcon = GetSpecializationInfoByID(currentSpecID)
-    wf_curIcon:SetTexture(curSpecIcon or "Interface\\Icons\\INV_Misc_QuestionMark")
+    wf_curIcon:SetTexture(curSpecIcon or 134400)
     wf_curName:SetText("|cffffffff" .. (curSpecName or "Unknown") .. "|r")
 
     -- Warning text

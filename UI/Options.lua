@@ -45,30 +45,7 @@ frame:SetScript("OnEvent", function(self, event, loadedAddon)
         local setting = Settings.RegisterAddOnSetting(reminderCategory, variable, variableKey, variableTbl,
             type(default), name, default)
 
-        local initializer = Settings.CreateCheckbox(reminderCategory, setting, L["OPTIONS_REMINDER_TOOLTIP"])
-
-        -- Add a "Preview" button on the same row as the checkbox.
-        hooksecurefunc(SettingsCheckboxControlMixin, "Init", function(self, init)
-            if init == initializer then
-                if not self.VCAPreviewButton then
-                    local btn = CreateFrame("Button", nil, self, "UIPanelButtonTemplate")
-                    btn:SetSize(100, 22)
-                    btn:SetPoint("RIGHT", self, "RIGHT", -16, 0)
-                    btn:SetText(L["OPTIONS_PREVIEW_REMINDER"])
-                    btn:SetScript("OnClick", function()
-                        if VoidcoreAdvisorReminder:IsShown() then
-                            VCA.Reminder.Hide()
-                        else
-                            VCA.Reminder.ShowExample()
-                        end
-                    end)
-                    self.VCAPreviewButton = btn
-                end
-                self.VCAPreviewButton:Show()
-            elseif self.VCAPreviewButton then
-                self.VCAPreviewButton:Hide()
-            end
-        end)
+        Settings.CreateCheckbox(reminderCategory, setting, L["OPTIONS_REMINDER_TOOLTIP"])
     end
 
     -- ── Bonus Roll confirmation overlay toggle ────────────────────────────
@@ -81,30 +58,7 @@ frame:SetScript("OnEvent", function(self, event, loadedAddon)
 
         local setting = Settings.RegisterAddOnSetting(bonusRollCategory, variable, variableKey, variableTbl,
             type(default), name, default)
-        local brcInitializer = Settings.CreateCheckbox(bonusRollCategory, setting,
-            L["OPTIONS_BONUS_ROLL_CONFIRM_TOOLTIP"])
-
-        hooksecurefunc(SettingsCheckboxControlMixin, "Init", function(self, init)
-            if init == brcInitializer then
-                if not self.VCABRCPreviewButton then
-                    local btn = CreateFrame("Button", nil, self, "UIPanelButtonTemplate")
-                    btn:SetSize(100, 22)
-                    btn:SetPoint("RIGHT", self, "RIGHT", -16, 0)
-                    btn:SetText(L["OPTIONS_PREVIEW_BONUS_ROLL"])
-                    btn:SetScript("OnClick", function()
-                        if VCARollWindow and VCARollWindow:IsShown() then
-                            VCA.BonusRollConfirm.Hide()
-                        else
-                            VCA.BonusRollConfirm.ShowPreview()
-                        end
-                    end)
-                    self.VCABRCPreviewButton = btn
-                end
-                self.VCABRCPreviewButton:Show()
-            elseif self.VCABRCPreviewButton then
-                self.VCABRCPreviewButton:Hide()
-            end
-        end)
+        Settings.CreateCheckbox(bonusRollCategory, setting, L["OPTIONS_BONUS_ROLL_CONFIRM_TOOLTIP"])
     end
 
     -- ── Show items remaining per spec toggle ─────────────────────────────

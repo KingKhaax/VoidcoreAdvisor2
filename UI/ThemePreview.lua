@@ -32,7 +32,7 @@ end
 VCA.OnTheme(Repaint)
 
 local frame = CreateFrame("Frame", "VCAThemePreviewFrame", UIParent, "BackdropTemplate")
-frame:SetSize(400, 290)
+frame:SetSize(400, 308)
 frame:SetPoint("CENTER", UIParent, "CENTER", 360, 0)
 frame:SetFrameStrata("DIALOG")
 frame:SetClampedToScreen(true)
@@ -209,7 +209,7 @@ for i = 1, 3 do
     if GetSpecialization and GetSpecializationInfo then
         specID, specName, _, specIcon = GetSpecializationInfo(i)
     end
-    icon:SetTexture(specIcon or "Interface\\Icons\\INV_Misc_QuestionMark")
+    icon:SetTexture(specIcon or 134400)
     name:SetText(specName or ("Spec " .. i))
 end
 

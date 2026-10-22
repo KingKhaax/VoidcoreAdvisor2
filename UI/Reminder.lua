@@ -88,31 +88,129 @@ local function RankCurrentPlayerSpecsForItemsCached(itemIDs, sourceType, sourceI
     return results
 end
 
+-- true while the popup is about a raid boss instead of a Mythic+ dungeon (wording only).
+local popupIsBoss = false
+
+-- The reminder popups have their own theme setting (default: the colors of your class).
+local function ReminderPalette()
+    local gdb = _G[VCA.GLOBAL_DB_NAME]
+    return VCA.GetPalette(gdb and gdb.reminderTheme or "class")
+end
+local shownBosses -- assigned in the raid boss section below
+
+-- ── Shared look ───────────────────────────────────────────────────────────────
+-- Flat themed frames with gold corner brackets, spec rows with a small bar, like the
+-- sample windows. All colors come from ReminderPalette(), so the popup follows the
+-- "Reminder popup theme" option.
+
+local FRAME_W = 440
+local PAD = 20
+
+local function FlatBackdrop(f)
+    f:SetBackdrop({
+        bgFile = "Interface\\Buttons\\WHITE8X8",
+        edgeFile = "Interface\\Buttons\\WHITE8X8",
+        edgeSize = 1,
+        insets = {left = 1, right = 1, top = 1, bottom = 1}
+    })
+    VCA.OnTheme(function()
+        local p = ReminderPalette()
+        f:SetBackdropColor(p.bg[1], p.bg[2], p.bg[3], 0.97)
+        f:SetBackdropBorderColor(p.border[1], p.border[2], p.border[3], 1)
+    end)
+    for _, point in ipairs({"TOPLEFT", "BOTTOMRIGHT"}) do
+        local h = f:CreateTexture(nil, "OVERLAY")
+        h:SetColorTexture(0.80, 0.70, 0.48, 1)
+        h:SetSize(11, 1)
+        h:SetPoint(point, f, point, 0, 0)
+        local v = f:CreateTexture(nil, "OVERLAY")
+        v:SetColorTexture(0.80, 0.70, 0.48, 1)
+        v:SetSize(1, 11)
+        v:SetPoint(point, f, point, 0, 0)
+    end
+end
+
+-- A 1px line; themed unless an explicit color is given.
+local function Line(f, r, g, b, a)
+    local t = f:CreateTexture(nil, "ARTWORK")
+    t:SetHeight(1)
+    if r then
+        t:SetColorTexture(r, g, b, a)
+    else
+        VCA.OnTheme(function()
+            local e = ReminderPalette().border
+            t:SetColorTexture(e[1], e[2], e[3], 0.5)
+        end)
+    end
+    return t
+end
+
+local function PlaceLine(line, f, y)
+    line:ClearAllPoints()
+    line:SetPoint("TOPLEFT", f, "TOPLEFT", 16, y)
+    line:SetPoint("TOPRIGHT", f, "TOPRIGHT", -16, y)
+    line:Show()
+end
+
+-- A spec icon with a colored border (green = recommended, grey = current).
+local function SpecIcon(f, recommended)
+    local border = f:CreateTexture(nil, "BACKGROUND")
+    if recommended then
+        border:SetColorTexture(0.36, 1.0, 0.29, 1)
+    else
+        border:SetColorTexture(0.42, 0.43, 0.47, 1)
+    end
+    local icon = f:CreateTexture(nil, "ARTWORK")
+    icon:SetSize(30, 30)
+    icon:SetTexCoord(0.08, 0.92, 0.08, 0.92)
+    border:SetPoint("TOPLEFT", icon, "TOPLEFT", -2, 2)
+    border:SetPoint("BOTTOMRIGHT", icon, "BOTTOMRIGHT", 2, -2)
+    return icon
+end
+
+-- Up to 4 rows: background, icon, text and a bar with the share of items still missing.
+local BAR_W = 90
+local function NewSpecRows(parent)
+    local rows = {}
+    for i = 1, 4 do
+        local row = {}
+        row.bg = parent:CreateTexture(nil, "BACKGROUND")
+        row.bg:SetColorTexture(1, 1, 1, 0.045)
+        row.icon = parent:CreateTexture(nil, "ARTWORK")
+        row.icon:SetSize(20, 20)
+        row.icon:SetTexCoord(0.08, 0.92, 0.08, 0.92)
+        row.label = parent:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+        row.track = parent:CreateTexture(nil, "BORDER")
+        row.track:SetSize(BAR_W, 5)
+        row.track:SetColorTexture(0, 0, 0, 0.45)
+        row.fill = parent:CreateTexture(nil, "ARTWORK")
+        row.fill:SetHeight(5)
+        row.bg:Hide()
+        row.icon:Hide()
+        row.label:Hide()
+        row.track:Hide()
+        row.fill:Hide()
+        rows[i] = row
+    end
+    VCA.OnTheme(function()
+        local t = ReminderPalette().timer
+        for _, row in ipairs(rows) do
+            row.fill:SetColorTexture(t[1], t[2], t[3], 1)
+        end
+    end)
+    return rows
+end
+
 -- ── Main frame ────────────────────────────────────────────────────────────────
 
 local frame = CreateFrame("Frame", "VoidcoreAdvisorReminder", UIParent, "BackdropTemplate")
-frame:SetSize(360, 290)
+frame:SetSize(FRAME_W, 290)
 frame:SetPoint("CENTER")
 frame:SetFrameStrata("DIALOG")
 frame:SetClampedToScreen(true)
 frame:EnableMouse(true)
 frame:Hide()
-
-frame:SetBackdrop({
-    bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background-Dark",
-    edgeFile = "Interface\\DialogFrame\\UI-DialogBox-Border",
-    tile = true,
-    tileSize = 32,
-    edgeSize = 32,
-    insets = {
-        left = 11,
-        right = 12,
-        top = 12,
-        bottom = 11
-    }
-})
-VCA.OnTheme(function() local t = ReminderPalette().bg; frame:SetBackdropColor(t[1], t[2], t[3], 0.95) end)
-VCA.OnTheme(function() local t = ReminderPalette().border; frame:SetBackdropBorderColor(t[1], t[2], t[3], 1) end)
+FlatBackdrop(frame)
 
 -- ESC key closes the popup via the global UISpecialFrames mechanism.
 tinsert(UISpecialFrames, "VoidcoreAdvisorReminder")
@@ -120,60 +218,42 @@ tinsert(UISpecialFrames, "VoidcoreAdvisorReminder")
 -- ── Title ─────────────────────────────────────────────────────────────────────
 
 local title = frame:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
-title:SetPoint("TOP", 0, -14)
 VCA.OnTheme(function()
     title:SetText(VCA.RebornTitle(L["REMINDER_TITLE"], ReminderPalette()))
 end)
 
 local subtitle = frame:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
-subtitle:SetPoint("TOP", title, "BOTTOM", 0, -4)
-subtitle:SetText("|cff888888" .. L["REMINDER_SUBTITLE"] .. "|r")
+subtitle:SetWidth(FRAME_W - PAD * 2)
+subtitle:SetJustifyH("CENTER")
+subtitle:SetWordWrap(true)
+subtitle:SetText("|cff9b9ba6" .. L["REMINDER_SUBTITLE"] .. "|r")
 
 local voidcoreCount = frame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-voidcoreCount:SetPoint("TOP", subtitle, "BOTTOM", 0, -3)
 
-local divider = frame:CreateTexture(nil, "ARTWORK")
-VCA.OnTheme(function() local t = ReminderPalette().border; divider:SetColorTexture(t[1], t[2], t[3], 0.4) end)
-divider:SetPoint("TOPLEFT", frame, "TOPLEFT", 16, -56)
-divider:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -16, -56)
-divider:SetHeight(1)
+local divider = Line(frame)
 
 -- ── Current loot spec row ─────────────────────────────────────────────────────
 
 local curHeader = frame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-curHeader:SetPoint("TOPLEFT", frame, "TOPLEFT", 20, -68)
-curHeader:SetText("|cff888888" .. L["REMINDER_CURRENT_SPEC"] .. "|r")
-
-local curIcon = frame:CreateTexture(nil, "ARTWORK")
-curIcon:SetSize(28, 28)
-curIcon:SetPoint("TOPLEFT", frame, "TOPLEFT", 24, -88)
-curIcon:SetTexCoord(0.08, 0.92, 0.08, 0.92)
-
+curHeader:SetText("|cffa9a9b3" .. L["REMINDER_CURRENT_SPEC"] .. "|r")
+local curIcon = SpecIcon(frame, false)
 local curName = frame:CreateFontString(nil, "OVERLAY", "GameFontHighlightLarge")
-curName:SetPoint("LEFT", curIcon, "RIGHT", 8, 0)
 
 -- ── Recommended loot spec row ─────────────────────────────────────────────────
 
 local recHeader = frame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-recHeader:SetPoint("TOPLEFT", frame, "TOPLEFT", 20, -130)
-recHeader:SetText("|cff00ff00" .. L["REMINDER_RECOMMENDED"] .. "|r")
-
-local recIcon = frame:CreateTexture(nil, "ARTWORK")
-recIcon:SetSize(28, 28)
-recIcon:SetPoint("TOPLEFT", frame, "TOPLEFT", 24, -150)
-recIcon:SetTexCoord(0.08, 0.92, 0.08, 0.92)
-
+recHeader:SetText("|cff5dff4a" .. L["REMINDER_RECOMMENDED"] .. "|r")
+local recIcon = SpecIcon(frame, true)
 local recName = frame:CreateFontString(nil, "OVERLAY", "GameFontHighlightLarge")
-recName:SetPoint("LEFT", recIcon, "RIGHT", 8, 0)
 
 local recStats = frame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-recStats:SetPoint("TOPLEFT", frame, "TOPLEFT", 24, -184)
+recStats:SetWidth(FRAME_W - PAD * 2)
+recStats:SetJustifyH("CENTER")
+recStats:SetWordWrap(true)
 
 -- ── Dynamic warning section (1-item-remaining) ───────────────────────────────
 
-local dynWarnDivider = frame:CreateTexture(nil, "ARTWORK")
-dynWarnDivider:SetColorTexture(1.0, 0.5, 0.0, 0.4)
-dynWarnDivider:SetHeight(1)
+local dynWarnDivider = Line(frame, 1.0, 0.5, 0.0, 0.45)
 dynWarnDivider:Hide()
 
 local dynWarnIcon = frame:CreateTexture(nil, "ARTWORK")
@@ -182,44 +262,33 @@ dynWarnIcon:SetAtlas("Ping_Wheel_Icon_Warning")
 dynWarnIcon:Hide()
 
 local dynWarnText = frame:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
-dynWarnText:SetWidth(292)
+dynWarnText:SetWidth(FRAME_W - PAD * 2 - 26)
 dynWarnText:SetJustifyH("LEFT")
+dynWarnText:SetWordWrap(true)
 dynWarnText:Hide()
 
 -- ── Spec-list section ────────────────────────────────────────────────────────
 
-local dynSpecDivider = frame:CreateTexture(nil, "ARTWORK")
-VCA.OnTheme(function() local t = ReminderPalette().border; dynSpecDivider:SetColorTexture(t[1], t[2], t[3], 0.4) end)
-dynSpecDivider:SetHeight(1)
+local dynSpecDivider = Line(frame)
 dynSpecDivider:Hide()
 
 local dynSpecHeader = frame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
 dynSpecHeader:Hide()
 
-local dynSpecRows = {}
-for i = 1, 4 do
-    local row = {}
-    row.icon = frame:CreateTexture(nil, "ARTWORK")
-    row.icon:SetSize(18, 18)
-    row.icon:SetTexCoord(0.08, 0.92, 0.08, 0.92)
-    row.label = frame:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
-    row.icon:Hide()
-    row.label:Hide()
-    dynSpecRows[i] = row
-end
+local dynSpecRows = NewSpecRows(frame)
 
 -- ── Prompt ────────────────────────────────────────────────────────────────────
 
 local prompt = frame:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
-prompt:SetPoint("LEFT", frame, "LEFT", 20, 0)
-prompt:SetPoint("RIGHT", frame, "RIGHT", -20, 0)
+prompt:SetPoint("LEFT", frame, "LEFT", PAD, 0)
+prompt:SetPoint("RIGHT", frame, "RIGHT", -PAD, 0)
 prompt:SetPoint("BOTTOM", frame, "BOTTOM", 0, 56)
 prompt:SetJustifyH("CENTER")
 
 -- ── Buttons ───────────────────────────────────────────────────────────────────
 
 local yesBtn = CreateFrame("Button", nil, frame, "UIPanelButtonTemplate")
-yesBtn:SetSize(140, 28)
+yesBtn:SetSize(160, 28)
 yesBtn:SetPoint("BOTTOMLEFT", frame, "BOTTOMLEFT", 30, 18)
 yesBtn:SetText(L["REMINDER_YES"])
 
@@ -231,7 +300,7 @@ yesBtn:SetScript("OnClick", function()
 end)
 
 local noBtn = CreateFrame("Button", nil, frame, "UIPanelButtonTemplate")
-noBtn:SetSize(140, 28)
+noBtn:SetSize(160, 28)
 noBtn:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -30, 18)
 noBtn:SetText(L["REMINDER_NO"])
 
@@ -240,22 +309,27 @@ noBtn:SetScript("OnClick", function()
 end)
 
 -- ── Shared spec-list builder ─────────────────────────────────────────────────
--- Populates up to 4 pre-built spec rows starting at dynY and returns the new dynY.
--- rows: array of {icon=Texture, label=FontString}
--- rankings: spec ranking table from RankCurrentPlayerSpecsForItemsCached
--- highlightSpecID: specID to colour green (favored/current)
--- parentFrame: frame used for TOPLEFT anchoring
+-- Fills up to 4 spec rows starting at startY and returns the y below the last one.
+-- rows: from NewSpecRows(); rankings: spec ranking table from
+-- RankCurrentPlayerSpecsForItemsCached; highlightSpecID: spec drawn in gold.
+local ROW_STRIDE = 26
 local function BuildSpecList(parentFrame, startY, rows, rankings, highlightSpecID)
     local dynY = startY
     local rowsUsed = 0
+    local width = parentFrame:GetWidth()
     for _, r in ipairs(rankings or {}) do
         if rowsUsed >= 4 then
             break
         end
         local row = rows[rowsUsed + 1]
 
+        row.bg:ClearAllPoints()
+        row.bg:SetPoint("TOPLEFT", parentFrame, "TOPLEFT", PAD, dynY)
+        row.bg:SetSize(width - PAD * 2, 24)
+        row.bg:Show()
+
         row.icon:ClearAllPoints()
-        row.icon:SetPoint("TOPLEFT", parentFrame, "TOPLEFT", 24, dynY)
+        row.icon:SetPoint("TOPLEFT", parentFrame, "TOPLEFT", PAD + 3, dynY - 2)
         row.icon:SetTexture(r.specIcon or "Interface\\Icons\\INV_Misc_QuestionMark")
         row.icon:Show()
 
@@ -280,30 +354,37 @@ local function BuildSpecList(parentFrame, startY, rows, rankings, highlightSpecI
         row.label:SetText(warnPrefix .. "|" .. nameColor .. r.specName .. "|r: " .. remainStr)
         row.label:Show()
 
-        dynY = dynY - 22
+        -- Bar: items still missing out of the spec's pool.
+        local base = (r.baseCount and r.baseCount > 0) and r.baseCount or math.max(r.remainingCount * 2, 1)
+        local frac = math.min(1, math.max(0, (r.remainingCount or 0) / base))
+        row.track:ClearAllPoints()
+        row.track:SetPoint("TOPRIGHT", parentFrame, "TOPRIGHT", -PAD - 8, dynY - 10)
+        row.track:Show()
+        row.fill:ClearAllPoints()
+        row.fill:SetPoint("TOPLEFT", row.track, "TOPLEFT", 0, 0)
+        row.fill:SetWidth(math.max(2, BAR_W * frac))
+        row.fill:Show()
+
+        dynY = dynY - ROW_STRIDE
         rowsUsed = rowsUsed + 1
     end
     -- Hide unused rows.
     for i = rowsUsed + 1, 4 do
-        rows[i].icon:Hide()
-        rows[i].label:Hide()
+        local row = rows[i]
+        row.bg:Hide()
+        row.icon:Hide()
+        row.label:Hide()
+        row.track:Hide()
+        row.fill:Hide()
     end
     return dynY
 end
 
 -- ── Show / Hide ───────────────────────────────────────────────────────────────
 
--- true while the popup is about a raid boss instead of a Mythic+ dungeon (wording only).
-local popupIsBoss = false
-
--- The reminder popups have their own theme setting (default: the colors of your class).
-local function ReminderPalette()
-    local gdb = _G[VCA.GLOBAL_DB_NAME]
-    return VCA.GetPalette(gdb and gdb.reminderTheme or "class")
-end
-local shownBosses -- assigned in the raid boss section below
-
 function Reminder.Show(currentSpecID, bestEntry, selectedCount, rankings)
+    local W = frame:GetWidth()
+
     -- Voidcore count
     local currInfo = C_CurrencyInfo and C_CurrencyInfo.GetCurrencyInfo(VCA.VOIDCORE_CURRENCY_ID)
     local owned = currInfo and currInfo.quantity or 0
@@ -312,63 +393,91 @@ function Reminder.Show(currentSpecID, bestEntry, selectedCount, rankings)
     -- Current spec info
     local _, curSpecName, _, curSpecIcon = GetSpecializationInfoByID(currentSpecID)
     curIcon:SetTexture(curSpecIcon or "Interface\\Icons\\INV_Misc_QuestionMark")
-    curName:SetText("|cffdddddd" .. (curSpecName or "Unknown") .. "|r")
+    curName:SetText("|cffffffff" .. (curSpecName or "Unknown") .. "|r")
 
     -- Recommended spec info
     recIcon:SetTexture(bestEntry.specIcon or "Interface\\Icons\\INV_Misc_QuestionMark")
-    recName:SetText("|cffffff00" .. (bestEntry.specName or "Unknown") .. "|r")
+    recName:SetText("|cfffff6d8" .. (bestEntry.specName or "Unknown") .. "|r")
 
     local pct = math.floor((bestEntry.selectedOdds or 0) * 100 + 0.5)
-    recStats:SetText(string.format(L["REMINDER_ITEMS_SELECTED"], selectedCount) .. "  |cff888888\226\128\162|r  " ..
-                         "|cffffff00" .. string.format(L["REMINDER_SELECTED_CHANCE"], pct) .. "|r")
+    recStats:SetText("|cffffd84d" .. string.format(L["REMINDER_ITEMS_SELECTED"], selectedCount) .. "|r  |cff9b9ba6\226\128\162|r  " ..
+                         "|cffffd84d" .. string.format(L["REMINDER_SELECTED_CHANCE"], pct) .. "|r")
 
     prompt:SetText(string.format(L["REMINDER_CHANGE_PROMPT"], bestEntry.specName or "?"))
 
-    -- ── Dynamic section ──────────────────────────────────────────────────────
-    -- Content above the dynamic section ends at approximately y=-200.
-    local dynY = -208
+    -- Everything is stacked from the top using the real text heights, so nothing
+    -- overlaps or gets cut when a language needs more lines.
+    local y = -14
+    title:ClearAllPoints()
+    title:SetPoint("TOP", frame, "TOP", 0, y)
+    y = y - title:GetStringHeight() - 4
+
+    subtitle:ClearAllPoints()
+    subtitle:SetPoint("TOP", frame, "TOP", 0, y)
+    y = y - subtitle:GetStringHeight() - 4
+
+    voidcoreCount:ClearAllPoints()
+    voidcoreCount:SetPoint("TOP", frame, "TOP", 0, y)
+    y = y - voidcoreCount:GetStringHeight() - 8
+
+    PlaceLine(divider, frame, y)
+    y = y - 10
+
+    curHeader:ClearAllPoints()
+    curHeader:SetPoint("TOPLEFT", frame, "TOPLEFT", PAD, y)
+    y = y - 20
+    curIcon:ClearAllPoints()
+    curIcon:SetPoint("TOPLEFT", frame, "TOPLEFT", PAD + 4, y)
+    curName:ClearAllPoints()
+    curName:SetPoint("LEFT", curIcon, "RIGHT", 10, 0)
+    y = y - 38
+
+    recHeader:ClearAllPoints()
+    recHeader:SetPoint("TOPLEFT", frame, "TOPLEFT", PAD, y)
+    y = y - 20
+    recIcon:ClearAllPoints()
+    recIcon:SetPoint("TOPLEFT", frame, "TOPLEFT", PAD + 4, y)
+    recName:ClearAllPoints()
+    recName:SetPoint("LEFT", recIcon, "RIGHT", 10, 0)
+    y = y - 38
+
+    recStats:ClearAllPoints()
+    recStats:SetPoint("TOP", frame, "TOP", 0, y)
+    y = y - recStats:GetStringHeight() - 10
 
     if bestEntry.remainingCount == 1 then
-        -- Orange divider before warning.
-        dynWarnDivider:ClearAllPoints()
-        dynWarnDivider:SetPoint("TOPLEFT", frame, "TOPLEFT", 16, dynY)
-        dynWarnDivider:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -16, dynY)
-        dynWarnDivider:Show()
-        dynY = dynY - 12
+        PlaceLine(dynWarnDivider, frame, y)
+        y = y - 10
 
         dynWarnIcon:ClearAllPoints()
-        dynWarnIcon:SetPoint("TOPLEFT", frame, "TOPLEFT", 20, dynY)
+        dynWarnIcon:SetPoint("TOPLEFT", frame, "TOPLEFT", PAD, y)
         dynWarnIcon:Show()
 
         dynWarnText:ClearAllPoints()
-        dynWarnText:SetPoint("TOPLEFT", frame, "TOPLEFT", 46, dynY)
+        dynWarnText:SetPoint("TOPLEFT", frame, "TOPLEFT", PAD + 26, y)
         dynWarnText:SetText(L[popupIsBoss and "REMINDER_WARNING_ONE_ITEM_BOSS" or "REMINDER_WARNING_ONE_ITEM"])
         dynWarnText:Show()
 
-        dynY = dynY - 80
+        y = y - math.max(dynWarnText:GetStringHeight(), 20) - 10
     else
         dynWarnDivider:Hide()
         dynWarnIcon:Hide()
         dynWarnText:Hide()
     end
 
-    -- Purple divider before spec list.
-    dynSpecDivider:ClearAllPoints()
-    dynSpecDivider:SetPoint("TOPLEFT", frame, "TOPLEFT", 16, dynY)
-    dynSpecDivider:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -16, dynY)
-    dynSpecDivider:Show()
-    dynY = dynY - 14
+    PlaceLine(dynSpecDivider, frame, y)
+    y = y - 10
 
     dynSpecHeader:ClearAllPoints()
-    dynSpecHeader:SetPoint("TOPLEFT", frame, "TOPLEFT", 20, dynY)
-    dynSpecHeader:SetText("|cff888888" .. L["REMINDER_SPEC_LIST_HEADER"] .. "|r")
+    dynSpecHeader:SetPoint("TOPLEFT", frame, "TOPLEFT", PAD, y)
+    dynSpecHeader:SetText("|cffa9a9b3" .. L["REMINDER_SPEC_LIST_HEADER"] .. "|r")
     dynSpecHeader:Show()
-    dynY = dynY - 20
+    y = y - 22
 
-    dynY = BuildSpecList(frame, dynY, dynSpecRows, rankings, bestEntry.specID)
+    y = BuildSpecList(frame, y, dynSpecRows, rankings, bestEntry.specID)
 
-    -- Resize frame to fit all content + room for prompt + buttons.
-    frame:SetHeight(math.abs(dynY) + 90)
+    -- Room for the question and the buttons.
+    frame:SetHeight(math.abs(y) + 96)
 
     pendingSpecID = bestEntry.specID
     frame:Show()
@@ -426,102 +535,60 @@ end
 -- ── Warning popup (already on the favored loot spec) ────────────────────────
 
 local warnFrame = CreateFrame("Frame", "VoidcoreAdvisorWarning", UIParent, "BackdropTemplate")
-warnFrame:SetSize(360, 340)
+warnFrame:SetSize(FRAME_W, 340)
 warnFrame:SetPoint("CENTER")
 warnFrame:SetFrameStrata("DIALOG")
 warnFrame:SetClampedToScreen(true)
 warnFrame:EnableMouse(true)
 warnFrame:Hide()
-
-warnFrame:SetBackdrop({
-    bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background-Dark",
-    edgeFile = "Interface\\DialogFrame\\UI-DialogBox-Border",
-    tile = true,
-    tileSize = 32,
-    edgeSize = 32,
-    insets = {
-        left = 11,
-        right = 12,
-        top = 12,
-        bottom = 11
-    }
-})
-VCA.OnTheme(function() local t = ReminderPalette().bg; warnFrame:SetBackdropColor(t[1], t[2], t[3], 0.95) end)
-VCA.OnTheme(function() local t = ReminderPalette().border; warnFrame:SetBackdropBorderColor(t[1], t[2], t[3], 1) end)
+FlatBackdrop(warnFrame)
 
 tinsert(UISpecialFrames, "VoidcoreAdvisorWarning")
 
 local wf_title = warnFrame:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
-wf_title:SetPoint("TOP", 0, -14)
 VCA.OnTheme(function()
     wf_title:SetText(VCA.RebornTitle(L["WARNING_TITLE"], ReminderPalette()))
 end)
 
 local wf_subtitle = warnFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
-wf_subtitle:SetPoint("TOP", wf_title, "BOTTOM", 0, -4)
+wf_subtitle:SetWidth(FRAME_W - PAD * 2)
+wf_subtitle:SetJustifyH("CENTER")
+wf_subtitle:SetWordWrap(true)
 wf_subtitle:SetText("|cffff8000" .. L["WARNING_SUBTITLE"] .. "|r")
 
 local wf_voidcoreCount = warnFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-wf_voidcoreCount:SetPoint("TOP", wf_subtitle, "BOTTOM", 0, -3)
 
-local wf_divider1 = warnFrame:CreateTexture(nil, "ARTWORK")
-VCA.OnTheme(function() local t = ReminderPalette().border; wf_divider1:SetColorTexture(t[1], t[2], t[3], 0.4) end)
-wf_divider1:SetPoint("TOPLEFT", warnFrame, "TOPLEFT", 16, -56)
-wf_divider1:SetPoint("TOPRIGHT", warnFrame, "TOPRIGHT", -16, -56)
-wf_divider1:SetHeight(1)
+local wf_divider1 = Line(warnFrame)
 
 local wf_specHeader = warnFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-wf_specHeader:SetPoint("TOPLEFT", warnFrame, "TOPLEFT", 20, -68)
-wf_specHeader:SetText("|cff888888" .. L["WARNING_FAVORED_SPEC"] .. "|r")
+wf_specHeader:SetText("|cffa9a9b3" .. L["WARNING_FAVORED_SPEC"] .. "|r")
 
-local wf_curIcon = warnFrame:CreateTexture(nil, "ARTWORK")
-wf_curIcon:SetSize(28, 28)
-wf_curIcon:SetPoint("TOPLEFT", warnFrame, "TOPLEFT", 24, -88)
-wf_curIcon:SetTexCoord(0.08, 0.92, 0.08, 0.92)
-
+local wf_curIcon = SpecIcon(warnFrame, false)
 local wf_curName = warnFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlightLarge")
-wf_curName:SetPoint("LEFT", wf_curIcon, "RIGHT", 8, 0)
 
 -- Warning section (always shown)
-local wf_warnDivider = warnFrame:CreateTexture(nil, "ARTWORK")
-wf_warnDivider:SetColorTexture(1.0, 0.5, 0.0, 0.4)
-wf_warnDivider:SetPoint("TOPLEFT", warnFrame, "TOPLEFT", 16, -130)
-wf_warnDivider:SetPoint("TOPRIGHT", warnFrame, "TOPRIGHT", -16, -130)
-wf_warnDivider:SetHeight(1)
+local wf_warnDivider = Line(warnFrame, 1.0, 0.5, 0.0, 0.45)
 
 local wf_warnIcon = warnFrame:CreateTexture(nil, "ARTWORK")
 wf_warnIcon:SetSize(20, 20)
-wf_warnIcon:SetPoint("TOPLEFT", warnFrame, "TOPLEFT", 20, -148)
 wf_warnIcon:SetAtlas("Ping_Wheel_Icon_Warning")
 
 local wf_warnText = warnFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
-wf_warnText:SetWidth(292)
+wf_warnText:SetWidth(FRAME_W - PAD * 2 - 26)
 wf_warnText:SetJustifyH("LEFT")
-wf_warnText:SetPoint("TOPLEFT", warnFrame, "TOPLEFT", 46, -148)
+wf_warnText:SetWordWrap(true)
 
 -- Spec-list section (dynamic height, positioned by ShowWarning)
-local wf_specListDivider = warnFrame:CreateTexture(nil, "ARTWORK")
-VCA.OnTheme(function() local t = ReminderPalette().border; wf_specListDivider:SetColorTexture(t[1], t[2], t[3], 0.4) end)
-wf_specListDivider:SetHeight(1)
+local wf_specListDivider = Line(warnFrame)
 wf_specListDivider:Hide()
 
 local wf_specListHeader = warnFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
 wf_specListHeader:Hide()
 
-local wf_specRows = {}
-for i = 1, 4 do
-    local row = {}
-    row.icon = warnFrame:CreateTexture(nil, "ARTWORK")
-    row.icon:SetSize(18, 18)
-    row.icon:SetTexCoord(0.08, 0.92, 0.08, 0.92)
-    row.label = warnFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
-    row.icon:Hide()
-    row.label:Hide()
-    wf_specRows[i] = row
-end
+local wf_specRows = NewSpecRows(warnFrame)
 
 local wf_closeBtn = CreateFrame("Button", nil, warnFrame, "UIPanelButtonTemplate")
-wf_closeBtn:SetSize(140, 28)
+wf_closeBtn:SetSize(160, 28)
 wf_closeBtn:SetPoint("BOTTOM", warnFrame, "BOTTOM", 0, 18)
 wf_closeBtn:SetText(L["WARNING_CLOSE"])
 wf_closeBtn:SetScript("OnClick", function()
@@ -537,31 +604,59 @@ function Reminder.ShowWarning(currentSpecID, currentEntry, rankings)
     -- Current (favored) spec
     local _, curSpecName, _, curSpecIcon = GetSpecializationInfoByID(currentSpecID)
     wf_curIcon:SetTexture(curSpecIcon or "Interface\\Icons\\INV_Misc_QuestionMark")
-    wf_curName:SetText("|cffffff00" .. (curSpecName or "Unknown") .. "|r")
+    wf_curName:SetText("|cffffffff" .. (curSpecName or "Unknown") .. "|r")
 
     -- Warning text
     wf_warnText:SetText(string.format(L[popupIsBoss and "WARNING_ONE_ITEM_BOSS" or "WARNING_ONE_ITEM"],
         currentEntry.remainingCount or 1))
 
-    -- Spec list (dynamic, starts at y=-220 which is well below the 2-3 line warning text)
-    local dynY = -220
+    -- Stacked from the top with the real text heights.
+    local y = -14
+    wf_title:ClearAllPoints()
+    wf_title:SetPoint("TOP", warnFrame, "TOP", 0, y)
+    y = y - wf_title:GetStringHeight() - 4
 
-    wf_specListDivider:ClearAllPoints()
-    wf_specListDivider:SetPoint("TOPLEFT", warnFrame, "TOPLEFT", 16, dynY)
-    wf_specListDivider:SetPoint("TOPRIGHT", warnFrame, "TOPRIGHT", -16, dynY)
-    wf_specListDivider:Show()
-    dynY = dynY - 14
+    wf_subtitle:ClearAllPoints()
+    wf_subtitle:SetPoint("TOP", warnFrame, "TOP", 0, y)
+    y = y - wf_subtitle:GetStringHeight() - 4
+
+    wf_voidcoreCount:ClearAllPoints()
+    wf_voidcoreCount:SetPoint("TOP", warnFrame, "TOP", 0, y)
+    y = y - wf_voidcoreCount:GetStringHeight() - 8
+
+    PlaceLine(wf_divider1, warnFrame, y)
+    y = y - 10
+
+    wf_specHeader:ClearAllPoints()
+    wf_specHeader:SetPoint("TOPLEFT", warnFrame, "TOPLEFT", PAD, y)
+    y = y - 20
+    wf_curIcon:ClearAllPoints()
+    wf_curIcon:SetPoint("TOPLEFT", warnFrame, "TOPLEFT", PAD + 4, y)
+    wf_curName:ClearAllPoints()
+    wf_curName:SetPoint("LEFT", wf_curIcon, "RIGHT", 10, 0)
+    y = y - 40
+
+    PlaceLine(wf_warnDivider, warnFrame, y)
+    y = y - 10
+    wf_warnIcon:ClearAllPoints()
+    wf_warnIcon:SetPoint("TOPLEFT", warnFrame, "TOPLEFT", PAD, y)
+    wf_warnText:ClearAllPoints()
+    wf_warnText:SetPoint("TOPLEFT", warnFrame, "TOPLEFT", PAD + 26, y)
+    y = y - math.max(wf_warnText:GetStringHeight(), 20) - 10
+
+    PlaceLine(wf_specListDivider, warnFrame, y)
+    y = y - 10
 
     wf_specListHeader:ClearAllPoints()
-    wf_specListHeader:SetPoint("TOPLEFT", warnFrame, "TOPLEFT", 20, dynY)
-    wf_specListHeader:SetText("|cff888888" .. L["WARNING_SPEC_LIST_HEADER"] .. "|r")
+    wf_specListHeader:SetPoint("TOPLEFT", warnFrame, "TOPLEFT", PAD, y)
+    wf_specListHeader:SetText("|cffa9a9b3" .. L["WARNING_SPEC_LIST_HEADER"] .. "|r")
     wf_specListHeader:Show()
-    dynY = dynY - 20
+    y = y - 22
 
-    dynY = BuildSpecList(warnFrame, dynY, wf_specRows, rankings, currentSpecID)
+    y = BuildSpecList(warnFrame, y, wf_specRows, rankings, currentSpecID)
 
     -- Resize to fit.
-    warnFrame:SetHeight(math.abs(dynY) + 70)
+    warnFrame:SetHeight(math.abs(y) + 70)
 
     warnFrame:Show()
 end
@@ -833,3 +928,4 @@ eventFrame:SetScript("OnEvent", function(self, event, isInitialLogin, isReloadin
         Reminder.Evaluate()
     end)
 end)
+

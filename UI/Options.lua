@@ -167,22 +167,10 @@ frame:SetScript("OnEvent", function(self, event, loadedAddon)
             VCA.Panel.Refresh()
         end
     end, function()
-        VCA.ThemePreview.SetTheme("current", false)
-        VCA.ThemePreview.Show()
+        VCA.ThemePreview.Toggle()
     end)
 
-    -- 2. The theme the sample window shows.
-    ThemeRow("VoidcoreAdvisor_PreviewTheme", "previewTheme", "OPTIONS_PREVIEW_THEME", "OPTIONS_PREVIEW_THEME_TOOLTIP",
-        "class", true, function(tbl)
-            VCA.ThemePreview.SetTheme(tbl.previewTheme)
-            VCA.ThemePreview.Show()
-        end, function()
-            local gdb = _G[VCA.GLOBAL_DB_NAME]
-            VCA.ThemePreview.SetTheme(gdb and gdb.previewTheme or "class")
-            VCA.ThemePreview.Show()
-        end)
-
-    -- 3. The theme of the bonus roll window; its button opens the roll window preview.
+    -- 2. The theme of the bonus roll window; its button opens the roll window preview.
     ThemeRow("VoidcoreAdvisor_RollTheme", "rollTheme", "OPTIONS_ROLL_THEME", "OPTIONS_ROLL_THEME_TOOLTIP", "class", true,
         function(tbl)
             VCA.ApplyTheme(tbl.theme)
@@ -194,7 +182,7 @@ frame:SetScript("OnEvent", function(self, event, loadedAddon)
             end
         end)
 
-    -- 4. The theme of the loot spec reminder popups; its button opens the example popup.
+    -- 3. The theme of the loot spec reminder popups; its button opens the example popup.
     ThemeRow("VoidcoreAdvisor_ReminderTheme", "reminderTheme", "OPTIONS_REMINDER_THEME",
         "OPTIONS_REMINDER_THEME_TOOLTIP", "class", true, function(tbl)
             VCA.ApplyTheme(tbl.theme)

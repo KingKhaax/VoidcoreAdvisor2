@@ -4,11 +4,11 @@
 - New **Preview** button next to the color theme selector in the options (also `/void preview`): a sample window that recolors live while you change the theme, with a counting-down timer bar.
 - The timer bar of the bonus roll window shows the time left (for example 2:34) in its center.
 - **Mark rolled item** now works in two steps: press the bar, click the items you got (they dim right away, nothing is saved yet), then press the bar again to save them. Closing the panel or changing boss discards unsaved marks. Shift+click still stages everything between two clicks.
-- New **Preview theme** selector in the options: the preview window can show any theme without changing yours (default: your class), with < > buttons inside the window to browse them.
+- The preview window has < > buttons to look at other themes without changing yours.
 - New **Bonus roll window theme** selector in the options: the bonus roll window has its own color theme (default: your class).
 - The loot spec reminder popup now also appears in front of raid bosses: target a current-season raid boss before the pull and you get it once per boss. It has its own option (on by default) and boss wording in the warning.
-- New **Reminder popup theme** selector in the options (default: your class), and the reminder popups show a gold "Reborn" next to the title.
-- Every theme row in the options now has its own **Preview** button: the color theme and the preview theme open the sample window, the bonus roll theme opens the roll window preview and the reminder theme opens the example popup.
+- New **Reminder popup theme** selector in the options (default: your class), and the reminder popups show a gold "Reborn" next to the title. Both popups now use the flat themed look of the sample windows (gold corners, bigger spec rows, progress bars, no clipped text).
+- Every theme row in the options now has its own **Preview** button: the color theme opens the sample window, the bonus roll theme opens the roll window preview and the reminder theme opens the example popup.
 - New `/void open` command: opens the addon options page (themes and previews) directly.
 - Removed the "Style of my specialization" theme. "Style of my class" stays; anyone who had the specialization theme selected is moved to it.
 

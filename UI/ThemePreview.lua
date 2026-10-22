@@ -10,7 +10,7 @@ local Preview = {}
 VCA.ThemePreview = Preview
 
 -- "current" = the theme you use; otherwise a theme key (or "class").
-local previewKey = "class"
+local previewKey = "current"
 
 local painters = {}
 local function Palette()
@@ -84,16 +84,12 @@ local function Label(key)
     return VCA.ThemeLabel(key)
 end
 
--- persist == false previews a theme without saving it as your preview setting.
-function Preview.SetTheme(key, persist)
+-- Shows a theme in the sample window; nothing is saved.
+function Preview.SetTheme(key)
     if key ~= "current" and not VCA.IsTheme(key) then
         key = "current"
     end
     previewKey = key
-    local gdb = _G[VCA.GLOBAL_DB_NAME]
-    if gdb and persist ~= false then
-        gdb.previewTheme = key
-    end
     themeName:SetText(Label(key))
     Repaint()
 end
@@ -278,23 +274,20 @@ function Preview.GetTheme()
     return previewKey
 end
 
+-- It always opens on the theme you use.
+function Preview.Show()
+    if not frame:IsShown() then
+        Preview.SetTheme("current")
+    end
+    frame:Show()
+end
+
 function Preview.Toggle()
     if frame:IsShown() then
         frame:Hide()
     else
-        frame:Show()
+        Preview.Show()
     end
 end
 
-function Preview.Show()
-    frame:Show()
-end
-
--- Restores the theme chosen last time once the saved variables are available.
-local loader = CreateFrame("Frame")
-loader:RegisterEvent("PLAYER_LOGIN")
-loader:SetScript("OnEvent", function()
-    local gdb = _G[VCA.GLOBAL_DB_NAME]
-    Preview.SetTheme((gdb and gdb.previewTheme) or "class")
-end)
 themeName:SetText(Label(previewKey))

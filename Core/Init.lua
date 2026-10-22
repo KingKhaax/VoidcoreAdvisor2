@@ -27,7 +27,6 @@ local function GetGlobalDefaults()
         brcSpecListEnabled = true,
         brcConfirmEnabled = true,
         theme = "green",
-        previewTheme = "class",
         rollTheme = "class",
         reminderTheme = "class",
         brcDefaultOnV2 = true
@@ -68,9 +67,6 @@ local function InitDB()
         end
         if gdb.theme == "spec" then
             gdb.theme = "class" -- the specialization theme was removed in 2.3.3
-        end
-        if gdb.previewTheme == nil or (gdb.previewTheme ~= "current" and not VCA.IsTheme(gdb.previewTheme)) then
-            gdb.previewTheme = "class"
         end
         if gdb.rollTheme == nil or (gdb.rollTheme ~= "current" and not VCA.IsTheme(gdb.rollTheme)) then
             gdb.rollTheme = "class"

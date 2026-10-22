@@ -1,5 +1,8 @@
 # Changelog
 
+## 2.2.5
+- The "new raid not in the loot data" message ignores the "Midnight" world boss entry by its ID and tells you about each unknown raid only once, instead of at every login.
+
 ## 2.2.4
 - Login item-cache warmup is gentler (about 80 items per second instead of 600) to avoid frame rate dips right after logging in.
 

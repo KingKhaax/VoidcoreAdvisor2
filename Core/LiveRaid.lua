@@ -75,7 +75,15 @@ end
 -- as the expansion's own "Midnight" entry do not. The instance must be selected.
 -- The entry named after the expansion (the world bosses) is skipped too, and so is
 -- anything without a map.
+-- Journal entries that are not raids (world bosses of an expansion).
+local NOT_RAIDS = {
+    [1312] = true -- "Midnight" world bosses
+}
+
 local function IsRaidInstance(instanceID, instanceName, tier)
+    if instanceID and NOT_RAIDS[instanceID] then
+        return false
+    end
     if not (EJ_IsValidInstanceDifficulty(14) or EJ_IsValidInstanceDifficulty(15) or EJ_IsValidInstanceDifficulty(16)) then
         return false
     end
@@ -277,7 +285,10 @@ local function CheckOutdated()
         return
     end
     local savedTier = EJ_GetCurrentTier()
-    local unknown = {}
+    -- Each unknown raid is announced once, ever (not at every login).
+    local gdb = _G[VCA.GLOBAL_DB_NAME]
+    local already = gdb and gdb.warnedRaids
+    local unknown, unknownIDs = {}, {}
     EJ_SelectTier(EJ_GetNumTiers())
     local idx = 1
     while true do
@@ -285,10 +296,11 @@ local function CheckOutdated()
         if not instanceID then
             break
         end
-        if not VCA.LootPool.IsCurrentSeasonRaid(instanceID) then
+        if not VCA.LootPool.IsCurrentSeasonRaid(instanceID) and not (already and already[instanceID]) then
             EJ_SelectInstance(instanceID)
             if IsRaidInstance(instanceID, name, EJ_GetNumTiers()) then
                 unknown[#unknown + 1] = name or tostring(instanceID)
+                unknownIDs[#unknownIDs + 1] = instanceID
             end
         end
         idx = idx + 1
@@ -298,6 +310,12 @@ local function CheckOutdated()
     end
     if #unknown > 0 then
         warnedOutdated = true
+        if gdb then
+            gdb.warnedRaids = gdb.warnedRaids or {}
+            for _, id in ipairs(unknownIDs) do
+                gdb.warnedRaids[id] = true
+            end
+        end
         print(VCA.Theme.title .. "VoidcoreAdvisor Reborn:|r " ..
                   string.format(L["DATA_OUTDATED"], table.concat(unknown, ", ")))
     end

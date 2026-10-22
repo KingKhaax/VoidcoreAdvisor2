@@ -309,6 +309,22 @@ local function GetOrCreateRow(parent)
     return row
 end
 
+-- Shown instead of a table full of dashes while no boss has chosen items yet.
+local emptyHint = contentArea:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
+emptyHint:SetPoint("TOPLEFT", contentArea, "TOPLEFT", PADDING + 10, -40)
+emptyHint:SetPoint("TOPRIGHT", contentArea, "TOPRIGHT", -PADDING - 10, -40)
+emptyHint:SetJustifyH("CENTER")
+emptyHint:SetSpacing(4)
+emptyHint:SetText("|cffbbbbbb" .. L["RAID_OVERVIEW_EMPTY_HINT"] .. "|r")
+emptyHint:Hide()
+
+local function ShowTable(show)
+    for _, w in ipairs({hdrBoss, hdrSpec, hdrLooted, hdrChance, colHeaderRule}) do
+        w:SetShown(show)
+    end
+    emptyHint:SetShown(not show)
+end
+
 local function HideAllRows()
     for _, row in ipairs(rows) do
         row.frame:Hide()
@@ -401,6 +417,7 @@ end
 
 local function Populate()
     HideAllRows()
+    ShowTable(true)
 
     local contentW = frame:GetWidth() - PADDING * 2
     scrollFrame:ClearAllPoints()
@@ -470,6 +487,13 @@ local function Populate()
         end
 
         idx = idx + 1
+    end
+
+    if selectedBossCount == 0 and #entries > 0 then
+        ShowTable(false)
+        SetLoadingState(false, false)
+        scrollChild:SetHeight(1)
+        return
     end
 
     local waitingForCache = selectedBossCount > 0 and cacheReadyBossCount < selectedBossCount

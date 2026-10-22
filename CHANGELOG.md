@@ -9,6 +9,7 @@
 - The loot spec reminder popup now also appears in front of raid bosses: target a current-season raid boss before the pull and you get it once per boss. It has its own option (on by default) and boss wording in the warning.
 - New **Reminder popup theme** selector in the options (default: your class), and the reminder popups show a gold "Reborn" next to the title. Both popups now use the flat themed look of the sample windows (gold corners, bigger spec rows, progress bars, no clipped text).
 - Every theme row in the options now has its own **Preview** button: the color theme opens the sample window, the bonus roll theme opens the roll window preview and the reminder theme opens the example popup.
+- The raid boss overview no longer shows a table full of dashes: until you choose items for a boss it explains what to do instead.
 - New `/void open` command: opens the addon options page (themes and previews) directly.
 - Removed the "Style of my specialization" theme. "Style of my class" stays; anyone who had the specialization theme selected is moved to it.
 

@@ -402,9 +402,10 @@ local function RankCurrentPlayerSpecsForItemsCached(itemIDs, sourceType, sourceI
             matchRemainingCount = matchRemainingCount,
             selectedOdds = remainingCount > 0 and (matchRemainingCount / remainingCount) or 0,
             allObtained = baseCount > 0 and remainingCount == 0,
-            noItems = matchCount < selectedCount
+            noItems = false -- set below by MarkCoverage
         }
     end
+    VCA.Probability.MarkCoverage(results, #itemIDs)
 
     table.sort(results, function(a, b)
         if a.noItems ~= b.noItems then

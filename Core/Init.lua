@@ -281,6 +281,12 @@ SlashCmdList["VOIDCOREADVISOR"] = function(msg)
     elseif cmd == "version" then
         print(VCA.Theme.title .. "VoidcoreAdvisor Reborn:|r " .. string.format(L["VERSION_FORMAT"], VCA.VERSION))
 
+    elseif cmd == "tooltips" then
+        -- Checks that no raid item loses its effect text in the tooltip.
+        if VCA.Panel and VCA.Panel.AuditRaidTooltips then
+            VCA.Panel.AuditRaidTooltips()
+        end
+
     elseif cmd == "replaylog" then
         VCA.Detection.ReplayBonusRollLog(true)
         -- Refresh the panel so newly-marked items are immediately hidden.

@@ -1,3 +1,12 @@
+Version: 2.7.3
+2026/10/24 Released
+
+🛠️ Fix
+- [Tooltip] Some raid items lost their "Equip:" effect text in the tooltip, for example the plate legs of Ula'tek (Unbound Rancor Legguards). Those items only show the effect when their link carries one extra bonus ID. Instead of listing the items by hand, the addon now compares the tooltip with the plain item's and, when an effect line is lost, rebuilds the link with that bonus and keeps it if the effect comes back. It works for every item of the season raids, on Normal, Heroic and Mythic and for every armor type. The new command /void tooltips checks all of them in game and lists any item that still loses an effect. Reported on CurseForge.
+- [Overview] When you chose items that no single specialization can loot (for example a tank weapon and a damage weapon of the same class, plus a neck and trinkets), every specialization was marked as unable and the overview showed the first one, such as Holy for a Paladin, with a 0% drop chance. Now the specializations that cover the most of your chosen items are used and ranked, and the chance shown is the one for the items they cover. Applies to the raid and dungeon overviews, the specialization ranking and the reminder. Reported on CurseForge.
+
+---
+
 Version: 2.7.2
 2026/10/23 Released
 

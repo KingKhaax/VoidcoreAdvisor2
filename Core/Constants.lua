@@ -3,7 +3,7 @@
 local addonName, VCA = ...
 
 VCA.ADDON_NAME = addonName
-VCA.VERSION = (C_AddOns and C_AddOns.GetAddOnMetadata and C_AddOns.GetAddOnMetadata("VoidcoreAdvisorReborn", "Version")) or "2.7.2"
+VCA.VERSION = (C_AddOns and C_AddOns.GetAddOnMetadata and C_AddOns.GetAddOnMetadata("VoidcoreAdvisorReborn", "Version")) or "2.7.3"
 VCA.SCHEMA_VERSION = 2
 VCA.CHAR_DB_NAME = "VoidcoreAdvisorCharDB"
 VCA.GLOBAL_DB_NAME = "VoidcoreAdvisorDB"
@@ -75,7 +75,8 @@ VCA.RaidVoidcoreTooltip = {
 -- Items that need an extra bonus ID (13708) in the Heroic link; raw EJ link on Mythic.
 VCA.RaidTooltipExtraBonusItems = {
     [268265] = true,
-    [271875] = true
+    [271875] = true,
+    [271878] = true -- Ula'tek plate legs (Unbound Rancor)
 }
 
 -- Items excluded from specific encounters (do not drop from Voidcores).

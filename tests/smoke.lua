@@ -451,3 +451,33 @@ check("Replay: the difficulty comes from the item link", function()
     assert(D.ResolveEntryDifficulty({difficultyID = 16, itemLink = "|Hitem:1::::::::90:269::95:2:13334:12849::::::|h"}) == 15,
         "link wins over a wrong saved difficulty")
 end)
+
+check("Raid tooltip: an item that loses its effect gets the effect bonus", function()
+    local old = _G.C_TooltipInfo
+    local oldEquip, oldUse, oldProc = _G.ITEM_SPELL_TRIGGER_ONEQUIP, _G.ITEM_SPELL_TRIGGER_ONUSE, _G.ITEM_SPELL_TRIGGER_ONPROC
+    _G.ITEM_SPELL_TRIGGER_ONEQUIP, _G.ITEM_SPELL_TRIGGER_ONUSE, _G.ITEM_SPELL_TRIGGER_ONPROC = "Equip:", "Use:", "Chance on hit:"
+    _G.C_TooltipInfo = {
+        GetItemByID = function(id)
+            return {lines = {{leftText = "Name"}, {leftText = "Equip: does a thing"}}}
+        end,
+        GetHyperlink = function(link)
+            if link:find(":13708:") then
+                return {lines = {{leftText = "Name"}, {leftText = "Equip: does a thing"}}}
+            end
+            return {lines = {{leftText = "Name"}}}
+        end
+    }
+    local sample = "|cnIQ3:|Hitem:999001::::::::90:104::5:1:3524:1:28:7363:::::|h[X]|h|r"
+    local link = VCA.Panel.BuildRaidTooltipLink(sample, 15, 1)
+    assert(link:find(":13708:"), link)
+    -- an item that keeps its effect is left alone
+    _G.C_TooltipInfo.GetHyperlink = function() return {lines = {{leftText = "Equip: does a thing"}}} end
+    local link2 = VCA.Panel.BuildRaidTooltipLink(sample:gsub("999001", "999002"), 15, 1)
+    assert(not link2:find(":13708:"), link2)
+    -- tooltip data not available yet: nothing is decided
+    _G.C_TooltipInfo.GetHyperlink = function() return nil end
+    local link3 = VCA.Panel.BuildRaidTooltipLink(sample:gsub("999001", "999003"), 15, 1)
+    assert(not link3:find(":13708:"), link3)
+    _G.C_TooltipInfo = old
+    _G.ITEM_SPELL_TRIGGER_ONEQUIP, _G.ITEM_SPELL_TRIGGER_ONUSE, _G.ITEM_SPELL_TRIGGER_ONPROC = oldEquip, oldUse, oldProc
+end)

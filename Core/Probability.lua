@@ -160,6 +160,24 @@ function Probability.RankCurrentPlayerSpecs(sourceType, sourceID, difficultyID, 
     return Probability.RankSpecs(specs, sourceType, sourceID, difficultyID, isHighTier)
 end
 
+-- Marks which specs are usable for a choice of items.  A spec that can loot ALL the chosen
+-- items is the ideal one; when no spec can (for example a tank weapon and a damage weapon
+-- of the same class), the specs that cover the most chosen items are the usable ones, and
+-- their odds are those of the items they do cover.  Specs covering fewer, or none, are
+-- flagged noItems.  results need matchCount; selectedCount = number of chosen items.
+function Probability.MarkCoverage(results, selectedCount)
+    local maxMatch = 0
+    for _, r in ipairs(results) do
+        if r.matchCount > maxMatch then
+            maxMatch = r.matchCount
+        end
+    end
+    local needed = math.min(selectedCount, maxMatch)
+    for _, r in ipairs(results) do
+        r.noItems = r.matchCount < needed or (selectedCount > 0 and maxMatch == 0)
+    end
+end
+
 -- Ranks the current player's specs by how many of the given itemIDs fall into
 -- each spec's loot pool at the specified source/difficulty.
 --
@@ -233,9 +251,10 @@ function Probability.RankCurrentPlayerSpecsForItems(itemIDs, sourceType, sourceI
             remainingOdds = remainingCount > 0 and (1 / remainingCount) or 0,
             selectedOdds = remainingCount > 0 and (matchRemainingCount / remainingCount) or 0,
             allObtained = baseCount > 0 and remainingCount == 0,
-            noItems = matchCount < selectedCount -- spec cannot loot ALL selected items
+            noItems = false -- set below by MarkCoverage
         }
     end
+    Probability.MarkCoverage(results, #itemIDs)
 
     table.sort(results, function(a, b)
         if a.noItems ~= b.noItems then

@@ -737,10 +737,88 @@ local function GetRaidEJItemLink(itemID)
     return result
 end
 
+-- ── Raid tooltip: keep the item's effect text ─────────────────────────────────
+-- Some items show their "Equip:/Use:" effect only when their link carries the extra bonus ID
+-- 13708 (real drops of those items have it).  Instead of listing the items by hand, the tooltip
+-- data of the built link is compared with the plain item's: when an effect line is lost, the
+-- link is rebuilt with 13708 and kept if the effect comes back.  The verdict is remembered.
+local EFFECT_BONUS = "13708"
+local effectFix = {} -- ["itemID:difficulty"] = true (needs 13708) / false (does not)
+
+local function EffectPrefixes()
+    local prefixes = {}
+    for _, pair in ipairs({{"ITEM_SPELL_TRIGGER_ONEQUIP", "Equip:"}, {"ITEM_SPELL_TRIGGER_ONUSE", "Use:"},
+                           {"ITEM_SPELL_TRIGGER_ONPROC", "Chance on hit:"}}) do
+        local value = _G[pair[1]]
+        prefixes[#prefixes + 1] = type(value) == "string" and value or pair[2]
+    end
+    return prefixes
+end
+
+-- Number of effect lines in tooltip data; nil while the data is not available yet.
+local function CountEffectLines(data)
+    if type(data) ~= "table" or type(data.lines) ~= "table" then
+        return nil
+    end
+    local prefixes = EffectPrefixes()
+    local count = 0
+    for i = 1, #data.lines do
+        local line = data.lines[i]
+        local text = type(line) == "table" and line.leftText
+        if type(text) == "string" then
+            text = text:gsub("|c%x%x%x%x%x%x%x%x", ""):gsub("|r", "")
+            for _, prefix in ipairs(prefixes) do
+                if text:sub(1, #prefix) == prefix then
+                    count = count + 1
+                    break
+                end
+            end
+        end
+    end
+    return count
+end
+
+local function TooltipEffectCount(getter, arg)
+    if not (C_TooltipInfo and getter) then
+        return nil
+    end
+    local ok, data = pcall(getter, arg)
+    if not ok then
+        return nil
+    end
+    return CountEffectLines(data)
+end
+
+-- Does this item need the effect bonus on this difficulty?  nil = cannot tell yet.
+local function NeedsEffectBonus(itemID, difficultyID, linkWithout, linkWith)
+    local key = itemID .. ":" .. difficultyID
+    if effectFix[key] ~= nil then
+        return effectFix[key]
+    end
+    if not (C_TooltipInfo and C_TooltipInfo.GetItemByID and C_TooltipInfo.GetHyperlink) then
+        return nil
+    end
+    local base = TooltipEffectCount(C_TooltipInfo.GetItemByID, itemID)
+    local plain = TooltipEffectCount(C_TooltipInfo.GetHyperlink, linkWithout)
+    if not base or not plain then
+        return nil
+    end
+    local needs = false
+    if plain < base then
+        local withBonus = TooltipEffectCount(C_TooltipInfo.GetHyperlink, linkWith)
+        if not withBonus then
+            return nil
+        end
+        needs = withBonus > plain
+    end
+    effectFix[key] = needs
+    return needs
+end
+
 -- Builds a raid item link showing the correct Voidcore reward track and ilvl.
 -- Keeps linkLevel (f[10]) for correct ilvl; clears specID (f[11]) which suppresses
--- the "Upgrade Level" display when set.
-local function BuildRaidTooltipLink(itemLink, difficultyID)
+-- the "Upgrade Level" display when set.  encounterID defaults to the boss on screen.
+local function BuildRaidTooltipLink(itemLink, difficultyID, encounterID)
     local info = VCA.RaidVoidcoreTooltip[difficultyID]
     if not info or not itemLink or itemLink == "" then
         return nil
@@ -765,12 +843,33 @@ local function BuildRaidTooltipLink(itemLink, difficultyID)
 
     -- Check for encounter-specific bonus override (keyed by difficulty + encounterID).
     local encounterBonus = VCA.RaidEncounterTooltipBonus and VCA.RaidEncounterTooltipBonus[difficultyID] and
-                               VCA.RaidEncounterTooltipBonus[difficultyID][Panel.sourceID]
+                               VCA.RaidEncounterTooltipBonus[difficultyID][encounterID or Panel.sourceID]
 
     fields[11] = "" -- clear loot specID; its presence suppresses the track label
     fields[13] = info.ctx
 
-    -- Build new bonus list: [tag?, 13708 if special+non-mythic, track]
+    -- Assembles the link for a bonus list (the fields above are copied, never changed).
+    local function assemble(newBonuses)
+        local out = {}
+        for i, v in ipairs(fields) do
+            out[i] = v
+        end
+        for _ = 1, numBonuses do
+            table.remove(out, 15)
+        end
+        out[14] = tostring(#newBonuses)
+        for i, b in ipairs(newBonuses) do
+            table.insert(out, 14 + i, b)
+        end
+        -- Zero numModifiers so source modifier data cannot override the injected rank.
+        local numModsPos = 15 + #newBonuses
+        if out[numModsPos] then
+            out[numModsPos] = "0"
+        end
+        return table.concat(out, ":")
+    end
+
+    -- Bonus list: [tag?, 13708 if the item needs it, track]
     local newBonuses = {}
     if encounterBonus then
         newBonuses = encounterBonus
@@ -778,30 +877,98 @@ local function BuildRaidTooltipLink(itemLink, difficultyID)
         -- Special items on Mythic use 3524 (original Mythic tag) instead of 13335.
         newBonuses = {"3524", tostring(info.bonus)}
     else
+        local without = {}
         if info.tag then
-            newBonuses[#newBonuses + 1] = tostring(info.tag)
+            without[#without + 1] = tostring(info.tag)
         end
-        if isSpecial then
-            newBonuses[#newBonuses + 1] = "13708"
+        without[#without + 1] = tostring(info.bonus)
+        local withEffect = {}
+        for i, b in ipairs(without) do
+            withEffect[i] = b
         end
-        newBonuses[#newBonuses + 1] = tostring(info.bonus)
+        table.insert(withEffect, #withEffect, EFFECT_BONUS) -- before the track, as in the real drops
+
+        if isSpecial or (itemID and NeedsEffectBonus(itemID, difficultyID, assemble(without), assemble(withEffect))) then
+            newBonuses = withEffect
+        else
+            newBonuses = without
+        end
     end
 
-    for _ = 1, numBonuses do
-        table.remove(fields, 15)
-    end
-    fields[14] = tostring(#newBonuses)
-    for i, b in ipairs(newBonuses) do
-        table.insert(fields, 14 + i, b)
-    end
+    return assemble(newBonuses)
+end
 
-    -- Zero numModifiers so source modifier data cannot override the injected rank.
-    local numModsPos = 15 + #newBonuses
-    if fields[numModsPos] then
-        fields[numModsPos] = "0"
-    end
+Panel.BuildRaidTooltipLink = BuildRaidTooltipLink
 
-    return table.concat(fields, ":")
+-- Checks every item of the season raids on Normal, Heroic and Mythic: reports the ones whose
+-- tooltip still loses an effect line.  Item data loads in the background, so it works in
+-- rounds.  Run with /void tooltips.
+function Panel.AuditRaidTooltips()
+    local raids = VCA.SeasonData and VCA.SeasonData.raids
+    if not raids then
+        return
+    end
+    local jobs, seen = {}, {}
+    for encounterID, raidData in pairs(raids) do
+        for _, diffID in ipairs({14, 15, 16}) do
+            local sample = raidData.bonusByDiff and raidData.bonusByDiff[diffID]
+            local pool = raidData[diffID]
+            if sample and type(pool) == "table" then
+                for _, itemID in ipairs(pool) do
+                    local key = itemID .. ":" .. diffID
+                    if not seen[key] then
+                        seen[key] = true
+                        jobs[#jobs + 1] = {
+                            itemID = itemID,
+                            diffID = diffID,
+                            encounterID = encounterID,
+                            link = sample:gsub("item:%d+", "item:" .. itemID, 1)
+                        }
+                    end
+                end
+            end
+        end
+    end
+    local title = VCA.Theme.title .. "VoidcoreAdvisor Reborn:|r "
+    print(title .. string.format("Tooltip check: %d items to look at...", #jobs))
+    for _, job in ipairs(jobs) do
+        if C_Item and C_Item.RequestLoadItemDataByID then
+            C_Item.RequestLoadItemDataByID(job.itemID)
+        end
+    end
+    local round, fixed, bad, unknown = 0, 0, {}, 0
+    local function run()
+        round = round + 1
+        fixed, bad, unknown = 0, {}, 0
+        for _, job in ipairs(jobs) do
+            local link = BuildRaidTooltipLink(job.link, job.diffID, job.encounterID)
+            local verdict = effectFix[job.itemID .. ":" .. job.diffID]
+            if verdict == nil and not (VCA.RaidTooltipExtraBonusItems and VCA.RaidTooltipExtraBonusItems[job.itemID]) and
+                not (VCA.RaidEncounterTooltipBonus and VCA.RaidEncounterTooltipBonus[job.diffID] and
+                    VCA.RaidEncounterTooltipBonus[job.diffID][job.encounterID]) then
+                unknown = unknown + 1
+            elseif verdict then
+                fixed = fixed + 1
+            end
+            if link and C_TooltipInfo and C_TooltipInfo.GetItemByID and C_TooltipInfo.GetHyperlink then
+                local base = TooltipEffectCount(C_TooltipInfo.GetItemByID, job.itemID)
+                local built = TooltipEffectCount(C_TooltipInfo.GetHyperlink, link)
+                if base and built and built < base then
+                    bad[#bad + 1] = (C_Item.GetItemNameByID(job.itemID) or job.itemID) .. " (" .. job.diffID .. ")"
+                end
+            end
+        end
+        if unknown > 0 and round < 4 then
+            C_Timer.After(1.5, run)
+            return
+        end
+        print(title .. string.format("Tooltip check done: %d items fixed with the effect bonus, %d could not be read, %d still lose an effect.",
+            fixed, unknown, #bad))
+        for i = 1, math.min(#bad, 25) do
+            print("  " .. bad[i])
+        end
+    end
+    C_Timer.After(1.5, run)
 end
 
 -- ── Tooltip: obtained-spec lines ───────────────────────────────────────────

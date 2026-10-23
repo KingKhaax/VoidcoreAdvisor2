@@ -186,9 +186,13 @@ local function ResolveFromLastKeystoneRun()
         lastKeystoneRun.keyLevel)
 end
 
+-- What the player is really doing (the keystone or raid they are in, or just left) wins over the
+-- boss/dungeon open in the panel: the panel only fills in when there is no real context, as
+-- in the open world.  Otherwise a roll made on Heroic or on a +5 was filed under whatever
+-- Mythic boss or +10 tab was on screen.
 local function GetResolvedSource()
-    return sourceOverride or ResolveCurrentMythicPlusSource() or ResolveCurrentRaidSource() or
-               ResolveFromLastKeystoneRun()
+    return ResolveCurrentMythicPlusSource() or ResolveCurrentRaidSource() or ResolveFromLastKeystoneRun() or
+               sourceOverride
 end
 
 local function IsInInstancedContent()
@@ -312,7 +316,7 @@ end
 
 -- A raid drop carries the difficulty it dropped on as a bonus ID of its link, so it can be
 -- told even when the addon was showing another boss or difficulty when the roll happened.
-local LINK_DIFFICULTY_BONUS = {[13334] = 15, [13335] = 16}
+local LINK_DIFFICULTY_BONUS = {[13333] = 14, [13334] = 15, [13335] = 16}
 
 function Detection.RaidDifficultyFromLink(link)
     if type(link) ~= "string" then

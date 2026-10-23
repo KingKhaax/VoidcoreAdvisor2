@@ -255,11 +255,68 @@ local winItemName = win:CreateFontString(nil, "OVERLAY", "VCAFontHighlight")
 winItemName:SetPoint("TOPLEFT", winItemIcon, "TOPRIGHT", 8, -2)
 winItemName:SetWidth(238)
 winItemName:SetJustifyH("LEFT")
-winItemName:SetWordWrap(true)
+winItemName:SetWordWrap(false)
 
--- Voidcore count + cost line (shown below item name text)
+-- Second line of the item name (the part after the colon, e.g. "Presa")
+local winItemSub = win:CreateFontString(nil, "OVERLAY", "VCAFontHighlightSmall")
+winItemSub:SetPoint("TOPLEFT", winItemName, "BOTTOMLEFT", 0, -1)
+winItemSub:SetWidth(238)
+winItemSub:SetJustifyH("LEFT")
+winItemSub:SetWordWrap(true)
+
+-- Voidcore count + cost line (shown below the name lines)
 local winVoidcoreInfo = win:CreateFontString(nil, "OVERLAY", "VCAFontNormal")
-winVoidcoreInfo:SetPoint("TOPLEFT", winItemName, "BOTTOMLEFT", 0, -4)
+winVoidcoreInfo:SetPoint("TOPLEFT", winItemSub, "BOTTOMLEFT", 0, -3)
+
+-- "Alijo de Vacio nebuloso: Presa" -> name on the first line (in the quality color), "Presa" under it.
+-- The second line says where the roll comes from once that is known (see ApplySourceSub).
+local sourceSub
+
+local function SetItemTitle(hex, fullName)
+    local name, sub = fullName:match("^([^:]+):%s*(.+)$")
+    name = (name or fullName):gsub("%s+$", "")
+    winItemName:SetText("|c" .. hex .. name .. "|r")
+    sub = sourceSub or sub
+    winItemSub:SetText(sub and ("|cffcdbfe0" .. sub .. "|r") or "")
+end
+
+-- Raid: "Boss name (Difficulty)".  Mythic+: "Mythic +10".
+local function SourceSubtitle(source)
+    if not (source and source.sourceType) then
+        return nil
+    end
+    if source.sourceType == VCA.ContentType.RAID then
+        local boss = source.sourceID and EJ_GetEncounterInfo and EJ_GetEncounterInfo(source.sourceID)
+        local diff = source.difficultyID and GetDifficultyInfo and GetDifficultyInfo(source.difficultyID)
+        if type(boss) ~= "string" or boss == "" then
+            boss = nil
+        end
+        if type(diff) ~= "string" or diff == "" then
+            diff = nil
+        end
+        if boss and diff then
+            return boss .. " (" .. diff .. ")"
+        end
+        return boss or diff
+    elseif source.sourceType == VCA.ContentType.MYTHIC_PLUS then
+        local label = (L["DIFFICULTY_MYTHIC_PLUS"] or "Mythic+"):gsub("%s*%+$", "")
+        local level = source.keyLevel
+        if not level and VCA.Detection and VCA.Detection.GetActiveSource then
+            local active = VCA.Detection.GetActiveSource()
+            level = active and active.sourceType == VCA.ContentType.MYTHIC_PLUS and active.keyLevel or nil
+        end
+        return level and (label .. " +" .. level) or label
+    end
+    return nil
+end
+
+local function ApplySourceSub(source)
+    local text = SourceSubtitle(source)
+    sourceSub = text
+    if text then
+        winItemSub:SetText("|cffcdbfe0" .. text .. "|r")
+    end
+end
 
 -- Timer bar  (value mirrored from BonusRollFrame.PromptFrame.Timer.Bar via OnUpdate)
 local timerBar = CreateFrame("StatusBar", nil, win)
@@ -481,25 +538,34 @@ for i = 1, 4 do
     local row = {}
     -- Clickable button; spec icon fills the button face
     row.btn = CreateFrame("Button", nil, win)
-    row.btn:SetSize(22, 22)
-    -- Edge around the icon: bright for the active loot spec, dim for the others
+    row.btn:SetSize(160, 24)
+    -- Chip: an outline (bright for the active loot spec, dim for the others) and a dark fill
     row.edge = row.btn:CreateTexture(nil, "BACKGROUND")
-    row.edge:SetPoint("TOPLEFT", row.btn, "TOPLEFT", -2, 2)
-    row.edge:SetPoint("BOTTOMRIGHT", row.btn, "BOTTOMRIGHT", 2, -2)
+    row.edge:SetAllPoints(row.btn)
+    row.bg = row.btn:CreateTexture(nil, "BACKGROUND", nil, 1)
+    row.bg:SetPoint("TOPLEFT", row.btn, "TOPLEFT", 1, -1)
+    row.bg:SetPoint("BOTTOMRIGHT", row.btn, "BOTTOMRIGHT", -1, 1)
+    row.bg:SetColorTexture(0.04, 0.09, 0.06, 0.95)
     row.glow = row.btn:CreateTexture(nil, "OVERLAY")
     row.glow:SetPoint("CENTER", row.btn, "CENTER", 0, 0)
     row.glow:SetSize(50, 50)
     row.glow:SetAtlas("currency-frame-glow")
     row.glow:Hide()
     row.icon = row.btn:CreateTexture(nil, "ARTWORK")
-    row.icon:SetAllPoints(row.btn)
+    row.icon:SetSize(18, 18)
+    row.icon:SetPoint("LEFT", row.btn, "LEFT", 4, 0)
     row.icon:SetTexCoord(0.08, 0.92, 0.08, 0.92)
     local hl = row.btn:CreateTexture(nil, "HIGHLIGHT")
     hl:SetAllPoints(row.btn)
     hl:SetColorTexture(1, 1, 1, 0.2)
     row.label = win:CreateFontString(nil, "OVERLAY", "VCAFontHighlightSmall")
+    row.label:SetJustifyH("LEFT")
+    row.label:SetWordWrap(false)
+    row.count = win:CreateFontString(nil, "OVERLAY", "VCAFontHighlightSmall")
+    row.count:SetJustifyH("RIGHT")
     row.btn:Hide()
     row.label:Hide()
+    row.count:Hide()
     specListRows[i] = row
 end
 
@@ -711,6 +777,7 @@ local function HideSpecList()
         specListRows[i].btn:Hide()
         specListRows[i].glow:Hide()
         specListRows[i].label:Hide()
+        specListRows[i].count:Hide()
     end
 end
 
@@ -733,13 +800,9 @@ local function ShowSpecList(source, dynY)
     specListSep:Hide()
     dynY = dynY - 12
 
-    -- Horizontal layout: [icon] N (W)  [icon] N (W)  …
-    -- Cell = 22px icon + 4px gap + ~42px text ("12 (3)") + 10px between = 63px
-    local CELL_W = 60
-    local WIN_W = 360
-    local specCount = math.min(#specs, 4)
-    -- Total row width: (N-1) gaps + last cell (icon 22 + gap 4 + text ~42)
-    local startX = 18
+    -- Chips in two columns: [icon] Name        N (W)
+    local CHIP_W, CHIP_H, CHIP_GAP = 160, 24, 8
+    local startX = 16
 
     local activeSpecID = VCA.SpecInfo.GetEffectiveLootSpecID()
     local selectedSet = VCA.Data.GetSelectedItems(source.sourceType, source.sourceID, source.difficultyID)
@@ -775,22 +838,29 @@ local function ShowSpecList(source, dynY)
             end
         end
 
+        local col, rowIdx = (i - 1) % 2, math.floor((i - 1) / 2)
         row.btn:ClearAllPoints()
-        row.btn:SetPoint("TOPLEFT", win, "TOPLEFT", startX + (i - 1) * CELL_W, dynY)
+        row.btn:SetPoint("TOPLEFT", win, "TOPLEFT", startX + col * (CHIP_W + CHIP_GAP), dynY - rowIdx * (CHIP_H + 4))
         row.icon:SetTexture(spec.icon or 134400)
         row.glow:Hide()
         local a = RollPalette().accent
-        if spec.specID == activeSpecID then
+        local isActive = spec.specID == activeSpecID
+        if isActive then
             row.edge:SetColorTexture(a[1], a[2], a[3], 1)
         else
             row.edge:SetColorTexture(0.2, 0.28, 0.24, 1)
         end
 
-        row.label:ClearAllPoints()
-        row.label:SetPoint("LEFT", row.btn, "RIGHT", 4, 0)
         local remColor = remaining > 0 and "|cffffffff" or "|cff666666"
         local wantedStr = wanted > 0 and (" |cffffff00(" .. wanted .. ")|r") or ""
-        row.label:SetText(remColor .. remaining .. "|r" .. wantedStr)
+        row.count:ClearAllPoints()
+        row.count:SetPoint("RIGHT", row.btn, "RIGHT", -5, 0)
+        row.count:SetText(remColor .. remaining .. "|r" .. wantedStr)
+        row.label:ClearAllPoints()
+        row.label:SetPoint("LEFT", row.icon, "RIGHT", 5, 0)
+        row.label:SetPoint("RIGHT", row.count, "LEFT", -4, 0)
+        local specLabelName = select(2, GetSpecializationInfoByID(spec.specID)) or "?"
+        row.label:SetText((isActive and "|cffffffff" or "|cffb9c7bf") .. specLabelName .. "|r")
 
         -- Capture loop locals for closures
         local capturedSpecID = spec.specID
@@ -863,21 +933,33 @@ local function ShowSpecList(source, dynY)
 
         row.btn:Show()
         row.label:Show()
+        row.count:Show()
     end
 
     -- Hide unused slots
     for i = (#specs + 1), 4 do
         specListRows[i].btn:Hide()
         specListRows[i].label:Hide()
+        specListRows[i].count:Hide()
     end
 
-    dynY = dynY - 30 -- single row height
+    local chipRows = math.ceil(math.min(#specs, 4) / 2)
+    dynY = dynY - chipRows * (CHIP_H + 4) -- chips and the gap below them
     return dynY
 end
 
 -- Lays out, from y downwards: the odds panel, the per-spec chips, the timer and the
 -- one-item warning. Returns the y below the last of them. `source` must carry
 -- { sourceType, sourceID, difficultyID } or be nil.
+-- Where the section below the header starts.  The header is the icon (40) or, when the item name
+-- takes two lines, the name plus the cost line, so nothing ever overlaps.
+local function HeaderBottomY()
+    local nameH = winItemName:GetStringHeight() or 14
+    local subH = winItemSub:GetStringHeight() or 0
+    local infoH = winVoidcoreInfo:GetStringHeight() or 14
+    return -(14 + math.max(40, 2 + nameH + 1 + subH + 3 + infoH) + 12)
+end
+
 local function LayoutDynamicSection(source, specID, y)
     topSep:Hide()
     specName:Hide()
@@ -1043,13 +1125,12 @@ function BRC.Show()
     end
     if iName then
         local _, _, _, hex = C_Item.GetItemQualityColor(iQuality or 1)
-        local shortName = (iName:match("^([^:]+)") or iName):gsub("%s+$", "")
-        winItemName:SetText("|c" .. hex .. shortName .. "|r")
+        SetItemTitle(hex, iName)
     elseif pf.Name and pf.Name:GetText() and pf.Name:GetText() ~= "" then
         local bName = pf.Name:GetText()
-        winItemName:SetText("|cffffffff" .. ((bName:match("^([^:]+)") or bName):gsub("%s+$", "")) .. "|r")
+        SetItemTitle("ffffffff", bName)
     else
-        winItemName:SetText("|cff888888Nebulous Voidcore Roll|r")
+        SetItemTitle("ff888888", "Nebulous Voidcore Roll")
     end
 
     local specID = VCA.SpecInfo.GetEffectiveLootSpecID()
@@ -1079,6 +1160,7 @@ function BRC.Show()
         end
     end
     cachedSource = source
+    ApplySourceSub(source)
 
     -- Voidcore count + cost
     local currInfo = C_CurrencyInfo and C_CurrencyInfo.GetCurrencyInfo(VCA.VOIDCORE_CURRENCY_ID)
@@ -1088,7 +1170,7 @@ function BRC.Show()
                          VCA.VoidcoreCost.MYTHIC_PLUS)
     winVoidcoreInfo:SetText(string.format(L["BONUS_ROLL_CONFIRM_COST"], cost, owned))
 
-    local dynY = LayoutDynamicSection(source, specID, -66)
+    local dynY = LayoutDynamicSection(source, specID, HeaderBottomY())
     local btnW, btnH = 140, 28
     local winH = math.abs(dynY) + 8 + btnH + 16
     win:SetSize(360, winH)
@@ -1228,8 +1310,7 @@ function BRC.ShowPreview()
         winItemIcon:Hide()
     end
     local iHex = iQuality and select(4, C_Item.GetItemQualityColor(iQuality)) or "ffa335ee"
-    local previewName = iName and ((iName:match("^([^:]+)") or iName):gsub("%s+$", "")) or "Nebulous Voidcore Roll"
-    winItemName:SetText("|c" .. iHex .. previewName .. "|r")
+    SetItemTitle(iHex, iName or "Nebulous Voidcore Roll")
 
     local specID = VCA.SpecInfo.GetEffectiveLootSpecID()
     local _, sName, _, sIcon = GetSpecializationInfoByID(specID)
@@ -1254,13 +1335,14 @@ function BRC.ShowPreview()
         end
     end
     cachedSource = source
+    ApplySourceSub(source)
 
     local cost = (cachedPromptData and cachedPromptData.currencyCost) or
                      ((source and source.sourceType == VCA.ContentType.RAID) and VCA.VoidcoreCost.RAID or
                          VCA.VoidcoreCost.MYTHIC_PLUS)
     winVoidcoreInfo:SetText(string.format(L["BONUS_ROLL_CONFIRM_COST"], cost, owned))
 
-    local dynY = LayoutDynamicSection(source, specID, -66)
+    local dynY = LayoutDynamicSection(source, specID, HeaderBottomY())
     local btnW, btnH = 140, 28
     local winH = math.abs(dynY) + 8 + btnH + 16
     win:SetSize(360, winH)
@@ -1393,7 +1475,7 @@ eventFrame:SetScript("OnEvent", function(self, event, ...)
                 if hex then
                     local iName = C_Item.GetItemInfo(itemID)
                     if iName then
-                        winItemName:SetText("|c" .. hex .. iName .. "|r")
+                        SetItemTitle(hex, iName)
                     end
                 end
             end

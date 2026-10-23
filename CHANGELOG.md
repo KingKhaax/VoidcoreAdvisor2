@@ -1,10 +1,12 @@
-Version: 2.7.4
+Version: 2.8.0
 2026/10/24 Released
 
 🔮 New
+- [Roll window] A cleaner bonus roll window. The item name takes the first line and under it comes where the roll is from: the boss with its difficulty for a raid (for example Ula'tek (Heroic)) and the difficulty with the key level for a dungeon (for example Mythic +10). The cost line follows, and your specializations are now chips with their icon, name and the number of items left (the ones you chose in brackets); the active one is outlined and clicking another one switches your loot specialization. Reported on CurseForge.
 - [History] The items of the roll history (/void history) can now be used: hover one to see its tooltip, Shift-click it to put the link in the chat and Ctrl-click it to try it on.
 
 🛠️ Fix
+- [Roll window] Long item names, such as "Nebulous Voidcache: Prey", wrapped over the cost line. The header now measures the name and everything below it moves down, so nothing overlaps.
 - [Settings] In the Tools tab the command written in each square (for example /void missing) touched the bottom border and stuck out depending on the font. The squares are a little taller and the command is anchored to their bottom, so it always stays inside.
 
 ---

@@ -72,3 +72,22 @@ test("Data: a roll stores whether it was a chosen item and the odds it had", fun
     Data.LogBonusRoll(3, nil, 1, {sourceType = "RAID", sourceID = 100, difficultyID = 15})
     assert(Data.GetBonusRollLog()[2].wanted == false)
 end)
+
+test("Data: clearing a raid item flags its roll entries so the replay does not bring it back", function()
+    local log = Data.GetBonusRollLog()
+    for i = #log, 1, -1 do
+        log[i] = nil
+    end
+    log[1] = {itemID = 7, specID = 1, raidInstanceID = 50, difficultyID = 15}  -- heroic roll
+    log[2] = {itemID = 7, specID = 1, raidInstanceID = 50, difficultyID = 16}  -- mythic roll of the same item
+    log[3] = {itemID = 8, specID = 1, raidInstanceID = 50, difficultyID = 15}  -- another item
+    log[4] = {itemID = 7, specID = 1, raidInstanceID = 60, difficultyID = 15}  -- another raid
+    Data.NeutralizeRollEntriesForItem(7, "RAID", 100, 15, 50)
+    assert(log[1].unmarked == true, "heroic roll flagged")
+    assert(not log[2].unmarked, "mythic roll kept")
+    assert(not log[3].unmarked, "other item kept")
+    assert(not log[4].unmarked, "other raid kept")
+    for i = #log, 1, -1 do
+        log[i] = nil
+    end
+end)

@@ -1656,9 +1656,12 @@ end
 -- ── Detection callback ────────────────────────────────────────────────────────
 -- Wired to Detection module: flash the detected item row green, print to chat.
 
-VCA.Detection.SetOnItemDetectedCallback(function(itemID, source)
-    -- Chat message
+VCA.Detection.SetOnItemDetectedCallback(function(itemID, source, itemLevel)
+    -- Chat message (with the item level the roll gave, so a wrong difficulty is easy to spot)
     local itemName = C_Item.GetItemNameByID(itemID) or tostring(itemID)
+    if itemLevel then
+        itemName = itemName .. " (ilvl " .. itemLevel .. ")"
+    end
     print(VCA.Theme.hdr .. "VoidcoreAdvisor Reborn:|r " .. string.format(L["DETECTED_OBTAINED"], "|cnIQ4:" .. itemName .. "|r"))
 
     -- Remove from saved selections now that it's obtained.

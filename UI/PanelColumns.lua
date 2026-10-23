@@ -359,6 +359,9 @@ local function PopulateItemColumn(sourceType, sourceID, difficultyID, isHighTier
                 end
                 VCA.Data.SetObtained(self.sourceType, self.sourceID, self.diffID, 0, self.itemID, false)
                 VCA.Data.RemoveAllManualLogEntriesForItem(self.itemID, self.sourceType, self.sourceID, self.diffID)
+                -- Roll entries must not bring the mark back when the log is replayed at login.
+                VCA.Data.NeutralizeRollEntriesForItem(self.itemID, self.sourceType, self.sourceID, self.diffID,
+                    raidData and raidData.instanceID)
             else
                 -- Mark obtained for all eligible specs, log the manual action, and check completion.
                 local source = {

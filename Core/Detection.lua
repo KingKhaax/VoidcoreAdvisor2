@@ -291,6 +291,108 @@ function Detection.CheckAndResetIfComplete(source, specID, isHighTier)
     return CheckAndResetIfComplete(source, specID, isHighTier)
 end
 
+-- Item level of the roll being processed, so the chat message can show it.
+local activeItemLevel
+
+-- Item level of an item link as the game shows it (nil when unknown).
+local function GetLinkItemLevel(link)
+    if type(link) ~= "string" or not (C_Item and C_Item.GetDetailedItemLevelInfo) then
+        return nil
+    end
+    local ok, ilvl = pcall(C_Item.GetDetailedItemLevelInfo, link)
+    if ok and type(ilvl) == "number" and ilvl > 0 then
+        return ilvl
+    end
+    return nil
+end
+
+function Detection.GetItemLevel(link)
+    return GetLinkItemLevel(link)
+end
+
+-- Item level of each raid difficulty, read once from the sample links of the season data.
+local raidLevels = {}
+local RAID_DIFFICULTIES = {14, 15, 16}
+
+local function RaidDifficultyFromItemLevel(ilvl)
+    if not ilvl or not (VCA.SeasonData and VCA.SeasonData.raids) then
+        return nil
+    end
+    local best, bestGap, tie
+    for _, diffID in ipairs(RAID_DIFFICULTIES) do
+        if not raidLevels[diffID] then
+            for _, raidData in pairs(VCA.SeasonData.raids) do
+                local level = raidData.bonusByDiff and GetLinkItemLevel(raidData.bonusByDiff[diffID])
+                if level then
+                    raidLevels[diffID] = level
+                    break
+                end
+            end
+        end
+        local level = raidLevels[diffID]
+        if level then
+            local gap = math.abs(level - ilvl)
+            if not bestGap or gap < bestGap then
+                best, bestGap, tie = diffID, gap, false
+            elseif gap == bestGap then
+                tie = true
+            end
+        end
+    end
+    if best and not tie and bestGap <= 3 then
+        return best
+    end
+    return nil
+end
+
+-- Raid difficulty of a roll log entry: the one it saved, or the one its item level points at.
+-- Never guesses: nil when neither is known.
+function Detection.ResolveEntryDifficulty(entry)
+    if entry.difficultyID then
+        return entry.difficultyID
+    end
+    local ilvl = entry.itemLevel or GetLinkItemLevel(entry.itemLink)
+    if ilvl and not entry.itemLevel then
+        entry.itemLevel = ilvl
+    end
+    return RaidDifficultyFromItemLevel(ilvl)
+end
+
+-- Undoes the marks an older version left on the other raid difficulties for a roll that
+-- belongs to keepDiff.  A difficulty stays marked when another log entry (or a manual
+-- mark) of the same item backs it.
+local function ClearOtherRaidDifficulties(entry, keepDiff, log)
+    if not (VCA.SeasonData and VCA.SeasonData.raids and VCA.Data and VCA.Data.SetObtained) then
+        return
+    end
+    for _, diffID in ipairs(RAID_DIFFICULTIES) do
+        if diffID ~= keepDiff then
+            local backed = false
+            for _, other in ipairs(log) do
+                if other ~= entry and other.itemID == entry.itemID and not other.unmarked and
+                    (other.difficultyID or Detection.ResolveEntryDifficulty(other)) == diffID then
+                    backed = true
+                    break
+                end
+            end
+            if not backed then
+                for encounterID, raidData in pairs(VCA.SeasonData.raids) do
+                    if raidData.instanceID == entry.raidInstanceID then
+                        local specMap = raidData.bySpec and raidData.bySpec[diffID]
+                        if specMap then
+                            for specID in pairs(specMap) do
+                                VCA.Data.SetObtained(VCA.ContentType.RAID, encounterID, diffID, specID, entry.itemID,
+                                    false)
+                            end
+                        end
+                        VCA.Data.SetObtained(VCA.ContentType.RAID, encounterID, diffID, 0, entry.itemID, false)
+                    end
+                end
+            end
+        end
+    end
+end
+
 local function OnCandidateItemDetected(itemID, source, specID)
     if not source or not itemID then
         return
@@ -313,7 +415,7 @@ local function OnCandidateItemDetected(itemID, source, specID)
     VCA.Data.PropagateObtainedToAllSpecs(source.sourceType, source.sourceID, source.difficultyID, itemID, isHighTier)
 
     if onDetectedCallback then
-        onDetectedCallback(itemID, source)
+        onDetectedCallback(itemID, source, activeItemLevel)
     end
 
     CheckAndResetIfComplete(source, specID, isHighTier)
@@ -378,25 +480,24 @@ end
 
 -- Last-resort recovery for log entries with only itemID+specID and no source
 -- context at all (pre-raid-detection logs).  Searches every SeasonData raid
--- encounter (all eligible difficulties) first; if found there, returns without
--- checking dungeons (item pools are mutually exclusive).  If not found in raids,
--- falls back to dungeon instances.
+-- encounter on raidDifficultyID only (a raid roll is marked on the difficulty it was made
+-- on, never on all of them; without a known difficulty raids are skipped) first; if found
+-- there, returns without checking dungeons (item pools are mutually exclusive).  If not
+-- found in raids, falls back to dungeon instances.
 -- Returns a descriptor on success so the caller can patch the log entry:
---   { kind="raid",    raidInstanceID=N }                   — found in a raid
+--   { kind="raid",    raidInstanceID=N, difficultyID=D }   — found in a raid
 --   { kind="dungeon", sourceType=T, sourceID=N, difficultyID=D } — found in a dungeon
 -- Returns nil on failure.
-local function TryMarkItemAcrossAllSources(itemID, specID)
+local function TryMarkItemAcrossAllSources(itemID, specID, raidDifficultyID)
     if not (VCA.SeasonData and itemID and specID) then
         return nil
     end
-    -- Raid encounters — mark across all eligible difficulties.
-    -- Pool is disjoint from dungeons, so stop here if found.
-    if VCA.SeasonData.raids then
+    -- Raid encounters. Pool is disjoint from dungeons, so stop here if found.
+    if VCA.SeasonData.raids and raidDifficultyID then
         local foundInRaid = false
         local resolvedRaidInstanceID = nil
         for encounterID, raidData in pairs(VCA.SeasonData.raids) do
-            for _, diffID in
-                ipairs({VCA.Difficulty.RAID_NORMAL, VCA.Difficulty.RAID_HEROIC, VCA.Difficulty.RAID_MYTHIC}) do
+            for _, diffID in ipairs({raidDifficultyID}) do
                 local pool = raidData[diffID]
                 if pool then
                     for _, id in ipairs(pool) do
@@ -416,7 +517,8 @@ local function TryMarkItemAcrossAllSources(itemID, specID)
         if foundInRaid then
             return {
                 kind = "raid",
-                raidInstanceID = resolvedRaidInstanceID
+                raidInstanceID = resolvedRaidInstanceID,
+                difficultyID = raidDifficultyID
             }
         end
     end
@@ -458,9 +560,13 @@ function Detection.ReplayBonusRollLog(verbose)
     end
     local marked, skipped, nomatch, incomplete = 0, 0, 0, 0
     for i, entry in ipairs(log) do
+        activeItemLevel = entry.itemLevel or GetLinkItemLevel(entry.itemLink)
         -- A raid bonus roll has raidInstanceID+difficultyID but no sourceType/sourceID.
         -- Try the all-encounters path before treating the entry as incomplete.
-        if not (entry.itemID and entry.sourceType and entry.sourceID and entry.difficultyID and entry.specID) then
+        if entry.unmarked then
+            -- The player cleared this item by hand: do not mark it again.
+            skipped = skipped + 1
+        elseif not (entry.itemID and entry.sourceType and entry.sourceID and entry.difficultyID and entry.specID) then
             if entry.itemID and entry.raidInstanceID and entry.difficultyID and entry.specID then
                 if TryMarkItemInAllRaidEncounters(entry.itemID, entry.raidInstanceID, entry.difficultyID, entry.specID) then
                     marked = marked + 1
@@ -484,23 +590,25 @@ function Detection.ReplayBonusRollLog(verbose)
                 -- already resolved this entry and stored enough info to skip the
                 -- full SeasonData scan.
                 if entry.itemID and entry.raidInstanceID and entry.resolvedAllRaidDifficulties and entry.specID then
-                    -- Fast re-execution: iterate all 3 eligible difficulties.
-                    -- OnCandidateItemDetected short-circuits for already-obtained
-                    -- items, so this is cheap on repeat replays.
+                    -- Older versions marked these on all three difficulties. Mark only the
+                    -- difficulty the roll really had (from its item level) and undo the rest;
+                    -- if it cannot be told, leave the entry alone instead of guessing.
+                    local diffID = Detection.ResolveEntryDifficulty(entry)
                     local anyMarked = false
-                    for _, diffID in ipairs({VCA.Difficulty.RAID_NORMAL, VCA.Difficulty.RAID_HEROIC,
-                                             VCA.Difficulty.RAID_MYTHIC}) do
-                        if TryMarkItemInAllRaidEncounters(entry.itemID, entry.raidInstanceID, diffID, entry.specID) then
-                            anyMarked = true
-                        end
+                    if diffID then
+                        ClearOtherRaidDifficulties(entry, diffID, log)
+                        entry.difficultyID = diffID
+                        entry.resolvedAllRaidDifficulties = nil
+                        anyMarked = TryMarkItemInAllRaidEncounters(entry.itemID, entry.raidInstanceID, diffID,
+                            entry.specID)
                     end
                     if anyMarked then
                         marked = marked + 1
                         if verbose then
                             local name = C_Item.GetItemNameByID(entry.itemID) or tostring(entry.itemID)
                             print(string.format(
-                                VCA.Theme.title .. "VoidcoreAdvisor Reborn:|r Replay [%d]: re-marked across all raid difficulties — %s (spec=%s)",
-                                i, name, tostring(entry.specID)))
+                                VCA.Theme.title .. "VoidcoreAdvisor Reborn:|r Replay [%d]: re-marked on difficulty %s — %s (spec=%s)",
+                                i, tostring(diffID), name, tostring(entry.specID)))
                         end
                     else
                         incomplete = incomplete + 1
@@ -512,7 +620,8 @@ function Detection.ReplayBonusRollLog(verbose)
                     end
                 elseif entry.itemID and entry.specID then
                     -- Full scan — no prior resolution on this entry.
-                    local resolved = TryMarkItemAcrossAllSources(entry.itemID, entry.specID)
+                    local resolved = TryMarkItemAcrossAllSources(entry.itemID, entry.specID,
+                        Detection.ResolveEntryDifficulty(entry))
                     if resolved then
                         marked = marked + 1
                         -- Patch the log entry so future replays skip this scan.
@@ -522,7 +631,7 @@ function Detection.ReplayBonusRollLog(verbose)
                             entry.difficultyID = resolved.difficultyID
                         else -- "raid"
                             entry.raidInstanceID = resolved.raidInstanceID
-                            entry.resolvedAllRaidDifficulties = true
+                            entry.difficultyID = resolved.difficultyID
                         end
                         if verbose then
                             local name = C_Item.GetItemNameByID(entry.itemID) or tostring(entry.itemID)
@@ -630,6 +739,7 @@ function Detection.ReplayBonusRollLog(verbose)
             end
         end
     end
+    activeItemLevel = nil
     if verbose then
         print(string.format(
             VCA.Theme.title .. "VoidcoreAdvisor Reborn:|r Replay complete: %d marked, %d already obtained, %d not in pool, %d incomplete.",
@@ -645,7 +755,8 @@ local function QueuePendingReward(itemID, source, specID)
     pendingRewards[#pendingRewards + 1] = {
         itemID = itemID,
         source = source,
-        specID = specID
+        specID = specID,
+        itemLevel = activeItemLevel
     }
 end
 
@@ -658,6 +769,7 @@ local function ProcessPendingRewards()
     for _, entry in ipairs(pendingRewards) do
         local source = entry.source or GetResolvedSource()
         local resolved = false
+        activeItemLevel = entry.itemLevel
         if source and source.raidInstanceID and not source.sourceType then
             resolved = TryMarkItemInAllRaidEncounters(entry.itemID, source.raidInstanceID, source.difficultyID,
                 entry.specID)
@@ -669,11 +781,13 @@ local function ProcessPendingRewards()
             remaining[#remaining + 1] = {
                 itemID = entry.itemID,
                 source = source,
-                specID = entry.specID
+                specID = entry.specID,
+                itemLevel = entry.itemLevel
             }
         end
     end
 
+    activeItemLevel = nil
     pendingRewards = remaining
 end
 
@@ -829,8 +943,11 @@ function handlers.BONUS_ROLL_RESULT(typeIdentifier, itemLink, quantity, specID)
     end
 
     -- Defer one frame so item data is populated before pool lookup.
+    local rolledLevel = GetLinkItemLevel(itemLink)
     C_Timer.After(0, function()
+        activeItemLevel = rolledLevel
         ProcessRewardItem(itemID, specID, capturedSource)
+        activeItemLevel = nil
         -- Replay the full log as a safety net: if the pool cache was not warm
         -- when ProcessRewardItem ran, the log entry now has the correct source.
         Detection.ReplayBonusRollLog(false)

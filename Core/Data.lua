@@ -365,6 +365,7 @@ function Data.LogBonusRoll(itemID, itemLink, specID, source)
         timestamp = time(),
         itemID = itemID,
         itemLink = itemLink,
+        itemLevel = VCA.Detection and VCA.Detection.GetItemLevel and VCA.Detection.GetItemLevel(itemLink) or nil,
         wanted = wanted,
         odds = odds,
         specID = specID,
@@ -437,6 +438,33 @@ function Data.RemoveAllManualLogEntriesForItem(itemID, sourceType, sourceID, dif
         if e.manual and e.itemID == itemID and e.sourceType == sourceType and e.sourceID == sourceID and e.difficultyID ==
             difficultyID then
             table.remove(log, i)
+        end
+    end
+end
+
+-- Flags the roll entries of an item that the player cleared by hand, so the replay at login
+-- does not mark it again.  A raid roll counts when it belongs to the same raid and
+-- difficulty (or its difficulty is unknown); raidInstanceID is the raid's journal id.
+-- The entries stay in the log: /void rolls and the history still show the roll.
+function Data.NeutralizeRollEntriesForItem(itemID, sourceType, sourceID, difficultyID, raidInstanceID)
+    local db = _G[VCA.CHAR_DB_NAME]
+    if not db or not db.bonusRollLog then
+        return
+    end
+    for _, e in ipairs(db.bonusRollLog) do
+        if not e.manual and e.itemID == itemID then
+            local sameSource = e.sourceType == sourceType and e.sourceID == sourceID and e.difficultyID == difficultyID
+            local sameRaid = false
+            if raidInstanceID and e.raidInstanceID == raidInstanceID then
+                local diff = e.difficultyID
+                if not diff and VCA.Detection and VCA.Detection.ResolveEntryDifficulty then
+                    diff = VCA.Detection.ResolveEntryDifficulty(e)
+                end
+                sameRaid = diff == nil or diff == difficultyID
+            end
+            if sameSource or sameRaid then
+                e.unmarked = true
+            end
         end
     end
 end

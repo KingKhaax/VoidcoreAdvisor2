@@ -425,3 +425,20 @@ check("Raid overview: the slot section refreshes", function()
     VCA.RaidOverview.RefreshSlots()
     assert(VCA.RaidOverview.SLOT_SECTION_H and VCA.RaidOverview.SLOT_SECTION_H > 60)
 end)
+
+check("Replay: a roll without difficulty is marked on its own difficulty only", function()
+    local oldInfo = C_Item.GetDetailedItemLevelInfo
+    C_Item.GetDetailedItemLevelInfo = function(link)
+        if link:find(":7359:") then return 321 end
+        if link:find(":7363:") then return 334 end
+        if link:find(":7362:") then return 344 end
+        return tonumber(link:match("ilvl=(%d+)"))
+    end
+    local lvl = VCA.Detection.GetItemLevel("x ilvl=334")
+    assert(lvl == 334, tostring(lvl))
+    assert(VCA.Detection.ResolveEntryDifficulty({itemLink = "x ilvl=334"}) == 15)
+    assert(VCA.Detection.ResolveEntryDifficulty({itemLink = "x ilvl=344"}) == 16)
+    assert(VCA.Detection.ResolveEntryDifficulty({itemLink = "x ilvl=200"}) == nil, "far level is not guessed")
+    assert(VCA.Detection.ResolveEntryDifficulty({difficultyID = 14, itemLink = "x ilvl=344"}) == 14)
+    C_Item.GetDetailedItemLevelInfo = oldInfo
+end)

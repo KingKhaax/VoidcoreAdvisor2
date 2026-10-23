@@ -407,31 +407,43 @@ markModeBtn:SetBackdrop({
     edgeFile = "Interface\\Buttons\\WHITE8X8",
     edgeSize = 1
 })
-markModeBtn:SetBackdropBorderColor(0, 0, 0, 1)
 local markModeText = markModeBtn:CreateFontString(nil, "OVERLAY", "VCAFontHighlight")
 markModeText:SetPoint("LEFT", markModeBtn, "LEFT", 6, 0)
 markModeText:SetPoint("RIGHT", markModeBtn, "RIGHT", -6, 0)
 markModeText:SetJustifyH("CENTER")
 markModeText:SetWordWrap(false)
 markModeBtn.text = markModeText
-local markShine = markModeBtn:CreateTexture(nil, "ARTWORK")
-markShine:SetPoint("TOPLEFT", markModeBtn, "TOPLEFT", 1, -1)
-markShine:SetPoint("TOPRIGHT", markModeBtn, "TOPRIGHT", -1, -1)
-markShine:SetHeight(1)
-markShine:SetColorTexture(1, 1, 1, 0.28)
 local markHover = markModeBtn:CreateTexture(nil, "HIGHLIGHT")
 markHover:SetAllPoints()
-markHover:SetColorTexture(1, 1, 1, 0.12)
-local function UpdateMarkModeButton()
+local markHovered = false
+local function PaintMarkModeButton()
+    local t = VCA.Theme
     if Panel.markMode then
-        markModeBtn:SetBackdropColor(0.45, 0.35, 0.05, 1)
+        if markHovered then
+            markModeBtn:SetBackdropColor(0.23, 0.07, 0.07, 1)
+            markModeBtn:SetBackdropBorderColor(0.93, 0.33, 0.33, 1)
+        else
+            markModeBtn:SetBackdropColor(0.165, 0.05, 0.05, 1)
+            markModeBtn:SetBackdropBorderColor(0.64, 0.2, 0.2, 1)
+        end
+        markHover:SetColorTexture(1, 0.35, 0.3, 0.08)
+    else
+        local f = markHovered and 1 or 0.5
+        markModeBtn:SetBackdropColor(t.timerBg[1] + (t.timer[1] - t.timerBg[1]) * f,
+            t.timerBg[2] + (t.timer[2] - t.timerBg[2]) * f, t.timerBg[3] + (t.timer[3] - t.timerBg[3]) * f, 1)
+        markModeBtn:SetBackdropBorderColor(t.accent[1], t.accent[2], t.accent[3], 1)
+        markHover:SetColorTexture(t.accent[1], t.accent[2], t.accent[3], 0.18)
+    end
+end
+local function UpdateMarkModeButton()
+    PaintMarkModeButton()
+    if Panel.markMode then
         local n = 0
         for _ in pairs(Panel.pendingMarks) do
             n = n + 1
         end
-        markModeText:SetText("|cffffe9a3" .. L["MARK_MODE_ACTIVE"] .. (n > 0 and (" (" .. n .. ")") or "") .. "|r")
+        markModeText:SetText("|cffff8b7a" .. L["MARK_MODE_ACTIVE"] .. (n > 0 and (" (" .. n .. ")") or "") .. "|r")
     else
-        markModeBtn:SetBackdropColor(0.14, 0.42, 0.16, 1)
         markModeText:SetText("+ " .. L["MARK_MODE_BUTTON"])
     end
 end
@@ -523,6 +535,8 @@ markModeBtn:SetScript("OnClick", function()
     Panel.RefreshItemColumn()
 end)
 markModeBtn:SetScript("OnEnter", function(self)
+    markHovered = true
+    PaintMarkModeButton()
     GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
     GameTooltip:SetText(L["MARK_MODE_BUTTON"], 1, 1, 1)
     GameTooltip:AddLine(L["MARK_MODE_TIP"], nil, nil, nil, true)
@@ -530,10 +544,13 @@ markModeBtn:SetScript("OnEnter", function(self)
     GameTooltip:Show()
 end)
 markModeBtn:SetScript("OnLeave", function()
+    markHovered = false
+    PaintMarkModeButton()
     GameTooltip:Hide()
 end)
 markModeBtn:Hide()
 UpdateMarkModeButton()
+VCA.OnTheme(PaintMarkModeButton)
 
 local lootSpecLabel = contentArea:CreateFontString(nil, "OVERLAY", "VCAFontNormal")
 lootSpecLabel:SetJustifyH("LEFT")

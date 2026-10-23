@@ -2,6 +2,7 @@ Version: 2.7.1
 2026/10/23 Released
 
 🔮 New
+- [Panel] A new look for the "Mark rolled item" button at the bottom of the loot column. While you can press it, it is filled with the color of your theme and glows when you hover it. Once mark mode is on it turns a muted red, with a lighter red on hover, to show that pressing it again saves the marks and leaves the mode. Both states follow the theme you chose, and the gold bar and the white line on top are gone.
 - [Detection] The chat message that says an item was detected as obtained through a Nebulous Voidcore now shows the item level the roll gave, in parentheses next to the item, so a wrong difficulty is easy to spot.
 
 🛠️ Fix

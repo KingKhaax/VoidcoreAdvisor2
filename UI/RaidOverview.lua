@@ -435,7 +435,8 @@ local function Populate()
     local contentW = frame:GetWidth() - PADDING * 2
     scrollFrame:ClearAllPoints()
     scrollFrame:SetPoint("TOPLEFT", contentArea, "TOPLEFT", PADDING, -(COL_HEADER_H + 8))
-    scrollFrame:SetPoint("BOTTOMRIGHT", contentArea, "BOTTOMRIGHT", -PADDING, 20)
+    -- leave room for the "select by slot" section (UI/RaidSlots.lua) and the characters link
+    scrollFrame:SetPoint("BOTTOMRIGHT", contentArea, "BOTTOMRIGHT", -PADDING, 40 + (Overview.SLOT_SECTION_H or 0))
     scrollChild:SetWidth(contentW)
 
     local instanceID = Overview.instanceID
@@ -586,6 +587,9 @@ local function Populate()
 
     scrollChild:SetHeight(math.max(rowTop, 1))
     scrollFrame:SetVerticalScroll(0)
+    if Overview.RefreshSlots then
+        Overview.RefreshSlots()
+    end
 end
 
 function Overview.Show(instanceID, difficultyID)

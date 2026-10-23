@@ -1,3 +1,14 @@
+Version: 2.7.0
+2026/10/23 Released
+
+🔮 New
+- [Raid Overview] "Select by slot" for raids, the same wishlist the Dungeon Overview has: a grid of equipment slots at the bottom of the raid overview. Press a slot to open a list with every item of that slot your class can loot in the raid (on the difficulty you are viewing) and tick the ones you want; each item is chosen on every boss that drops it. "Select All" chooses them all and the red x clears the choice. Suggested on CurseForge.
+
+🛠️ Fix
+- [Loot] Tank specializations could not choose the damage trinkets that the Adventure Guide shows them (for example Zul'jin's Guillotine Technique for a Protection Paladin), because the loot tables listed those trinkets only for the damage specializations. Tanks now also get the trinkets of the damage specializations of their class that use the same main stat: Protection Paladin with Retribution, Protection Warrior with Arms and Fury, Blood with Frost and Unholy, Guardian with Feral, Brewmaster with Windwalker and Vengeance with Havoc. Reported on CurseForge.
+
+---
+
 Version: 2.6.1
 2026/10/23 Released
 

@@ -420,3 +420,8 @@ check("Settings window font list opens", function()
     VCA.SettingsWindow.Open(1)
     VCA.SettingsWindow.Hide()
 end)
+
+check("Raid overview: the slot section refreshes", function()
+    VCA.RaidOverview.RefreshSlots()
+    assert(VCA.RaidOverview.SLOT_SECTION_H and VCA.RaidOverview.SLOT_SECTION_H > 60)
+end)

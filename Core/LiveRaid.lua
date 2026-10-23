@@ -34,6 +34,9 @@ local function Inject(entry)
         end
     end
     VCA.LootPool.AddLiveRaid(entry.instanceID, entry.mapID)
+    if VCA.TankTrinkets then
+        VCA.TankTrinkets.Run()
+    end
 end
 
 local function ItemQuality(itemID, link)

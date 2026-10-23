@@ -158,6 +158,7 @@ function Tools.History()
     end
     lines[#lines + 1] = ""
     local shown = 0
+    local links = {}
     for i = #log, 1, -1 do
         local e = log[i]
         shown = shown + 1
@@ -167,11 +168,12 @@ function Tools.History()
         lines[#lines + 1] = string.format("%s  %s  -  %s%s", date("%Y/%m/%d %H:%M", e.timestamp or 0),
             ItemWithIcon(e.itemID, e.itemLink), e.sourceID and SourceName(e.sourceType, e.sourceID) or L["TOOLS_HISTORY_UNKNOWN"],
             e.manual and ("  " .. L["TOOLS_HISTORY_MANUAL"]) or (e.wanted and ("  " .. L["TOOLS_HISTORY_WANTED"]) or ""))
+        links[#lines] = e.itemLink or (e.itemID and ("item:" .. e.itemID)) or nil
     end
     if #log == 0 then
         lines[#lines + 1] = L["TOOLS_HISTORY_EMPTY"]
     end
-    VCA.Report.Show(L["TOOLS_HISTORY_TITLE"], table.concat(lines, "\n"), {footer = L["TOOLS_HISTORY_NOTE"], rich = true})
+    VCA.Report.Show(L["TOOLS_HISTORY_TITLE"], table.concat(lines, "\n"), {footer = L["TOOLS_HISTORY_NOTE"], rich = true, links = links})
 end
 
 -- ── /void chars ───────────────────────────────────────────────────────────────

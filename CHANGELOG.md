@@ -1,3 +1,14 @@
+Version: 2.7.4
+2026/10/24 Released
+
+🔮 New
+- [History] The items of the roll history (/void history) can now be used: hover one to see its tooltip, Shift-click it to put the link in the chat and Ctrl-click it to try it on.
+
+🛠️ Fix
+- [Settings] In the Tools tab the command written in each square (for example /void missing) touched the bottom border and stuck out depending on the font. The squares are a little taller and the command is anchored to their bottom, so it always stays inside.
+
+---
+
 Version: 2.7.3
 2026/10/24 Released
 

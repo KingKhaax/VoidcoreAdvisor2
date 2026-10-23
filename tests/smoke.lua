@@ -481,3 +481,9 @@ check("Raid tooltip: an item that loses its effect gets the effect bonus", funct
     _G.C_TooltipInfo = old
     _G.ITEM_SPELL_TRIGGER_ONEQUIP, _G.ITEM_SPELL_TRIGGER_ONUSE, _G.ITEM_SPELL_TRIGGER_ONPROC = oldEquip, oldUse, oldProc
 end)
+
+check("Report: rich rows with item links", function()
+    VCA.Report.Show("Test", "first\n\nsecond item", {rich = true, links = {[3] = "item:19019"}})
+    VCA.Report.Show("Test", "only one line", {rich = true})
+    VCA.Report.Hide()
+end)

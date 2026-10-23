@@ -65,6 +65,82 @@ richText:SetJustifyH("LEFT")
 richText:SetJustifyV("TOP")
 richText:SetSpacing(3)
 
+-- Rich rows: in rich mode every line of the text is its own row, so a line that carries an item
+-- can be hovered (tooltip), shift-clicked (into the chat) or ctrl-clicked (dressing room).
+local richRows = {}
+
+local function GetRichRow(i)
+    local row = richRows[i]
+    if row then
+        return row
+    end
+    row = CreateFrame("Button", nil, richHolder)
+    row:SetWidth(580)
+    row.text = row:CreateFontString(nil, "OVERLAY", "ChatFontNormal")
+    row.text:SetPoint("TOPLEFT", 0, 0)
+    row.text:SetWidth(580)
+    row.text:SetJustifyH("LEFT")
+    row.text:SetJustifyV("TOP")
+    row.text:SetSpacing(3)
+    row.hl = row:CreateTexture(nil, "BACKGROUND")
+    row.hl:SetAllPoints()
+    row.hl:SetColorTexture(1, 1, 1, 0.08)
+    row.hl:Hide()
+    row:SetScript("OnEnter", function(self)
+        if not self.link then
+            return
+        end
+        self.hl:Show()
+        GameTooltip:SetOwner(self, "ANCHOR_CURSOR_RIGHT")
+        GameTooltip:SetHyperlink(self.link)
+        GameTooltip:Show()
+    end)
+    row:SetScript("OnLeave", function(self)
+        self.hl:Hide()
+        GameTooltip:Hide()
+    end)
+    row:SetScript("OnClick", function(self)
+        if not self.link then
+            return
+        end
+        if IsModifiedClick("CHATLINK") then
+            local link = self.link
+            if not link:find("|H", 1, true) and C_Item and C_Item.GetItemInfo then
+                link = select(2, C_Item.GetItemInfo(link)) or link
+            end
+            ChatEdit_InsertLink(link)
+        elseif IsModifiedClick("DRESSUP") then
+            DressUpLink(self.link)
+        end
+    end)
+    richRows[i] = row
+    return row
+end
+
+-- Lays the text out as rows; links[n] is the item link of line n (optional).
+local function ShowRichRows(text, links)
+    richText:SetText("")
+    local y, n = 0, 0
+    for line in ((text or "") .. "\n"):gmatch("([^\n]*)\n") do
+        n = n + 1
+        local row = GetRichRow(n)
+        row.link = links and links[n] or nil
+        row.text:SetText(line == "" and " " or line)
+        local h = math.max(8, row.text:GetStringHeight() + 3)
+        row:SetHeight(h)
+        row:ClearAllPoints()
+        row:SetPoint("TOPLEFT", richHolder, "TOPLEFT", 0, -y)
+        row:EnableMouse(row.link ~= nil)
+        row:Show()
+        y = y + h
+    end
+    for i = n + 1, #richRows do
+        richRows[i].link = nil
+        richRows[i]:Hide()
+    end
+    richHolder:SetHeight(math.max(10, y + 6))
+end
+
 local actionBtn = CreateFrame("Button", nil, frame, "UIPanelButtonTemplate")
 actionBtn:SetSize(140, 24)
 actionBtn:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -16, 14)
@@ -85,6 +161,8 @@ end)
 -- opts.button  : label of an action button; it receives the text of the box
 -- opts.editable: the box starts empty and you paste into it (needs opts.button)
 -- opts.footer  : small hint at the bottom
+-- opts.rich    : show text with icons; opts.links = {[line number] = item link} makes those lines
+--                hoverable and clickable
 function Report.Show(titleText, text, opts)
     opts = opts or {}
     title:SetText(VCA.Theme.title .. titleText .. "|r")
@@ -99,8 +177,7 @@ function Report.Show(titleText, text, opts)
     frame:Raise()
     if opts.rich then
         scroll:SetScrollChild(richHolder)
-        richText:SetText(text or "")
-        richHolder:SetHeight(math.max(10, richText:GetStringHeight() + 6))
+        ShowRichRows(text, opts.links)
         scroll:SetVerticalScroll(0)
         frame:Show()
         return

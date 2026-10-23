@@ -5,7 +5,7 @@ Version: 2.7.1
 - [Detection] The chat message that says an item was detected as obtained through a Nebulous Voidcore now shows the item level the roll gave, in parentheses next to the item, so a wrong difficulty is easy to spot.
 
 🛠️ Fix
-- [Detection] A raid roll made on Heroic could end up marked on Mythic. Rolls saved by older versions without a difficulty were applied to Normal, Heroic and Mythic at once. Now the difficulty is taken from the roll itself or, when it was not saved, from the item level of the rolled item (for example 334 is Heroic and 344 is Mythic); if it cannot be told, nothing is marked instead of guessing. Marks that older versions put on the wrong difficulties are removed the next time the roll log is checked, unless another roll or a manual mark of that item backs them.
+- [Detection] A raid roll made on Heroic could be saved and marked as Mythic. When the boss open in the panel was a Mythic one, it won over the real difficulty of the roll. Now the difficulty is read from the rolled item itself (its link says whether it dropped on Heroic or Mythic); rolls saved by older versions without a difficulty use the item level, and if it cannot be told nothing is marked instead of guessing. Rolls already saved with the wrong difficulty are corrected the next time the roll log is checked, and the marks they left on the wrong difficulty are removed unless another roll or a manual mark of that item backs them.
 - [Panel] An item you unmarked came back after relogging, because the saved roll that had detected it was applied again at login. Unmarking an item now also tells the log not to mark it again; the roll stays in /void rolls and the history.
 
 ---

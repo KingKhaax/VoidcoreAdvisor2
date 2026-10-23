@@ -442,3 +442,12 @@ check("Replay: a roll without difficulty is marked on its own difficulty only", 
     assert(VCA.Detection.ResolveEntryDifficulty({difficultyID = 14, itemLink = "x ilvl=344"}) == 14)
     C_Item.GetDetailedItemLevelInfo = oldInfo
 end)
+
+check("Replay: the difficulty comes from the item link", function()
+    local D = VCA.Detection
+    assert(D.RaidDifficultyFromLink("|Hitem:268265::::::::90:269::95:5:6652:13668:13334:12849:13987::::::|h") == 15)
+    assert(D.RaidDifficultyFromLink("|Hitem:268253::::::::90:269::96:4:6652:13662:13335:13848::::::|h") == 16)
+    assert(D.RaidDifficultyFromLink("|Hitem:193714::::::::90:268::35:6:12801:13440:6652::::::|h") == nil)
+    assert(D.ResolveEntryDifficulty({difficultyID = 16, itemLink = "|Hitem:1::::::::90:269::95:2:13334:12849::::::|h"}) == 15,
+        "link wins over a wrong saved difficulty")
+end)

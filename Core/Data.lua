@@ -453,13 +453,13 @@ function Data.NeutralizeRollEntriesForItem(itemID, sourceType, sourceID, difficu
     end
     for _, e in ipairs(db.bonusRollLog) do
         if not e.manual and e.itemID == itemID then
-            local sameSource = e.sourceType == sourceType and e.sourceID == sourceID and e.difficultyID == difficultyID
+            local diff = e.difficultyID
+            if VCA.Detection and VCA.Detection.ResolveEntryDifficulty then
+                diff = VCA.Detection.ResolveEntryDifficulty(e) or diff
+            end
+            local sameSource = e.sourceType == sourceType and e.sourceID == sourceID and diff == difficultyID
             local sameRaid = false
             if raidInstanceID and e.raidInstanceID == raidInstanceID then
-                local diff = e.difficultyID
-                if not diff and VCA.Detection and VCA.Detection.ResolveEntryDifficulty then
-                    diff = VCA.Detection.ResolveEntryDifficulty(e)
-                end
                 sameRaid = diff == nil or diff == difficultyID
             end
             if sameSource or sameRaid then

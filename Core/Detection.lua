@@ -310,6 +310,23 @@ function Detection.GetItemLevel(link)
     return GetLinkItemLevel(link)
 end
 
+-- A raid drop carries the difficulty it dropped on as a bonus ID of its link, so it can be
+-- told even when the addon was showing another boss or difficulty when the roll happened.
+local LINK_DIFFICULTY_BONUS = {[13334] = 15, [13335] = 16}
+
+function Detection.RaidDifficultyFromLink(link)
+    if type(link) ~= "string" then
+        return nil
+    end
+    for bonusID in link:gmatch(":(1333%d):") do
+        local diffID = LINK_DIFFICULTY_BONUS[tonumber(bonusID)]
+        if diffID then
+            return diffID
+        end
+    end
+    return nil
+end
+
 -- Item level of each raid difficulty, read once from the sample links of the season data.
 local raidLevels = {}
 local RAID_DIFFICULTIES = {14, 15, 16}
@@ -348,6 +365,10 @@ end
 -- Raid difficulty of a roll log entry: the one it saved, or the one its item level points at.
 -- Never guesses: nil when neither is known.
 function Detection.ResolveEntryDifficulty(entry)
+    local fromLink = Detection.RaidDifficultyFromLink(entry.itemLink)
+    if fromLink then
+        return fromLink
+    end
     if entry.difficultyID then
         return entry.difficultyID
     end
@@ -370,7 +391,7 @@ local function ClearOtherRaidDifficulties(entry, keepDiff, log)
             local backed = false
             for _, other in ipairs(log) do
                 if other ~= entry and other.itemID == entry.itemID and not other.unmarked and
-                    (other.difficultyID or Detection.ResolveEntryDifficulty(other)) == diffID then
+                    Detection.ResolveEntryDifficulty(other) == diffID then
                     backed = true
                     break
                 end
@@ -563,9 +584,30 @@ function Detection.ReplayBonusRollLog(verbose)
         activeItemLevel = entry.itemLevel or GetLinkItemLevel(entry.itemLink)
         -- A raid bonus roll has raidInstanceID+difficultyID but no sourceType/sourceID.
         -- Try the all-encounters path before treating the entry as incomplete.
+        local linkDiff = Detection.RaidDifficultyFromLink(entry.itemLink)
         if entry.unmarked then
             -- The player cleared this item by hand: do not mark it again.
             skipped = skipped + 1
+        elseif linkDiff and (entry.sourceType == VCA.ContentType.RAID or entry.raidInstanceID) and
+            entry.difficultyID ~= linkDiff and entry.itemID and entry.specID then
+            -- The roll was saved with another difficulty than the one its item dropped on (the
+            -- boss open in the panel won over the real one).  Correct it, undo the wrong marks
+            -- and mark the real difficulty.
+            local raidData = entry.sourceID and VCA.SeasonData and VCA.SeasonData.raids and
+                                 VCA.SeasonData.raids[entry.sourceID]
+            entry.raidInstanceID = entry.raidInstanceID or (raidData and raidData.instanceID)
+            entry.resolvedAllRaidDifficulties = nil
+            entry.difficultyID = linkDiff
+            if entry.raidInstanceID then
+                ClearOtherRaidDifficulties(entry, linkDiff, log)
+                if TryMarkItemInAllRaidEncounters(entry.itemID, entry.raidInstanceID, linkDiff, entry.specID) then
+                    marked = marked + 1
+                else
+                    skipped = skipped + 1
+                end
+            else
+                incomplete = incomplete + 1
+            end
         elseif not (entry.itemID and entry.sourceType and entry.sourceID and entry.difficultyID and entry.specID) then
             if entry.itemID and entry.raidInstanceID and entry.difficultyID and entry.specID then
                 if TryMarkItemInAllRaidEncounters(entry.itemID, entry.raidInstanceID, entry.difficultyID, entry.specID) then
@@ -936,6 +978,18 @@ function handlers.BONUS_ROLL_RESULT(typeIdentifier, itemLink, quantity, specID)
     -- Capture the source now — GetInstanceInfo() state may change one frame
     -- later (e.g. after run completion), which would cause source resolution to fail.
     local capturedSource = GetResolvedSource()
+
+    -- The boss open in the panel can win over the real one: trust the difficulty the item dropped on.
+    local linkDiff = Detection.RaidDifficultyFromLink(itemLink)
+    if capturedSource and linkDiff and capturedSource.difficultyID ~= linkDiff and
+        (capturedSource.sourceType == VCA.ContentType.RAID or capturedSource.raidInstanceID) then
+        local fixed = {}
+        for k, v in pairs(capturedSource) do
+            fixed[k] = v
+        end
+        fixed.difficultyID = linkDiff
+        capturedSource = fixed
+    end
 
     -- Write a raw log entry immediately for post-hoc auditing if matching fails.
     if VCA.Data and VCA.Data.LogBonusRoll then
